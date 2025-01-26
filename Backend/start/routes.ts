@@ -3,16 +3,16 @@ import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 
 import UsersController from '#controllers/users/main'
-import SesioneController from '#controllers/sesiones/main'
+import SesioneController from '#controllers/authentication/main'
 import MateriasController from '#controllers/materias/main'
 import UnidadesController from '#controllers/unidades/main'
 import ContentsController from '#controllers/contents/main'
 
-
+// http://localhost:3333/ovacademy/user/estudianteHabilitar
 router.group(() => {
 
     router.group(() => {
-        router.post('/login', [SesioneController, 'authorize'])
+        router.post('/login', [SesioneController, 'authorize']) //Loggeo de un usuario
     }).prefix('/auth')
 
     router.group(() => {
@@ -21,6 +21,7 @@ router.group(() => {
         router.get('/show', [UsersController, 'show']) //VALIDAR TOKEN DE UN USUARIO
         router.post('', [UsersController, 'store']) // CREAR UN USUARIO
         router.put('', [UsersController, 'edit']) // EDITAR UN USUARIO
+        router.put('estudianteHabilitar', [UsersController, 'habilitarEstudiante']) // HABILITAR UN USUARIO
         router.delete('', [UsersController, 'delete']) // ACTIVAR O DESHABILITAR UN USUARIO
     }).prefix('/user')
 

@@ -1,16 +1,18 @@
 import type { HttpContext } from '@adonisjs/core/http';
 import UserService from '../../controllers/users/service.js';
+import EstudianteService from '../../controllers/estudiante/service.js';
 import SesioneService from '../authentication/service.js';
 import TokenService from '../authentication/token.js';
 
 const userService_ = new UserService();
+const EstudianteService_ = new EstudianteService();
 const SesioneService_ = new SesioneService();
 const TokenService_ = new TokenService();
 
-export default class SesioneController {
+export default class UsersController {
 
     public async index({ request, response }: HttpContext) {
-
+        
         try {
 
             // Obtener el parámetro de consulta type_id
@@ -22,7 +24,8 @@ export default class SesioneController {
                     message: 'El parámetro type_id es obligatorio y debe ser un número válido.'
                 });
             }
-
+            
+            
             const user = await userService_.listado_usuarios(Number(type_id));
     
             if (!user || user.length === 0) {
@@ -30,26 +33,31 @@ export default class SesioneController {
                     message: 'No se encontraron usuarios con el type_id proporcionado.'
                 });
             }
+
+            // Mapeamos los resultados para mover "$extras" al nivel principal
+            const mappedUsers = user.map(u => ({
+                ...u.$attributes, // Incluye las propiedades principales (id, email, etc.)
+                ...u.$extras,     // Incluye las propiedades extras (semestre, habilitado)
+            }));
     
             // Si todo es correcto, retornar los usuarios con estado success
             return response.status(200).json({
-                data: user
+                data: mappedUsers,
             });
     
         } catch (error) {
             // Manejo de errores inesperados
             console.error(error);
             return response.status(500).json({
-                message: 'Ocurrió un error inesperado. Por favor, inténtalo más tarde.'
+                message: error
             });
         }
     }
-    
     // ver un usuario
     public async show(ctx: HttpContext): Promise<void> {
         
         const { response } = ctx;
-        
+
         try {
 
             
@@ -150,7 +158,21 @@ export default class SesioneController {
                     success: false 
                 });
             }
-            
+
+            if (type_id === 1) {
+
+                const respRegistrarEstudiante = await EstudianteService_.store(user.id);
+
+                if (!respRegistrarEstudiante) {
+                    console.log('error al crear el estudiante');
+                    return response.status(400).send({ 
+                        message: 'Error al crear al estudiante', 
+                        success: false 
+                    });
+                }
+
+            }
+                
             const respRegistroSession = await SesioneService_.store(user.id, password);
     
             if (!respRegistroSession) {
@@ -178,7 +200,7 @@ export default class SesioneController {
     public async edit({ request, response }: HttpContext) {
         try {
             
-            const { email, name, surname, phone } = request.only(['email', 'name', 'surname', 'phone']);
+            const { email, name, surname, phone, semestre } = request.only(['email', 'name', 'surname', 'phone', 'semestre']);
             const user = await userService_.edit(email);
             
             if (!user) {
@@ -189,13 +211,33 @@ export default class SesioneController {
             }
             
             try {
+
                 user.merge({ name, surname, phone });
                 await user.save();
+
+                try{
+
+                    const estudiante = await EstudianteService_.edit(user.id);
+
+                    if (!estudiante) {
+                        return response.status(404).json({
+                            message: 'Estudiante no encontrado',
+                            success: false,
+                        });
+                    }
+
+                    estudiante.merge({ semestre });
+                    await estudiante.save();
+
+                    return response.status(200).json({
+                        message: 'Usuario actualizado con éxito',
+                        data: user,
+                    });
+
+                }catch{
+                    
+                }
     
-                return response.status(200).json({
-                    message: 'Usuario actualizado con éxito',
-                    data: user,
-                });
     
             } catch (saveError) {
                 console.error(`Error al guardar el usuario: ${saveError.message}`);
@@ -216,6 +258,37 @@ export default class SesioneController {
         }
     }
 
+    public async habilitarEstudiante({ request, response }: HttpContext) {
+
+        try {
+            const { id } = request.only(['id']);
+
+            console.log(id)
+
+            const estudiante = await EstudianteService_.edit(id);
+
+            if (!estudiante) {
+                return response.status(404).json({
+                    message: 'Estudiante no encontrado',
+                    success: false,
+                });
+            }
+
+            estudiante.habilitado = !estudiante.habilitado;
+
+            await estudiante.save();
+    
+            return response.status(200).json({
+                success: true,
+            });
+
+        } catch (error) {
+            console.error(error);
+            return response.status(500)
+        }
+
+    }
+    
     public async delete({ request, response }: HttpContext) {
         try {
             const { email } = request.only(['email']);

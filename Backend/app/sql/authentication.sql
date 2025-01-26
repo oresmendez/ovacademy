@@ -3,6 +3,7 @@ CREATE SCHEMA IF NOT EXISTS authentication;
 -- Eliminar tablas si ya existen
 DROP TABLE IF EXISTS authentication.sesiones CASCADE;
 DROP TABLE IF EXISTS authentication.user CASCADE;
+DROP TABLE IF EXISTS authentication.estudiante CASCADE;
 DROP TABLE IF EXISTS authentication.type_user CASCADE;
 DROP TABLE IF EXISTS authentication.sesiones CASCADE;
 DROP TABLE IF EXISTS authentication.token CASCADE;
@@ -25,6 +26,15 @@ CREATE TABLE authentication.user (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha de creación del usuario
     update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha de actualización
     FOREIGN KEY (type_id) REFERENCES authentication.type_user (id) ON DELETE CASCADE -- Relación con type_user
+);
+
+CREATE TABLE authentication.estudiante (
+     
+    user_id INT PRIMARY KEY, -- Clave al ID del usuario
+    semestre VARCHAR(100), -- Semestre al cual cursa el estudiante
+    habilitado BOOLEAN DEFAULT FALSE NOT NULL, -- Estado de aprobacion del estudiante a la materia
+
+    FOREIGN KEY (user_id) REFERENCES authentication.user (id) ON DELETE CASCADE -- Relación con user
 );
 
 -- Crear la tabla sesiones

@@ -1,11 +1,9 @@
 'use client';
 import { apiRest, toast, useState, useEffect, export_file, useRouter, styled } from '@/app/utils/hooks';
 import DataTable_index from '@/app/components/dataTable_index';
-import Registrar_profesor from '@/app/components/registrar_profesor';
 
 export default function ListarEstudiantes() {
     const [data, setData] = useState([]);
-    const [deleteTrigger, setDeleteTrigger] = useState(false);
     const [filterText, setFilterText] = useState('');
     const [editRowId, setEditRowId] = useState(null);
     const [editRowData, setEditRowData] = useState({});
@@ -27,7 +25,7 @@ export default function ListarEstudiantes() {
             }
         };
         fetchData();
-    }, [deleteTrigger]);
+    }, []);
 
 
     const filteredData = data.filter(
@@ -35,7 +33,9 @@ export default function ListarEstudiantes() {
             (item.email?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
             (item.name?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
             (item.surname?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
-            (item.phone?.toLowerCase() || '').includes(filterText.toLowerCase())
+            (item.phone?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
+            (item.semestre?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
+            (item.habilitado?.toLowerCase() || '').includes(filterText.toLowerCase())
     );
 
     const handleEditClick = (row) => {
@@ -55,13 +55,37 @@ export default function ListarEstudiantes() {
         router.push(`/ovacademy/teacher/user/${id}`);
     };
 
+    const handleHabilitarUser = async (id) => {
+        try {
+            const response = await apiRest.fetchPut('http://localhost:3333/ovacademy/user/estudianteHabilitar', { id });
+            console.log(response);
+            if (response.status === 200) {
+                toast.success('Usuario Actualizado Exitosamente');
+                setData((prevData) =>
+                    prevData.map((item) =>
+                        item.id === id ? { ...item, habilitado: !item.habilitado } : item
+                    )
+                );
+            } else {
+                toast.error('Ocurrió un error');
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error('Error al conectar con el servidor.');
+        }
+    };
+    
     const handleDeleteClick = async (email) => {
         try {
             const response = await apiRest.fetchDelete('http://localhost:3333/ovacademy/user', { email });
             console.log(response);
             if (response.status === 200) {
                 toast.success('Usuario Actualizado Exitosamente');
-                setDeleteTrigger((prev) => !prev); // Trigger re-fetch
+                setData((prevData) =>
+                    prevData.map((item) =>
+                        item.email === email ? { ...item, statusLogico: !item.statusLogico } : item
+                    )
+                );
             } else {
                 toast.error('Ocurrió un error');
             }
@@ -76,8 +100,15 @@ export default function ListarEstudiantes() {
             const response = await apiRest.fetchPut(`http://localhost:3333/ovacademy/user`, editRowData);
             if (response.status === 200) {
                 toast.success('Los datos se actualizaron correctamente.');
+                setData((prevData) =>
+                    prevData.map((item) =>
+                        item.email === editRowData.email ? { ...item, ...editRowData } : item
+                    )
+                );
+    
+                // Limpiar el estado de edición
                 setEditRowId(null);
-                setDeleteTrigger((prev) => !prev); // Trigger re-fetch
+                setEditRowData({});
             } else {
                 toast.error('Error al actualizar los datos.');
                 console.error('Error en la respuesta del servidor:', response);
@@ -89,14 +120,16 @@ export default function ListarEstudiantes() {
     };
 
     const exportToPDF = () => {
-        const name = 'profesores.pdf';
+        const name = 'estudiantes.pdf';
         const title = 'Listado de Profesores';
-        const head = [['Correo Electrónico', 'Nombre', 'Apellido', 'Teléfono', 'Estado']];
+        const head = [['Correo Electrónico', 'Nombre', 'Apellido', 'Teléfono', 'Semestre' ,'Acceso', 'Estado']];
         const tableRows = filteredData.map((row) => [
             row.email,
             row.name,
             row.surname,
             row.phone,
+            row.semestre,
+            row.habilitado ? 'Activo' : 'Inactivo',
             row.statusLogico ? 'Activo' : 'Inactivo',
         ]);
         export_file.exportToPDF(title, head, tableRows, name);
@@ -160,6 +193,39 @@ export default function ListarEstudiantes() {
                     row.phone || 'N/A'
                 ),
             sortable: true,
+            grow: 1.1
+        },
+        {
+            name: 'Semestre',
+            selector: (row) =>
+                row.email === editRowId ? (
+                    <input
+                        type="text"
+                        value={editRowData.semestre || ''}
+                        onChange={(e) => handleInputChange(e, 'semestre')}
+                        className='label-row p-05'
+                    />
+                ) : (
+                    row.semestre || 'N/A'
+                ),
+            sortable: true,
+            grow: 1.2
+        },
+        {
+            name: 'Acceso',
+            selector: (row) => (
+                <button
+                    onClick={() => handleHabilitarUser(row.id)}
+                    className='label-status-user'
+                    style={{
+                        backgroundColor: row.habilitado ? '#28a745' : '#ff717f',
+                    }}
+                >
+                    {row.habilitado ? 'Si' : 'No'}
+                </button>
+            ),
+            sortable: true,
+            grow: 0.9,
         },
         {
             name: 'Estado',
@@ -168,18 +234,18 @@ export default function ListarEstudiantes() {
                     onClick={() => handleDeleteClick(row.email)}
                     className='label-status-user'
                     style={{
-                        backgroundColor: row.statusLogico ? '#ff717f' : '#28a745',
+                        backgroundColor: row.statusLogico ? '#28a745' : '#ff717f',
                     }}
                 >
-                    {row.statusLogico ? 'Deshabilitar' : 'Habilitar'}
+                    {row.statusLogico ? 'Habilitar' : 'Deshabilitar'}
                 </button>
             ),
             sortable: true,
-            grow: 1,
+            grow: 1.2,
         },
         {
             name: '',
-            grow: 2,
+            grow: 1.5,
             cell: (row) =>
                 row.email === editRowId ? (
                     <>
@@ -194,13 +260,6 @@ export default function ListarEstudiantes() {
                 ),
         },
     ];
-
-    const [visible, setVisible] = useState(false);
-    const openModal_teacher = () => setVisible(true);
-    const closeModal_teacher = () => {
-        setVisible(false);
-        setDeleteTrigger((prev) => !prev); // Actualizar el trigger al cerrar el modal
-    };
 
     return (
         <Componente>
@@ -222,7 +281,6 @@ export default function ListarEstudiantes() {
             </div>
             <DataTable_index columns={columns} data={filteredData} />
         </div>
-        <Registrar_profesor modal_teacher={visible} closeModal_teacher={closeModal_teacher} />
         </Componente>
     );
 }
