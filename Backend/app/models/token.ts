@@ -3,7 +3,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 
 export default class ApiToken extends BaseModel {
 
-  public static table = 'authentication.api_tokens'
+  public static table = 'authentication.token'
 
   @column({ isPrimary: true })
   declare id: number; // Corresponde al campo SERIAL de la tabla

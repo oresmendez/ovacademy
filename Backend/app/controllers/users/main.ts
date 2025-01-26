@@ -1,28 +1,28 @@
 import type { HttpContext } from '@adonisjs/core/http';
 import UserService from '../../controllers/users/service.js';
-import SesioneService from '../../controllers/sesiones/service.js';
-import Api_tokensService from '../sesiones/api_tokens.js';
-import { idText } from 'typescript';
+import SesioneService from '../authentication/service.js';
+import TokenService from '../authentication/token.js';
 
 const userService_ = new UserService();
 const SesioneService_ = new SesioneService();
-const Api_tokensService_ = new Api_tokensService();
+const TokenService_ = new TokenService();
 
 export default class SesioneController {
 
     public async index({ request, response }: HttpContext) {
-        // Obtener el parámetro de consulta type_id
-        const { type_id } = request.qs();
-    
-        // Validar si type_id existe y es válido
-        if (!type_id || isNaN(Number(type_id))) {
-            return response.status(400).json({
-                message: 'El parámetro type_id es obligatorio y debe ser un número válido.'
-            });
-        }
-    
+
         try {
-            
+
+            // Obtener el parámetro de consulta type_id
+            const { type_id } = request.qs();
+        
+            // Validar si type_id existe y es válido
+            if (!type_id || isNaN(Number(type_id))) {
+                return response.status(400).json({
+                    message: 'El parámetro type_id es obligatorio y debe ser un número válido.'
+                });
+            }
+
             const user = await userService_.listado_usuarios(Number(type_id));
     
             if (!user || user.length === 0) {
@@ -47,12 +47,13 @@ export default class SesioneController {
     
     // ver un usuario
     public async show(ctx: HttpContext): Promise<void> {
-    
+        
         const { response } = ctx;
         
         try {
+
             
-            const userAuthorized = await Api_tokensService_.verifyToken(ctx);
+            const userAuthorized = await TokenService_.verifyToken(ctx);
     
             if (userAuthorized && userAuthorized.user_id !== undefined) {
                 
@@ -133,7 +134,7 @@ export default class SesioneController {
     public async store({ request, response }: HttpContext) {
     
         try {
-            console.log("entrando en store user")
+            
             const { email, type_id, password } = request.only([
                 'email',  
                 'password',

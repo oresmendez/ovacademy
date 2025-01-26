@@ -1,5 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http';
-import Api_tokensService from '../controllers/sesiones/api_tokens.js';
+import Api_tokensService from '../controllers/authentication/token.js';
 
 const Api_tokensService_ = new Api_tokensService();
 

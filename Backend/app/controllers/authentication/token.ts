@@ -1,5 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http';
-import Api_tokens from '../../models/api_tokens.js'
+import Api_tokens from '../../models/token.js'
 
 import { randomBytes } from 'crypto';
 import { promisify } from 'util';

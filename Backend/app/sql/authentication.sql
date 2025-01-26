@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS authentication.sesiones CASCADE;
 DROP TABLE IF EXISTS authentication.user CASCADE;
 DROP TABLE IF EXISTS authentication.type_user CASCADE;
 DROP TABLE IF EXISTS authentication.sesiones CASCADE;
-DROP TABLE IF EXISTS authentication.api_tokens CASCADE;
+DROP TABLE IF EXISTS authentication.token CASCADE;
 
 -- Crear la tabla type_user
 CREATE TABLE authentication.type_user (
@@ -36,7 +36,7 @@ CREATE TABLE authentication.sesiones (
     FOREIGN KEY (user_id) REFERENCES authentication.user (id) ON DELETE CASCADE -- Relación con user
 );
 
-CREATE TABLE authentication.api_tokens (
+CREATE TABLE authentication.token (
     id SERIAL PRIMARY KEY,                     -- Identificador único
     user_id INT NOT NULL,                      -- Clave foránea al ID del usuario
     type_id INT NOT NULL,                      -- tipo de usuario
@@ -53,14 +53,6 @@ VALUES
     ('estudiante'),
     ('profesor');
 
-
-----------------------------------------------------------------------------
--- crear un usuario
-{
-    "email": "root",
-    "password": "1234",
-    "type_id": 2
-}
 
 
 

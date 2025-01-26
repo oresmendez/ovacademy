@@ -1,13 +1,33 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import SesioneService from '../../controllers/sesiones/service.js'
-import UserService from '../../controllers/users/service.js';
-import Api_tokensService from './api_tokens.js';
+import SesioneService from './service.js'
+import UserService from '../users/service.js';
+import TokenService from './token.js';
 
 const SesioneService_ = new SesioneService();
 const UserService_ = new UserService();
-const Api_tokensService_ = new Api_tokensService();
+const TokenService_ = new TokenService();
 
 export default class SesioneController {
+
+    #createApiToken = async (userId, userTypeId) => {
+        try {
+            const token = await TokenService_.create(userId, userTypeId);
+            return token;
+        } catch (error) {
+            console.error('Error al crear el token:', error);
+            return null;
+        }
+    }
+
+    #verify_password = async (userId, password) => {
+        try {
+            const token = await SesioneService_.verify_password(userId, password);
+            return token;
+        } catch (error) {
+            console.error('Error al verificar el token:', error);
+            return null;
+        }
+    }
     
     public async authorize({ request, response }: HttpContext) {
     
@@ -17,51 +37,46 @@ export default class SesioneController {
         if (!user) {
             console.log('El usuario no existe');
             return response.status(404).send({ 
-                message: 'Usuario o contraseña invalida', 
-                success: false 
+                message: 'Usuario o contraseña invalida'
             });
         }
     
-        const userAutorizado = await SesioneService_.verify_password(user.id, password);
+        const userAutorizado = await this.#verify_password(user.id, password);
     
         if (!userAutorizado) {
             console.log('contraseña no aceptada');
             return response.status(401).send({ 
-                message: 'Usuario no autorizado', 
-                success: false 
+                message: 'Usuario no autorizado'
             });
         }
     
         if(access != user.type_id){
             return response.status(401).send({ 
-                message: 'Usuario no autorizado', 
-                success: false 
+                message: 'Usuario no autorizado'
             });
         }
-    
-        const apiToken = await Api_tokensService_.create(user.id, user.type_id);
+        
+        const apiToken = await this.#createApiToken(user.id, user.type_id);
     
         if (!apiToken) {
             console.log('error al crear el token');
             return response.status(400).send({ 
-                message: 'error en el servidor', 
-                success: false 
+                message: 'error en el servidor'
             });
         }
     
         return response.ok({
-            success: true,
             nombre: user.name,
             apellido: user.surname,
             correo: user.email,
             type: user.type_id,
-            token: apiToken.token,
-    
+            token: apiToken.token
         });
     
     }
 
     public async store(user_id: number, password: string): Promise<boolean> {
+        
         try {
             if (!user_id || !password) {
                 console.log('Usuario y password son requeridos');
