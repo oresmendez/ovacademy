@@ -1,0 +1,245 @@
+{
+    "unidades": [
+        {
+            "nombre": "Aspectos Generales del Proyecto",
+            "descripcion": "Introduce los conceptos básicos y el marco general para comprender la naturaleza y relevancia de los proyectos en diversas áreas. Proporciona una visión general sobre la selección y definición de proyectos.",
+            "contenidos": [
+                {
+                    "nombre": "Proyecto. Definición e importancia",
+                    "descripcion": "Se analiza qué es un proyecto y por qué es fundamental para el desarrollo organizacional y social."
+                },
+                {
+                    "nombre": "Tipos de proyectos",
+                    "descripcion": "Exploración de las diversas categorías de proyectos, como sociales, productivos, tecnológicos, entre otros."
+                },
+                {
+                    "nombre": "Proyecto y planificación",
+                    "descripcion": "Se estudia la relación entre los proyectos y la planificación estratégica para garantizar su éxito."
+                },
+                {
+                    "nombre": "Etapas de un proyecto",
+                    "descripcion": "Descripción de las fases principales que conforman el ciclo de vida de un proyecto."
+                },
+                {
+                    "nombre": "Selección de proyectos a estudiar",
+                    "descripcion": "Criterios para identificar y elegir proyectos relevantes para un análisis detallado."
+                },
+                {
+                    "nombre": "Propósito u objetivo del proyecto",
+                    "descripcion": "Definición de los fines específicos que se busca alcanzar con un proyecto."
+                },
+                {
+                    "nombre": "Características del proyecto",
+                    "descripcion": "Identificación de los elementos distintivos que definen un proyecto específico."
+                },
+                {
+                    "nombre": "Identificación del proyecto",
+                    "descripcion": "Técnicas para determinar y describir un proyecto en su contexto específico."
+                },
+                {
+                    "nombre": "Infraestructura física y económica",
+                    "descripcion": "Evaluación de los recursos físicos y financieros necesarios para llevar a cabo un proyecto."
+                },
+                {
+                    "nombre": "Obtención de insumos",
+                    "descripcion": "Proceso para asegurar la disponibilidad de los recursos necesarios para el proyecto."
+                },
+                {
+                    "nombre": "Realización del proceso",
+                    "descripcion": "Análisis de las actividades principales para ejecutar el proyecto de manera efectiva."
+                },
+                {
+                    "nombre": "Efectos del proyecto sobre la economía regional y nacional",
+                    "descripcion": "Estudio del impacto económico de un proyecto en diferentes niveles."
+                },
+                {
+                    "nombre": "Efectos del proyecto sobre la balanza de pagos",
+                    "descripcion": "Análisis de cómo el proyecto influye en las relaciones comerciales internacionales."
+                },
+                {
+                    "nombre": "Efectos del proyecto sobre el medio ambiente",
+                    "descripcion": "Evaluación del impacto ambiental derivado de la implementación del proyecto."
+                }
+            ]
+        },
+        {
+            "nombre": "El Estudio del Mercado",
+            "descripcion": "Explora los principios y herramientas esenciales para analizar el mercado en el contexto de un proyecto, identificando oportunidades y riesgos.",
+            "contenidos": [
+                {
+                    "nombre": "Objetivos del estudio de mercado.",
+                    "descripcion": "Identificación de las metas principales del análisis de mercado dentro del proyecto."
+                },
+                {
+                    "nombre": "Las etapas del estudio de mercado",
+                    "descripcion": "Descripción de los pasos clave en la realización de un estudio de mercado."
+                },
+                {
+                    "nombre": "Importancia del estudio de mercado",
+                    "descripcion": "Explicación de por qué el análisis de mercado es crucial para la viabilidad del proyecto."
+                },
+                {
+                    "nombre": "Demanda",
+                    "descripcion": "Análisis de los requerimientos y necesidades del mercado objetivo."
+                },
+                {
+                    "nombre": "Comportamiento de la demanda actual",
+                    "descripcion": "Estudio de las tendencias actuales en el mercado."
+                },
+                {
+                    "nombre": "Estimación de la demanda",
+                    "descripcion": "Métodos para proyectar el potencial de ventas o uso del producto o servicio."
+                },
+                {
+                    "nombre": "Oferta",
+                    "descripcion": "Análisis de los competidores y las alternativas existentes en el mercado."
+                },
+                {
+                    "nombre": "El producto en el mercado",
+                    "descripcion": "Evaluación de la posición y competitividad del producto o servicio en el mercado."
+                },
+                {
+                    "nombre": "Comportamiento de la oferta",
+                    "descripcion": "Estudio de cómo los oferentes reaccionan ante las condiciones del mercado."
+                },
+                {
+                    "nombre": "Posibilidades del proyecto",
+                    "descripcion": "Identificación de oportunidades de éxito basadas en los datos de mercado."
+                },
+                {
+                    "nombre": "Situación del producto dentro de los acuerdos económicos",
+                    "descripcion": "Análisis de cómo los tratados y acuerdos comerciales afectan al producto."
+                },
+                {
+                    "nombre": "Comercialización",
+                    "descripcion": "Estrategias para llevar el producto o servicio al mercado objetivo."
+                },
+                {
+                    "nombre": "Mecanismos de comercialización previstos",
+                    "descripcion": "Identificación de los canales y métodos de distribución más adecuados."
+                },
+                {
+                    "nombre": "Conclusiones del Estudio del Mercado",
+                    "descripcion": "Resumen de hallazgos clave y recomendaciones derivadas del análisis de mercado."
+                }
+            ]
+        },
+        {
+            "nombre": "La Ingeniería del Proyecto",
+            "descripcion": "Se centra en el análisis técnico de las alternativas disponibles, los procesos de producción y los recursos necesarios para llevar a cabo el proyecto.",
+            "contenidos": [
+                {
+                    "nombre": "Análisis de las alternativas técnicas factibles",
+                    "descripcion": "Evaluación de las diferentes opciones tecnológicas disponibles para el proyecto."
+                },
+                {
+                    "nombre": "Descripción del proceso de transformación",
+                    "descripcion": "Detallado de los pasos requeridos para convertir insumos en productos finales."
+                },
+                {
+                    "nombre": "Posibilidades de expansión de la capacidad instalada",
+                    "descripcion": "Estudio de la factibilidad de ampliar las operaciones futuras."
+                },
+                {
+                    "nombre": "Inventario de obras físicas",
+                    "descripcion": "Identificación de las instalaciones y equipamiento necesario."
+                },
+                {
+                    "nombre": "Características de las obras",
+                    "descripcion": "Especificaciones técnicas de la infraestructura requerida para el proyecto."
+                },
+                {
+                    "nombre": "Costos",
+                    "descripcion": "Estimación de los gastos relacionados con las diferentes etapas y elementos del proyecto."
+                }
+            ]
+        },
+        {
+            "nombre": "Tamaño y localización del Proyecto",
+            "descripcion": "Examina los factores que determinan el tamaño óptimo del proyecto y su ubicación geográfica ideal para maximizar el éxito.",
+            "contenidos": [
+                {
+                    "nombre": "Determinación y formas de medir el tamaño del proyecto",
+                    "descripcion": "Técnicas para calcular la escala adecuada de un proyecto."
+                },
+                {
+                    "nombre": "Factores condicionantes del tamaño",
+                    "descripcion": "Identificación de elementos que afectan la magnitud del proyecto."
+                },
+                {
+                    "nombre": "Márgenes utilizados de capacidad",
+                    "descripcion": "Cómo se determina y optimiza el uso de recursos disponibles."
+                },
+                {
+                    "nombre": "Justificación del tamaño adoptado",
+                    "descripcion": "Argumentación de la elección del tamaño en función de los objetivos y recursos."
+                }
+            ]
+        },
+        {
+            "nombre": "El Análisis Financiero",
+            "descripcion": "Proporciona un marco para evaluar la viabilidad económica del proyecto a través de herramientas financieras y presupuestarias.",
+            "contenidos": [
+                {
+                    "nombre": "Inversión",
+                    "descripcion": "Estudio de los recursos financieros requeridos para iniciar el proyecto."
+                },
+                {
+                    "nombre": "Calendario de inversiones",
+                    "descripcion": "Planificación del desembolso de recursos a lo largo del tiempo."
+                },
+                {
+                    "nombre": "Financiamiento, importancia y organización para la promoción del proyecto",
+                    "descripcion": "Análisis de las fuentes y estructuras de financiamiento disponibles."
+                },
+                {
+                    "nombre": "Estructura y fuentes de la inversión inicial",
+                    "descripcion": "Desglose de los aportes financieros necesarios para iniciar el proyecto."
+                },
+                {
+                    "nombre": "Proyección de los estados financieros",
+                    "descripcion": "Estimación de los resultados financieros esperados a futuro."
+                },
+                {
+                    "nombre": "Análisis del presupuesto",
+                    "descripcion": "Estudio de la asignación de recursos y su efectividad financiera."
+                }
+            ]
+        },
+        {
+            "nombre": "Evaluación de Proyectos",
+            "descripcion": "Proporciona herramientas para evaluar proyectos desde perspectivas técnicas, financieras y sociales, asegurando su alineación con objetivos estratégicos.",
+            "contenidos": [
+                {
+                    "nombre": "Criterios de evaluación derivados de los objetivos del proyecto",
+                    "descripcion": "Identificación de los indicadores clave para medir el éxito del proyecto."
+                },
+                {
+                    "nombre": "Criterios de evaluación que reflejan los objetivos prioritarios del Ejecutivo Nacional, referentes al desarrollo económico y social del país",
+                    "descripcion": "Análisis de alineación del proyecto con las políticas nacionales."
+                },
+                {
+                    "nombre": "Elementos técnicos",
+                    "descripcion": "Aspectos técnicos que aseguran la factibilidad del proyecto."
+                },
+                {
+                    "nombre": "Elementos financieros",
+                    "descripcion": "Estudio de los aspectos económicos y rentabilidad del proyecto."
+                },
+                {
+                    "nombre": "Elementos sociales",
+                    "descripcion": "Evaluación de los impactos del proyecto en la sociedad y comunidades involucradas."
+                },
+                {
+                    "nombre": "Indicadores financieros",
+                    "descripcion": "Cálculo de tasas de retorno, valor presente neto y otros indicadores clave."
+                },
+                {
+                    "nombre": "Indicadores económicos",
+                    "descripcion": "Medición del impacto económico a nivel local y nacional."
+                }
+            ]
+        }
+        
+    ]
+}
