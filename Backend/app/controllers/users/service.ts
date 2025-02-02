@@ -20,7 +20,6 @@ export default class UserService {
             .select('id', 'email', 'name', 'surname', 'phone', 'status_logico')
             .orderBy('id', 'desc');
     
-        // Si type_id es 1, agregar el join con la tabla "estudiante"
         if (type_id === 1) {
             query
                 .leftJoin(
@@ -31,6 +30,18 @@ export default class UserService {
                 .select(
                     'authentication.estudiante.semestre',
                     'authentication.estudiante.habilitado'
+                );
+        }
+
+        if (type_id === 2) {
+            query
+                .leftJoin(
+                    'authentication.profesor',
+                    'authentication.profesor.user_id',
+                    'authentication.user.id'
+                )
+                .select(
+                    'authentication.profesor.colegiado'
                 );
         }
     

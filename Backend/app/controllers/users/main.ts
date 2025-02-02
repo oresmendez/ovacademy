@@ -1,11 +1,13 @@
 import type { HttpContext } from '@adonisjs/core/http';
 import UserService from '../../controllers/users/service.js';
 import EstudianteService from '../../controllers/estudiante/service.js';
+import ProfesorService from '../../controllers/profesor/service.js';
 import SesioneService from '../authentication/service.js';
 import TokenService from '../authentication/token.js';
 
 const userService_ = new UserService();
 const EstudianteService_ = new EstudianteService();
+const ProfesorService_ = new ProfesorService();
 const SesioneService_ = new SesioneService();
 const TokenService_ = new TokenService();
 
@@ -172,6 +174,20 @@ export default class UsersController {
                 }
 
             }
+
+            if (type_id === 2) {
+
+                const respRegistrarProfesor = await ProfesorService_.store(user.id);
+
+                if (!respRegistrarProfesor) {
+                    console.log('error al crear el profesor');
+                    return response.status(400).send({ 
+                        message: 'Error al crear al profesor', 
+                        success: false 
+                    });
+                }
+
+            }
                 
             const respRegistroSession = await SesioneService_.store(user.id, password);
     
@@ -197,7 +213,7 @@ export default class UsersController {
     }
     
     // editar un usuario
-    public async edit({ request, response }: HttpContext) {
+    public async editEstudiante({ request, response }: HttpContext) {
         try {
             
             const { email, name, surname, phone, semestre } = request.only(['email', 'name', 'surname', 'phone', 'semestre']);
@@ -228,6 +244,67 @@ export default class UsersController {
 
                     estudiante.merge({ semestre });
                     await estudiante.save();
+
+                    return response.status(200).json({
+                        message: 'Usuario actualizado con éxito',
+                        data: user,
+                    });
+
+                }catch{
+                    
+                }
+    
+    
+            } catch (saveError) {
+                console.error(`Error al guardar el usuario: ${saveError.message}`);
+                return response.status(500).json({
+                    message: 'Error al guardar los cambios del usuario',
+                    success: false,
+                    error: saveError.message,
+                });
+            }
+    
+        } catch (error) {
+            console.error(`Error en edit: ${error.message}`);
+            return response.status(500).json({
+                message: 'Error interno del servidor',
+                success: false,
+                error: error.message,
+            });
+        }
+    }
+
+    public async editProfesor({ request, response }: HttpContext) {
+        try {
+            
+            const { email, name, surname, phone, colegiado } = request.only(['email', 'name', 'surname', 'phone', 'colegiado']);
+            const user = await userService_.edit(email);
+            
+            if (!user) {
+                return response.status(404).json({
+                    message: 'Usuario no encontrado',
+                    success: false,
+                });
+            }
+            
+            try {
+
+                user.merge({ name, surname, phone });
+                await user.save();
+
+                try{
+
+                    const profesor = await ProfesorService_.edit(user.id);
+
+                    if (!profesor) {
+                        return response.status(404).json({
+                            message: 'Profesor no encontrado',
+                            success: false,
+                        });
+                    }
+
+                    profesor.merge({ colegiado });
+                    await profesor.save();
 
                     return response.status(200).json({
                         message: 'Usuario actualizado con éxito',

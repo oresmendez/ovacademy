@@ -32,7 +32,9 @@ export default class SesioneController {
     public async authorize({ request, response }: HttpContext) {
     
         const { email, password, access } = request.only(['email', 'password', 'access']);
-        const user = await UserService_.show('email', email);
+        const lowerEmail = email.toLowerCase();
+        const user = await UserService_.show('email', lowerEmail);
+
     
         if (!user) {
             console.log('El usuario no existe');

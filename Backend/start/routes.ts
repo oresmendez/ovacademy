@@ -8,7 +8,7 @@ import MateriasController from '#controllers/materias/main'
 import UnidadesController from '#controllers/unidades/main'
 import ContentsController from '#controllers/contents/main'
 
-// http://localhost:3333/ovacademy/user/estudianteHabilitar
+// http://localhost:3333/ovacademy/user/editProfesor
 router.group(() => {
 
     router.group(() => {
@@ -20,7 +20,8 @@ router.group(() => {
         router.get('/:id', [UsersController, 'show_id']) //VER USUARIO O PROFESOR ESPECÍFICAMENTE
         router.get('/show', [UsersController, 'show']) //VALIDAR TOKEN DE UN USUARIO
         router.post('', [UsersController, 'store']) // CREAR UN USUARIO
-        router.put('', [UsersController, 'edit']) // EDITAR UN USUARIO
+        router.put('editEstudiante', [UsersController, 'editEstudiante']) // EDITAR UN USUARIO
+        router.put('editProfesor', [UsersController, 'editProfesor']) // EDITAR UN PROFESOR
         router.put('estudianteHabilitar', [UsersController, 'habilitarEstudiante']) // HABILITAR UN USUARIO
         router.delete('', [UsersController, 'delete']) // ACTIVAR O DESHABILITAR UN USUARIO
     }).prefix('/user')

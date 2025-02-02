@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 
-export default class ApiToken extends BaseModel {
+export default class Token extends BaseModel {
 
   public static table = 'authentication.token'
 
