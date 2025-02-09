@@ -1,4 +1,4 @@
-'use client'; import { useEffect, Cookies, Image, Link, styled, Logo_Name, Header_search_bar } from '@/app/utils/hooks';
+'use client'; import { useEffect, Cookies, Image, Link, styled, LogoName, HeaderSearchBar } from '@/app/utils/hooks';
 
 export default function Home() {
 
@@ -14,7 +14,7 @@ return (
         <div className='layout-header'>
             <div className='container-header pl-20 pr-20'>
                 <div className='header-logo center-right pl-20'>
-                    <Logo_Name size_logo={40} size_name={1.5} />
+                    <LogoName size_logo={40} size_name={1.5} />
                 </div>
                 <nav className='header-navigation'>
                     <div className='header-navigation-test'></div>
@@ -31,7 +31,7 @@ return (
                 </nav>
             </div>
             <div className=''>
-                <Header_search_bar texto={"Inicio"}/>
+                <HeaderSearchBar texto={"Inicio"}/>
             </div>
         </div>
         <div className='layout-body- center'>
@@ -46,11 +46,11 @@ return (
             </div>
             <div className="banner-text center-column">
                 <div className='banner-text-title'>
-                    Academia Universitaria
+                    Formulación y Evaluación de Proyectos
                 </div>
                 <div className='banner-text-description center'>
-                Avanza y potencia tus habilidades, 
-                transformando tus conocimientos con recursos digitales de aprendizaje innovadores.
+                    Convierte ideas en proyectos, y proyectos en éxito. <br></br>
+                    Tu guía para diseñar proyectos sostenibles y rentables.
                 </div>
             </div>
         
@@ -133,31 +133,114 @@ const Componente = styled.div`
     }
 
     .banner-text {
-        
         color: white;
-        max-width:700px;
+        max-width: 90%;
         margin: 0 auto;
         position: relative;
-        
         z-index: 2;
-
         font-family: var(--font-lexend);
-    }  
+        text-align: center;
+    }
 
     .banner-text-title {
         font-weight: 600;
-        font-size: 2.8rem;
+        font-size: 2rem;
     }
 
     .banner-text-description{
         margin-top: 1rem;
         font-weight: 200;
-        font-size: 1.2rem;
-
+        font-size: 1rem;
         text-align: center;
     }
 
     .layout-footer{
+
+    }
+
+    @media (min-width: 2560px) {
+        .banner-text-title {
+            font-size: 2.6rem;
+        }
+        .banner-text-description{
+            font-size: 1.3rem;
+        }
+    }
+
+    /* 🖥️ Monitores grandes y pantallas Full HD (1441px - 2559px) */
+    @media (min-width: 1441px) and (max-width: 2559px) {
+        .banner-text-title {
+            font-size: 2.5rem;
+        }
+
+        .banner-text-description{
+            font-size: 1.2rem;
+        }
+    }
+
+    @media (min-width: 1440px) and (max-width: 2375px) {
+        .banner-text{
+            padding-right: 8rem;
+        }
+
+    }
+        /* 🖥️ Escritorios estándar (1025px - 1440px) */
+    @media (min-width: 1025px) and (max-width: 1440px) {
+        .banner-text-title {
+            font-size: 2.1rem;
+        }
+
+        .banner-text-description{
+            font-size: 1.2rem;
+        }
+
+    }
+
+        /* 💻 Tablets y pantallas pequeñas (769px - 1024px) */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .banner-text-title {
+            font-size: 2rem;
+        }
+
+        .banner-text-description{
+            font-size: 1.2rem;
+        }
+
+    }
+
+        /* 📱 Móviles grandes y pequeñas tablets (481px - 768px) */
+    @media (min-width: 481px) and (max-width: 768px) {
+        .banner-text-title {
+            font-size: 1.8rem;
+        }
+
+        .banner-text-description{
+            font-size: 1.1rem;
+        }
+
+    }
+
+        /* 📱 Móviles estándar (321px - 480px) */
+    @media (min-width: 321px) and (max-width: 480px) {
+        .banner-text-title {
+            font-size: 1.6rem;
+        }
+
+        .banner-text-description{
+            font-size: 1rem;
+        }
+
+    }
+
+        /* 📱 Móviles pequeños (hasta 320px) */
+    @media (max-width: 320px) {
+        .banner-text-title {
+            font-size: 1.4rem;
+        }
+
+        .banner-text-description{
+            font-size: 0.8rem;
+        }
 
     }
 

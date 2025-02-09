@@ -33,8 +33,8 @@ export default function Carrousel({ boxes, settings, sliderRef }) {
                                         <MdOutlineLocalLibrary style={{ fontSize: "100px", color: "#efefef" }} />
                                     </div>
                                     <div className="card-content-description">
-                                        <h3 className="card-title">{box.nombre}</h3>
-                                        <p className="card-type">{box.descripcion}</p>
+                                        <h3 className="card-title">{box.unidad}</h3>
+                                        <p className="card-type">{box.nombre}</p>
                                     </div>
                                 </Link>
                             </div>

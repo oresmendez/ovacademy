@@ -28,7 +28,7 @@ const NextArrow = ({ onClick }) => (
     </button>
 );
 
-export default function Carrousel_main({ boxes = [], tittle = "", description = "" }) {
+export default function CarrouselMain({ boxes = [], tittle = "", description = "" }) {
     const sliderRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(1);
 

@@ -35,7 +35,8 @@ export default function ListarProfesores() {
             (item.email?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
             (item.name?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
             (item.surname?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
-            (item.phone?.toLowerCase() || '').includes(filterText.toLowerCase())
+            (item.phone?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
+            (item.colegiado?.toLowerCase() || '').includes(filterText.toLowerCase())
     );
 
     // Handlers
@@ -52,7 +53,6 @@ export default function ListarProfesores() {
     };
 
     const handleVer = async (id) => {
-    
         router.push(`/ovacademy/teacher/user/${id}`);
     };
 
@@ -62,7 +62,11 @@ export default function ListarProfesores() {
             console.log(response);
             if (response.status === 200) {
                 toast.success('Usuario Actualizado Exitosamente');
-                setDeleteTrigger((prev) => !prev); // Trigger re-fetch
+                setData((prevData) =>
+                    prevData.map((item) =>
+                        item.email === email ? { ...item, statusLogico: !item.statusLogico } : item
+                    )
+                );
             } else {
                 toast.error('Ocurrió un error');
             }
@@ -74,11 +78,18 @@ export default function ListarProfesores() {
 
     const handleSaveClick = async () => {
         try {
-            const response = await apiRest.fetchPut(`http://localhost:3333/ovacademy/user`, editRowData);
+            const response = await apiRest.fetchPut(`http://localhost:3333/ovacademy/user/editProfesor`, editRowData);
             if (response.status === 200) {
                 toast.success('Los datos se actualizaron correctamente.');
+                setData((prevData) =>
+                    prevData.map((item) =>
+                        item.email === editRowData.email ? { ...item, ...editRowData } : item
+                    )
+                );
+    
+                // Limpiar el estado de edición
                 setEditRowId(null);
-                setDeleteTrigger((prev) => !prev); // Trigger re-fetch
+                setEditRowData({});
             } else {
                 toast.error('Error al actualizar los datos.');
                 console.error('Error en la respuesta del servidor:', response);
@@ -92,13 +103,14 @@ export default function ListarProfesores() {
     const exportToPDF = () => {
         const name = 'profesores.pdf';
         const title = 'Listado de Profesores';
-        const head = [['Correo Electrónico', 'Nombre', 'Apellido', 'Teléfono', 'Estado']];
+        const head = [['Correo Electrónico', 'Nombre', 'Apellido', 'Teléfono', 'Estado', 'Colegiado']];
         const tableRows = filteredData.map((row) => [
             row.email,
             row.name,
             row.surname,
             row.phone,
             row.statusLogico ? 'Activo' : 'Inactivo',
+            row.colegiado
         ]);
         export_file.exportToPDF(title, head, tableRows, name);
     };
@@ -161,6 +173,23 @@ export default function ListarProfesores() {
                     row.phone || 'N/A'
                 ),
             sortable: true,
+            grow: 2
+        },
+        {
+            name: 'Colegiado',
+            selector: (row) =>
+                row.email === editRowId ? (
+                    <input
+                        type="text"
+                        value={editRowData.colegiado || ''}
+                        onChange={(e) => handleInputChange(e, 'colegiado')}
+                        className='label-row p-05'
+                    />
+                ) : (
+                    row.colegiado || 'N/A'
+                ),
+            sortable: true,
+            grow: 2
         },
         {
             name: 'Estado',
@@ -169,18 +198,18 @@ export default function ListarProfesores() {
                     onClick={() => handleDeleteClick(row.email)}
                     className='label-status-user'
                     style={{
-                        backgroundColor: row.statusLogico ? '#ff717f' : '#28a745',
+                        backgroundColor: row.statusLogico ? '#28a745' : '#ff717f',
                     }}
                 >
-                    {row.statusLogico ? 'Deshabilitar' : 'Habilitar'}
+                    {row.statusLogico ? 'Habilitar' : 'Deshabilitar'}
                 </button>
             ),
             sortable: true,
-            grow: 1,
+            grow: 1.2,
         },
         {
             name: '',
-            grow: 2,
+            grow: 1.5,
             cell: (row) =>
                 row.email === editRowId ? (
                     <>

@@ -14,14 +14,14 @@ export { toast, Toaster };
 import Cookies from 'js-cookie';
 export { Cookies };
 
-import Logo_Name from '@/app/components/logo-name';
-export { Logo_Name };
+import LogoName from '@/app/components/logo-name';
+export { LogoName };
 
-import Logo_Name_White from '@/app/components/logo-name-white';
-export { Logo_Name_White };
+import LogoNameWhite from '@/app/components/logo-name-white';
+export { LogoNameWhite };
 
-import Header_search_bar from '@/app/components/header/header-search-bar';
-export { Header_search_bar };
+import HeaderSearchBar from '@/app/components/header/header-search-bar';
+export { HeaderSearchBar };
 
 import { startSession } from '@/app/utils/login';
 export { startSession };

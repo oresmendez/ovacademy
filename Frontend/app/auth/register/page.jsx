@@ -1,4 +1,4 @@
-'use client'; import {toast, useState, apiRest, useRouter, Link, styled, Logo_Name_White, startSession } from '@/app/utils/hooks';
+'use client'; import {toast, useState, apiRest, useRouter, Link, styled, LogoNameWhite, startSession } from '@/app/utils/hooks';
 
 export default function crear_user() {
     const router = useRouter();
@@ -41,7 +41,7 @@ export default function crear_user() {
             
         <div className='layout-authentication center'>
             <div className='authentication-content mt-30'>
-                <Logo_Name_White/>
+                <LogoNameWhite/>
                 <div className='create-account center'>
                     <div className='create-account-tittle mt-20'>
                         CREAR CUENTA

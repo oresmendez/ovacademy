@@ -1,5 +1,4 @@
-'use client';   import { useState, useRouter, Link, styled, apiRest } from '@/app/utils/hooks';
-                import { Logo_Name_White } from '@/app/utils/hooks';
+'use client';   import { useState, useRouter, Link, styled, apiRest, LogoNameWhite } from '@/app/utils/hooks';
 
 export default function () {
     const router = useRouter();
@@ -28,7 +27,7 @@ export default function () {
         <Componente>
         <div className='layout-authentication center'>
             <div className='authentication-content'>
-                <Logo_Name_White/>
+                <LogoNameWhite/>
                 <div className='forgot-password center'>
                     <div className='forgot-password-tittle mt-20'>
                         PASSWORD RESET

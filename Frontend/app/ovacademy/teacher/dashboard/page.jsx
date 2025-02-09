@@ -1,8 +1,7 @@
 'use client';
 import { useState, useEffect, styled, apiRest, textBarHeader, toast, Link ,Image} from '@/app/utils/hooks';
 import { MdEdit } from 'react-icons/md';
-import { FaCheck } from 'react-icons/fa';
-import { FaTimes } from 'react-icons/fa';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 
 export default function DashboardPage() {
     

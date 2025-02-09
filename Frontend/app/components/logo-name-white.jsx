@@ -6,7 +6,7 @@ import Image from "next/image";
 import '@/app/globals.css';
 import Link from 'next/link';
 
-export default function Logo_Name_White() {
+export default function LogoNameWhite() {
     return (
     <Componente>
         <Link href="/" passHref>

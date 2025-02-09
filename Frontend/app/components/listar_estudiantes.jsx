@@ -34,8 +34,7 @@ export default function ListarEstudiantes() {
             (item.name?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
             (item.surname?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
             (item.phone?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
-            (item.semestre?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
-            (item.habilitado?.toLowerCase() || '').includes(filterText.toLowerCase())
+            (item.semestre?.toLowerCase() || '').includes(filterText.toLowerCase())
     );
 
     const handleEditClick = (row) => {
@@ -51,7 +50,6 @@ export default function ListarEstudiantes() {
     };
 
     const handleVer = async (id) => {
-    
         router.push(`/ovacademy/teacher/user/${id}`);
     };
 
@@ -97,7 +95,7 @@ export default function ListarEstudiantes() {
 
     const handleSaveClick = async () => {
         try {
-            const response = await apiRest.fetchPut(`http://localhost:3333/ovacademy/user`, editRowData);
+            const response = await apiRest.fetchPut(`http://localhost:3333/ovacademy/user/editEstudiante`, editRowData);
             if (response.status === 200) {
                 toast.success('Los datos se actualizaron correctamente.');
                 setData((prevData) =>

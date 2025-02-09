@@ -13,7 +13,7 @@ export default function DashboardPage() {
         const breadcrumbHTML = (
             <>
                 <Link href={`/ovacademy/dashboard`}>Dashboard</Link>{" "}
-                <span className='separator'>&gt; </span>
+                <span className='separator'>&gt;</span>{' '}
                 Estudiante
             </>
         );

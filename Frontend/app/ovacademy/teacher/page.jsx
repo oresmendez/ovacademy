@@ -61,14 +61,14 @@ export default function FormularioUnidadesContenidos() {
                             {activeTab === 1 && (
                                 <div className="tab-panel">
                                     <h2>Estudiantes</h2>
-                                    <p>A continuación, se listan de los Estudiantes:</p>
+                                    <p>A continuación, listado de estudiantes:</p>
                                     <ListarEstudiantes />
                                 </div>
                             )}
                             {activeTab === 2 && (
                                 <div className="tab-panel">
                                     <h2>Profesores</h2>
-                                    <p>A continuación, se listan de los profesores:</p>
+                                    <p>A continuación, listado de profesores:</p>
                                     <ListarProfesores />
                                 </div>
                             )}

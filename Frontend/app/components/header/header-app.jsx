@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import '@/app/globals.css';
 
-import Logo_Name from '@/app/components/logo-name';
+import LogoName from '@/app/components/logo-name';
 import BurguerButton from '@/app/components/header/BurguerButton';
 import IconGroup from '@/app/components/header/IconGroup';
 
@@ -19,7 +19,7 @@ export default function Header({ handleClick, status }) {
                 </div>
                 <div className='header-main-elements center-right pl-20'>
                     <div className='header-logo'>
-                        <Logo_Name size_logo={40} size_name={1.5} />
+                        <LogoName size_logo={40} size_name={1.5} />
                     </div>
                 </div>
             </div>

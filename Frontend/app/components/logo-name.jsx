@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Logo_Name({ size_logo, size_name }) {
+export default function LogoName({ size_logo, size_name }) {
     return (
         <Componente $size_name={size_name}>
             <Link href="/" passHref>

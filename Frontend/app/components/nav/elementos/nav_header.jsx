@@ -4,7 +4,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import styled from "styled-components";
 
-import Logo_Name from '@/app/components/logo-name';
+import LogoName from '@/app/components/logo-name';
 
 import { IoCloseSharp} from "react-icons/io5";
 
@@ -17,7 +17,7 @@ export default function Nav_header({ handleClick, clicked }) {
                 <IoCloseSharp className={`icon-exit ${clicked ? 'active' : ''}`} />
             </button>
             <div className="pt-01 ml-15">
-                <Logo_Name size_logo={35} size_name={1.5} />
+                <LogoName size_logo={35} size_name={1.5} />
             </div>
         </div>
             

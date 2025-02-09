@@ -3,87 +3,120 @@ import { useState, useEffect, useParams, styled, apiRest, Link, textBarHeader } 
 
 export default function MateriasUnidades() {
 
-    const { unidades } = useParams();
+    const { unidad } = useParams();
 
-    const [units, setUnits] = useState([]); 
-    const [unaMateria, setUnaMateria] = useState({});
-    const [todasLasUnidades, setTodasLasUnidades] = useState([]);
-    const [allUnidades, setAllUnidades] = useState({});
+    const [materia, setMateria] = useState({});
+    const [unidades, setUnidades] = useState({});
+    const [allUnidades, setAllUnidades] = useState([]);
+    const [contenido, setContenido] = useState({});
+
 
     const { setHeaderText } = textBarHeader();
 
     useEffect(() => {
-        const breadcrumbHTML = (
-            <>
-                <Link href={`/ovacademy/dashboard`}>Dashboard</Link>{" "}
-                <span className='separator'>&gt; </span>
-                unidades
-            </>
-        );
 
-        setHeaderText(breadcrumbHTML);
+        setHeaderText(<>
+            <Link href={`/ovacademy/dashboard`}>Dashboard</Link>{/*
+            */}<span className="separator">&gt;</span>{/*
+            */}unidades
+        </>);
 
         const fetchData = async () => {
             try {
-                const [rUnaMateria, rTodasLasUnidades, rAllUnidades, rUnits] = await Promise.all([
-                    apiRest.fetchPost('http://localhost:3333/ovacademy/subject/obtenerUnaMateria', { id: 1 }),
-                    apiRest.fetchPost('http://localhost:3333/ovacademy/subject/unidades/obtenerTodasLasUnidades', { id: 1 }),
-                    apiRest.fetchPost('http://localhost:3333/ovacademy/subject/unidades/show', { id: unidades }),
-                    apiRest.fetchPost('http://localhost:3333/ovacademy/subject/unidades/contents/index', { id: unidades }),
-                ]);
 
-                setUnaMateria(rUnaMateria.data);
-                setTodasLasUnidades(rTodasLasUnidades.data.slice(0, 3)); // Limitar a un máximo de 3
-                setAllUnidades(rAllUnidades.data);
-                setUnits(rUnits.data);
+                const Materia_ = await apiRest.fetchGet('http://localhost:1337/api/materias');
+
+                if (Materia_?.data?.data?.length > 0) {
+                    setMateria(Materia_.data.data[0]);
+                } else {
+                    console.error("La respuesta de materias no contiene datos:", Materia_);
+                }
+
+                const Unidades_ = await apiRest.fetchGet(`http://localhost:1337/api/unidads?filters[id][$eq]=${unidad}`);
+                
+                if (Unidades_?.data?.data?.length > 0) {
+                    setUnidades(Unidades_.data.data[0]);
+                } else {
+                    console.error("Error al obtener los datos:");
+                }
+
+                const Contenido_ = await apiRest.fetchGet(`http://localhost:1337/api/contenidos?filters[unidad][id][$eq]=${unidad}`);
+                
+                if (Contenido_?.data?.data?.length > 0) {
+                    setContenido(Contenido_.data.data);
+                } else {
+                    console.error("Error al obtener los datos:");
+                }
+
+                const all_Unidades_ = await apiRest.fetchGet(`http://localhost:1337/api/unidads?filters[materia][id][$eq]=${Materia_.data.data[0].id}&sort=unidad:asc`);
+                console.log(all_Unidades_.data.data)
+                setAllUnidades(all_Unidades_.data.data);
+
             } catch (err) {
                 console.error('Error al conectar con el servidor:', err);
             }
         };
 
         fetchData();
-    }, [unidades]);
+    }, []);
 
     return (
         <StyledComponent>
             <div className='layout-body'>
                 <div className='container-body'>
                     <div className='banner-subjects'>
-                        <span className='banner-subjects-text ml-20'>{unaMateria.nombre}</span>
+                        <span className='banner-subjects-text ml-20'>{materia.nombre}</span>
                         <span className='banner-subjects-subtext ml-30 mt-05'>
-                            {todasLasUnidades[0]?.nombre || 'Nombre de la unidad'}
+                            {unidades?.nombre || 'Nombre de la unidad'}
                         </span>
                     </div>
 
                     <div className='description-subjects-general mt-10 p-10'>
-                        <p>{todasLasUnidades[0]?.descripcion || 'Sin descripción disponible.'}</p>
+                        <p>
+                            {unidades?.descripcion?.length > 0 
+                                ? unidades.descripcion[0]?.children?.[0]?.text || "Sin descripción disponible." 
+                                : "Sin descripción disponible."}
+                        </p>
                     </div>
 
+
                     <div className='description-content-subjects'>
-                        <div className='description-content-subjects-list'>
-                            <div className='course-content'>
-                                <ul className='content-list'>
-                                    {units.map((unit) => (
-                                        <li key={unit.id}>
-                                            <Link href={`/ovacademy/materias/${unidades}/${unit.id}`} passHref>
-                                                <span className='content-title'>{unit.nombre}</span>
+
+                        <div className="description-content-subjects-list">
+                            <div className="course-content">
+                                <ul className="content-list">
+                                    {Array.isArray(contenido) && contenido.length > 0 ? (
+                                        contenido.map((item) => (
+                                            <Link href={`/ovacademy/materias/${unidad}/${item.id}`} passHref>
+                                                <li key={item.id} className="content-item">
+                                                    <span className="content-title">{item.titulo}</span>
+                                                    <p>
+                                                        {item.descripcion.length > 0 
+                                                            ? item.descripcion[0].children[0].text 
+                                                            : "Sin descripción disponible."}
+                                                    </p>
+                                                </li>
                                             </Link>
-                                            <p>{unit.descripcion || 'Sin descripción disponible.'}</p>
-                                        </li>
-                                    ))}
+                                        ))
+                                    ) : (
+                                        <p>No hay contenido disponible.</p>
+                                    )}
                                 </ul>
                             </div>
                         </div>
-
                         <div className='description-content-subjects-other-subjets'>
                             <div className='related-units-tittle mb-10'>Otras unidades que pueden interesarte</div>
                             <div className='related-units-list center-column'>
-                                {todasLasUnidades.slice(0, 5).map((unidad) => ( // Limitar a 3 elementos
-                                    <div className='related-unit-card center-left' key={unidad.id}>
-                                        <h4>{unidad.nombre}</h4>
-                                        {/* <a href={`/ovacademy/materias/${unaMateria.id}/${unidad.id}`} className="related-unit-link">-</a> */}
-                                    </div>
-                                ))}
+                                {allUnidades
+                                    .filter((item) => item.id !== parseInt(unidad)) // Excluye la unidad actual
+                                    .slice(0, 5) // Limita a 5 resultados
+                                    .map((unidad) => (
+                                        <div className='related-unit-card center-left' key={unidad.id}>
+                                            <Link href={`/ovacademy/materias/${unidad.id}`} passHref>
+                                                <h4>{unidad.nombre}</h4>
+                                            </Link>
+                                        </div>
+                                    ))}
                             </div>
                         </div>
                     </div>
@@ -225,16 +258,20 @@ const StyledComponent = styled.div`
         border: 1px solid #e0e0e0;
         border-radius: 10px;
         padding: 15px;
-        flex: 1 1 calc(30% - 20px);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-        width:100%;
+        cursor: pointer;
+        width: 100%; /* Ajusta la tarjeta dentro del enlace */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
     }
 
-    .related-unit-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-    }
+    .related-units-list a:hover .related-unit-card {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
 
     .related-unit-card h4 {
         font-size: 1.2rem;

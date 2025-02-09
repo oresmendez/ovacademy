@@ -1,4 +1,4 @@
-'use client'; import {Cookies, useState, useEffect, useRouter, Link, styled, Logo_Name_White, startSession } from '@/app/utils/hooks';
+'use client'; import {Cookies, useState, useEffect, useRouter, Link, styled, LogoNameWhite, startSession } from '@/app/utils/hooks';
 
 export default function Login() {
 
@@ -22,7 +22,7 @@ export default function Login() {
         <Componente>
             <div className="layout-authentication center">
                 <div className="authentication-content">
-                    <Logo_Name_White />
+                    <LogoNameWhite />
                     <form className="form-login mt-30" onSubmit={handleRequest}>
                         <input
                             type="text"
