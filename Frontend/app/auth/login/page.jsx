@@ -1,4 +1,4 @@
-'use client'; import {Cookies, useState, useEffect, useRouter, Link, styled, LogoNameWhite, startSession } from '@/app/utils/hooks';
+'use client'; import {Cookies, useState, useEffect, useRouter, Link, styled, LogoNameWhite, startSession } from '@/app/components/utils/rutas';
 
 export default function Login() {
 
@@ -47,12 +47,6 @@ export default function Login() {
                             <button className="register-button mr-10">Crear</button>
                         </Link>
                     </div>
-                    <div className="teacher-or-admin mt-20 pt-20 center">
-                        <span className="teacher-or-admin-text mb-10">¿Eres Profesor o Administrador?</span>
-                        <Link href="/auth/teacher" passHref>
-                            <button className="register-button">Ingresa Aquí</button>
-                        </Link>
-                    </div>
                 </div>
             </div>
         </Componente>
@@ -69,11 +63,11 @@ const Componente = styled.div`
     }
 
     .authentication-content {
-        max-width: 28rem;
+        max-width: 30rem;
         width: 100%;
         background-color: rgba(255, 255, 255, 0.021);
         padding: 2rem;
-        height: 40rem;
+        height: 35rem;
         z-index: 1;
         font-family: var(--font-lexend);
     }

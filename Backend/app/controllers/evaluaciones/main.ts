@@ -1,0 +1,155 @@
+import type { HttpContext } from '@adonisjs/core/http'
+
+import UnidadesController from '../unidades/main.js';
+const UnidadesController_ = new UnidadesController();
+
+import EvaluacionesService from './service.js';
+const EvaluacionesService_ = new EvaluacionesService();
+
+import SopaDeLetrasController from '../sopa_de_letras/main.js';
+const SopaDeLetrasController_ = new SopaDeLetrasController();
+
+import CuestionariosController from '../cuestionarios/main.js';
+const CuestionariosController_ = new CuestionariosController();
+
+import PreguntasAbiertasController from '../preguntas_abiertas/main.js';
+const PreguntasAbiertasController_ = new PreguntasAbiertasController();
+
+export default class EvaluacionesController {
+
+    obtener_evaluaciones_By_Unidad = async (id_unidad: number) => {
+        return await EvaluacionesService_.obtenerEvaluacionesByID_Unidad(id_unidad);
+    }
+
+    delete_evaluacion = async (id: number) => {
+        return await EvaluacionesService_.eliminar_evaluacion(id)
+    }
+
+    public async create_evaluacion({ request, response }: HttpContext) {
+        try {
+            
+            const { id_unidad, type_id, nota_evaluacion} = request.only(['id_unidad', 'type_id', 'nota_evaluacion'])
+
+            const unidad = await UnidadesController_.consultar_unidad_by_ID(id_unidad);
+
+            const evaluaciones = await this.obtener_evaluaciones_By_Unidad(id_unidad);
+            let totalNotas = 0;
+
+            if (evaluaciones && evaluaciones.length > 0) {
+                totalNotas = evaluaciones.reduce((total, evaluacion) => {
+                    const nota = parseFloat(evaluacion.$attributes.nota_evaluacion);
+                    return total + (isNaN(nota) ? 0 : nota);
+                }, 0);
+            }
+
+            if (unidad) {
+                const sumaNotas = totalNotas + parseFloat(nota_evaluacion);
+                const sumaRedondeada = Math.round(sumaNotas * 100) / 100;
+            
+                if (sumaRedondeada > unidad.nota_unidad) {
+                    return response.status(400).send({ 
+                        message: `La nueva nota excede el puntaje. Actualmente tiene ${Math.round(totalNotas * 100) / 100} de ${unidad.nota_unidad} puntos`,
+                        success: false 
+                    });
+                }
+            }
+            
+            const evaluacion = await EvaluacionesService_.create_evaluacion(id_unidad, type_id, nota_evaluacion)
+            
+            if (!evaluacion) {
+                return response.status(400).send({ 
+                    message: 'Error al crear la evaluacion', 
+                    success: false 
+                });
+            }
+
+            if (parseInt(type_id) === 1) {
+                const { palabras } = request.only(['palabras'])
+
+                if (!await SopaDeLetrasController_.create_SopaDeLetras(evaluacion.id, palabras)) {
+                    this.delete_evaluacion(evaluacion.id)
+                    return response.status(400).send({ 
+                        message: 'error en la de la sopa de letras', 
+                        success: false 
+                    });
+                }
+            }
+
+            if (parseInt(type_id) === 2) {
+                const { cuestionario } = request.only(['cuestionario']);
+            
+                for (const item of cuestionario) {
+                    const pregunta = item.pregunta;
+                    const opciones = item.opciones;
+                    const respuesta_correcta = item.respuesta;
+            
+                    const creado = await CuestionariosController_.create_cuestionario(
+                        evaluacion.id,
+                        pregunta,
+                        opciones,
+                        respuesta_correcta
+                    );
+            
+                    if (!creado) {
+                        await this.delete_evaluacion(evaluacion.id);
+                        return response.status(400).send({ 
+                            message: 'Error en la creación del cuestionario', 
+                            success: false 
+                        });
+                    }
+                }
+            }
+
+            if (parseInt(type_id) === 3) {
+                const { preguntas } = request.only(['preguntas']);
+            
+                for (const item of preguntas) {
+            
+                    const creado = await PreguntasAbiertasController_.create_PreguntasAbiertas(
+                        evaluacion.id,
+                        item,
+                    );
+            
+                    if (!creado) {
+                        await this.delete_evaluacion(evaluacion.id);
+                        return response.status(400).send({ 
+                            message: 'Error en la creación del cuestionario', 
+                            success: false 
+                        });
+                    }
+                }
+            }
+            
+            return response.status(200).json({
+                message: 'evaluacion creada',
+                data: evaluacion
+            });
+
+            
+            
+        } catch (error) {
+            return response.status(500).json({
+                message: 'Error interno del servidor',
+                success: false
+            });
+        }
+    }
+
+    public async obtener_evaluacionesByUnidad({ params, response }: HttpContext) {
+    
+        try {
+            const evaluaciones = await this.obtener_evaluaciones_By_Unidad(params.id);
+    
+            if (!evaluaciones) {
+                return response.status(404).json({ message: 'Unidad no encontrada' });
+            }
+    
+            return response.status(200).json(evaluaciones);
+        } catch (error) {
+            console.error('Error obteniendo las evaluaciones:', error);
+            return response.status(500).json({ message: 'Error interno del servidor', error });
+        }
+    }
+
+
+}

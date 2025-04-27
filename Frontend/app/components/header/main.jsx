@@ -1,14 +1,6 @@
-'use client';
+"use client"; import { useState, styled, HeaderSearchBar, Header, Nav } from '@/app/components/utils/rutas';
 
-import React, { useState } from "react";
-import styled from 'styled-components';
-import '@/app/globals.css';
-
-import Header from '@/app/components/header/header-app';
-import HeaderSearchBar from '@/app/components/header/header-search-bar';
-import Nav from '@home/components/nav/main';
-
-export default function Header_app() {
+export default function HeaderPrincipal() {
     const [activarMenu, setActivarMenu] = useState(false);
 
     const handleActivarMenu = () => {

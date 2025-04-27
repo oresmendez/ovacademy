@@ -1,81 +1,196 @@
-/**----------------------------------------------------------
- * @author          : Orestes Fleitas
- * @NameController  : UnidadesController
- * @details         : Controlador que gestiona las operaciones relacionadas con las unidades.
- *                    Permite listar, mostrar y editar unidades utilizando los servicios correspondientes.
- */
 
 import type { HttpContext } from '@adonisjs/core/http'
-import UnidadService from '../../controllers/unidades/service.js'
 
+import UnidadService from '../../controllers/unidades/service.js'
 const UnidadService_ = new UnidadService();
+
+import TokenController from '../token/main.js';
+const TokenController_ = new TokenController();
+
+import SemestreProfesorAulController from '../semestre_profesor_aula/main.js';
+const SemestreProfesorAulController_ = new SemestreProfesorAulController();
+
+import EstudianteAulaController from '../estudiante_aula/main.js';
+const EstudianteAulaController_ = new EstudianteAulaController();
 
 export default class UnidadesController {
 
-    /**----------------------------------------------------------
-     * @author      : Orestes Fleitas
-     * @DateCreate  : 10 ene 2025
-     * @DateUpdate  : 10 ene 2025
-     * @Name        : index
-     * @details     : Método que lista las unidades relacionadas con el ID proporcionado en la solicitud.
-     * @returnTrue  : Devuelve una lista de unidades asociadas al ID, si el ID es válido y se encuentran resultados.
-     * @returnFalse : Puede lanzar una excepción o devolver un error si ocurre algún problema en la obtención de las unidades.
-    */
-    
-    public async index({ request }: HttpContext) {
-    
-        const { id } = request.only(['id']);
-    
-        return await UnidadService_.listarUnidades(id);
-    
+    consultar_unidades_by_user = async (user_id: number) => {
+        return await UnidadService_.obtenerUnidades(user_id);
     }
 
-    /**----------------------------------------------------------
-     * @author      : Orestes Fleitas
-     * @DateCreate  : 10 ene 2025
-     * @DateUpdate  : 10 ene 2025
-     * @Name        : show
-     * @details     : Método que devuelve los detalles de una unidad específica, basada en el ID proporcionado.
-     * @returnTrue  : Devuelve la información de la unidad si el ID es válido y la unidad existe.
-     * @returnFalse : Puede lanzar una excepción o devolver un error si no se encuentra la unidad.
-    */
-
-    public async show({ request }: HttpContext) {
-    
-        const { id } = request.only(['id']);
-    
-        return await UnidadService_.verUnidad(id);
-    
+    consultar_unidad_by_ID = async (unidad_id: number) => {
+        return await UnidadService_.obtenerUnidadesByID(unidad_id);
     }
 
-    /**----------------------------------------------------------
-     * @author      : Orestes Fleitas
-     * @DateCreate  : 10 ene 2025
-     * @DateUpdate  : 10 ene 2025
-     * @Name        : edit
-     * @details     : Método que permite editar los detalles de una unidad específica. 
-     *                Busca la unidad por ID, actualiza sus propiedades y guarda los cambios.
-     * @returnTrue  : Devuelve la unidad actualizada si la operación es exitosa.
-     * @returnFalse : 
-     *                - Devuelve un estado 404 si la unidad no se encuentra.
-     *                - Devuelve un estado 500 si ocurre un error al guardar los cambios o durante la ejecución.
-    */
-
-    public async edit({ request, response }: HttpContext) {
+    public async create_unidad({ request, response }: HttpContext) {
         try {
             
-            const { id, nombre, descripcion } = request.only(['id', 'nombre', 'descripcion']);
-            const unidad = await UnidadService_.editarUnidad(id);
+            const token = request.header('token');
+            if (!token) {return response.unauthorized({ message: 'Token requerido' });}
+            const userByToken = await TokenController_.obtenerUserByToken(token);
+
+            if (!(userByToken && userByToken.length > 0)) {
+                return response.notFound({ message: 'No se encontro un token valido de usuario' });
+            }
+
+            const unidades = await this.consultar_unidades_by_user(userByToken[0].user_id);
+            let totalNotas = 0;
+
+            if (unidades && unidades.length > 0) {
+                totalNotas = unidades.reduce((total, unidad) => {
+                    const datos = unidad.toJSON(); 
+                    return total + parseFloat(datos.notaUnidad);
+                }, 0);
+            } 
+
+            const { modulo, nombre, descripcion, nota_unidad } = request.only(['modulo', 'nombre', 'descripcion', 'nota_unidad'])            
             
+            if(totalNotas + parseFloat(nota_unidad) > 10){
+                return response.status(400).send({ 
+                    message: 'La nueva nota excede la cantidad de 10 puntos', 
+                    success: false 
+                });
+            }
+            
+            const unidad = await UnidadService_.crear_unidad(modulo, nombre, descripcion, userByToken[0].user_id, nota_unidad)
+
+            if (!unidad) {
+                return response.status(400).send({ 
+                    message: 'Error al crear la unidad', 
+                    success: false 
+                });
+            }
+
+            return response.status(200).json({
+                message: 'unidad creada'
+            });
+            
+        } catch (error) {
+            return response.status(500).json({
+                message: 'Error interno del servidor', error,
+                success: false
+            });
+        }
+    }
+
+    public async get_unidades_by_profesor({ request, response }: HttpContext) {
+    
+        try {
+            const token = request.header('token');
+
+            if (!token) {return response.unauthorized({ message: 'Token requerido' });}
+            const userByToken = await TokenController_.obtenerUserByToken(token);
+
+            if (!(userByToken && userByToken.length > 0)) {
+                return response.notFound({ message: 'No se encontro un token valido de usuario' });
+            }
+
+            const unidades = await this.consultar_unidades_by_user(userByToken[0].user_id);
+    
+            if (!unidades) {
+                return response.status(400).send({ 
+                    message: 'Error al obtener las unidades', 
+                    success: false 
+                });
+            }
+    
+            return response.status(200).json({
+                message: 'listado de unidades',
+                data: unidades
+            });
+            
+            
+        } catch (error) {
+            return response.status(500).json({
+                message: 'Error interno del servidor',
+                success: false
+            });
+        }
+    }
+
+    public async get_unidades_by_estudiante({ request, response }: HttpContext) {
+    
+        try {
+
+            const token = request.header('token');
+
+            if (!token) {return response.unauthorized({ message: 'Token requerido' });}
+            const userByToken = await TokenController_.obtenerUserByToken(token);
+
+            if (!(userByToken && userByToken.length > 0)) {
+                return response.notFound({ message: 'No se encontro un token valido de usuario' });
+            }
+
+            const Aula_estudiante = await EstudianteAulaController_.consultar_aula_by_estudiante(userByToken[0].user_id);
+
+            let Aula_profesor;
+            if (Aula_estudiante) {
+                Aula_profesor = await SemestreProfesorAulController_.obtener_datos_aula(
+                    Aula_estudiante.semestre_profesor_aula_id
+                );
+            }
+
+            const unidades = await UnidadService_.obtenerUnidades(Aula_profesor.profesor_id);
+    
+            if (!unidades) {
+                return response.status(400).send({ 
+                    message: 'Error al obtener las unidades', 
+                    success: false 
+                });
+            }
+    
+            return response.status(200).json({
+                message: 'listado de unidades',
+                data: unidades
+            });
+            
+            
+        } catch (error) {
+            return response.status(500).json({
+                message: error.message,
+                success: false
+            });
+        }
+    }
+
+
+
+    public async get_UnidadById({ params, response }: HttpContext) {
+
+        try {
+
+            const unidad = await this.consultar_unidad_by_ID(params.id);
+    
+            if (!unidad) {
+                return response.status(404).json({ message: 'Unidad no encontrada' });
+            }
+    
+            return response.status(200).json({
+                message: '',
+                data: unidad
+            });
+        } catch (error) {
+            console.error('Error obteniendo la unidad:', error);
+            return response.status(500).json({ message: 'Error interno del servidor', error });
+        }
+    }
+
+    public async edit_unidad_by_Id({ request, response }: HttpContext) {
+        try {
+            
+            const { id, modulo, nombre, nota_unidad, descripcion } = request.only(['id', 'modulo', 'nombre', 'nota_unidad', 'descripcion']);
+            
+            const unidad = await UnidadService_.obtenerUnidadesByID(id);
+    
             if (!unidad) {
                 return response.status(404).json({
                     message: 'Unidad no encontrada',
-                    success: false,
                 });
             }
             
             try {
-                unidad.merge({ id, nombre, descripcion });
+                unidad.merge({ id, modulo, nombre, nota_unidad, descripcion });
                 await unidad.save();
     
                 return response.status(200).json({
@@ -101,5 +216,32 @@ export default class UnidadesController {
             });
         }
     }
+
+    public async habilitar_or_deshabilitar_unidad({ params, response }: HttpContext) {
+        
+        try {
+            
+            const unidad = await UnidadService_.obtenerUnidadesByID(params.id);
+    
+            if (!unidad) {
+                return response.status(404).json({
+                    message: 'Unidad no encontrada',
+                });
+            }
+    
+            unidad.status = !unidad.status
+    
+            await unidad.save();
+    
+            return response.status(200).json({
+                success: true,
+            });
+
+        } catch (error) {
+            console.error(error);
+            return response.status(500)
+        }
+    }
+    
 
 }

@@ -1,16 +1,16 @@
-import Profesor from '../../models/profesor.js';
+import Profesor from '../../models/universidad/profesor.js';
 
 
 export default class ProfesorService {
 
-    async store(user_id: number): Promise<Profesor | null> {
+    async create_profesor(user_id: number): Promise<Profesor | null> {
         try {
             const user = await Profesor.create({
                 user_id,
             });
             return user;
         } catch (error) {
-            console.error('Error creando usuario en ProfesorService:', error.message);
+            console.error('Error creando usuario en EstudianteService:', error.message);
             return null;
         }
     }

@@ -1,0 +1,154 @@
+'use client'; import { useState, useEffect, useRouter, styled, apiRest, toast, export_file, DataTableIndex, ButtonAccion, InputSearch, ButtonLabelEstatus } from '@/app/components/utils/rutas';
+
+export default function ListarEstudiantes() {
+    const [data, setData] = useState([]);
+    const [filterText, setFilterText] = useState('');
+    const router = useRouter();
+
+    useEffect(() => {
+        obtenerEstudiantes();
+    }, []);
+
+    const obtenerEstudiantes = async () => {
+        
+        try {
+            const url = `http://localhost:3333/ovacademy/user?type_id=1`
+            const response = await apiRest.fetchGet(url);
+            if (response.status === 200) {
+                setData(response.data.data);
+            } else {
+                console.error('La respuesta de la API no contiene datos válidos.');
+                setData([]);
+            }
+        } catch (err) {
+            console.error('Error al conectar con el servidor:', err);
+            setData([]);
+        }
+    };
+
+    const handleVer = async (email) => {
+        router.push(`/ovacademy/profesor/estudiantes/${email}`);
+    };
+    
+    const handleDeleteClick = async (email) => {
+        try {
+            const response = await apiRest.fetchDelete('http://localhost:3333/ovacademy/user', { email });
+            console.log(response);
+            if (response.status === 200) {
+                toast.success(`Usuario ${email} actualizado`);
+                setData((prevData) =>
+                    prevData.map((item) =>
+                        item.email === email ? { ...item, status_logico: !item.status_logico } : item
+                    )
+                );
+            } else {
+                toast.error('Ocurrió un error');
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error('Error al conectar con el servidor.');
+        }
+    };
+
+    const exportToPDF = () => {
+        const name = 'estudiantes.pdf';
+        const title = 'Listado de Profesores';
+        const head = [['Correo Electrónico', 'Nombre', 'Apellido' ,'Acceso', 'Estado']];
+        const tableRows = filteredData.map((row) => [
+            row.email,
+            row.name,
+            row.surname,
+            row.habilitado ? 'Activo' : 'Inactivo',
+            row.status_logico ? 'Activo' : 'Inactivo',
+        ]);
+        export_file.exportToPDF(title, head, tableRows, name);
+    };
+
+    const exportToExcel = () => {
+        const name = 'profesores.xlsx';
+        const title = 'Profesores';
+        export_file.exportToExcel(title, filteredData, name);
+    };
+
+    const filteredData = data.filter((item) => {
+        const texto = filterText.toLowerCase();
+    
+        const email = item.email?.toLowerCase() || '';
+        const name = item.name?.toLowerCase() || '';
+        const surname = item.surname?.toLowerCase() || '';
+        const estadoTexto = item.status_logico ? 'activo' : 'inactivo';
+    
+        return (
+            email.includes(texto) ||
+            name.includes(texto) ||
+            surname.includes(texto) ||
+            estadoTexto.includes(texto)
+        );
+    });
+    
+
+    const columns = [
+        {   name: 'Correo Electrónico', 
+            selector: (row) => row.email || 'No disponible', 
+            sortable: true, 
+            grow: 2.2 
+        },
+        {   name: 'Nombre', 
+            selector: (row) => row.name || 'No disponible', 
+            sortable: true, 
+            grow: 2.2 
+        },
+        {   name: 'Apellido', 
+            selector: (row) => row.surname || 'No disponible', 
+            sortable: true, 
+            grow: 2.2 
+        },
+        {
+            name: 'Estado',
+            selector: (row) => (
+                <ButtonLabelEstatus
+                    status_logico={row.status_logico}
+                    onClick={() => handleDeleteClick(row.email)}
+                />
+            ),
+            sortable: true,
+            grow: 1.2,
+        },        
+        {
+            name: '',
+            grow: 1.5,
+            cell: (row) => (
+                <button onClick={() => handleVer(row.email)} style={{ color: '#0465ac' }}>Ver</button>
+            ),
+        }
+           
+    ];
+
+    return (
+        <Componente>
+        <div style={{ padding: '1rem', fontFamily: 'Lexend Deca, sans-serif' }}>
+            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="botones-exportar">
+                <ButtonAccion onClick={exportToPDF}>Exportar a PDF</ButtonAccion> 
+                <ButtonAccion onClick={exportToExcel}>Exportar a Excel</ButtonAccion> 
+                <ButtonAccion onClick={obtenerEstudiantes} loading={true} ></ButtonAccion> 
+            </div>
+                <InputSearch filterText={filterText} setFilterText={setFilterText} />
+            </div>
+            <DataTableIndex columns={columns} data={filteredData} />
+        </div>
+        </Componente>
+    );
+}
+
+const Componente = styled.div`
+    
+    .label-status-user{
+        color: white;
+        border-radius: 5px;
+        padding: 5px 10px;  
+    }
+
+    
+
+`;

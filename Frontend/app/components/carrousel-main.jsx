@@ -1,9 +1,6 @@
-'use client';
+'use client'; import { useState, useEffect, styled, useRef } from '@/app/components/utils/rutas';
 
-import { useState, useRef } from "react";
-import styled from 'styled-components';
 import Carrousel from '@/app/components/carrousel';
-import '@/app/globals.css';
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
@@ -45,7 +42,7 @@ export default function CarrouselMain({ boxes = [], tittle = "", description = "
         speed: 1000,
         slidesToShow: boxes.length > 0 ? Math.min(itemsPerPage, boxes.length) : 1, // Asegura valores válidos
         slidesToScroll: Math.min(slidesToScroll, boxes.length > 0 ? boxes.length : 1), // Evita errores
-        autoplay: false,
+        autoplay: true,
         autoplaySpeed: 5000,
         pauseOnHover: true,
         draggable: true,

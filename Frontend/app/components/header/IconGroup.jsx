@@ -1,11 +1,7 @@
-"use client";
+'use client'; import { styled , Link} from '@/app/components/utils/rutas';
 
-import React from "react";
-import styled from "styled-components";
-import { IoSearch, IoTrophy, IoNotifications } from "react-icons/io5";
 import { PiSignOutBold } from "react-icons/pi";
-import Link from 'next/link'; // Importa el componente Link
-import '@/app/globals.css';
+
 
 export default function IconGroup() {
     const icons = [

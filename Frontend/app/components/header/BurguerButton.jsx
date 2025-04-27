@@ -1,10 +1,6 @@
-"use client";
+'use client'; import { styled } from '@/app/components/utils/rutas';
 
-import React from 'react';
-import styled from "styled-components";
 import { IoMdMenu } from "react-icons/io";
-import '@/app/globals.css';
-
 
 export default function BurguerButton(props) {
     return (

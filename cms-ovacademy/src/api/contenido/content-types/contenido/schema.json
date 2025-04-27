@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contenidos",
+  "info": {
+    "singularName": "contenido",
+    "pluralName": "contenidos",
+    "displayName": "Contenido",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "required": true
+    },
+    "descripcion": {
+      "type": "blocks",
+      "required": true
+    },
+    "multimedia": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "unidad": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::unidad.unidad"
+    }
+  }
+}

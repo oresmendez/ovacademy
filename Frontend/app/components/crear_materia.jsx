@@ -1,4 +1,4 @@
-'use client'; import { styled, apiRest, toast, useRouter, useState } from '@/app/utils/hooks';
+'use client'; import { styled, apiRest, toast, useRouter, useState } from '@/app/components/utils/rutas';
 
 export default function Crear_materia({ statusTab }) {
 

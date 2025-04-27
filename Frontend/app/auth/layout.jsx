@@ -1,4 +1,4 @@
-'use client'; import {usePathname, Image, styled} from '@/app/utils/hooks';
+'use client'; import {usePathname, Image, styled} from '@/app/components/utils/rutas';
 
 export default function RootLayoutAuth({ children }) {
 

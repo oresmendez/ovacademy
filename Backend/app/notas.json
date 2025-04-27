@@ -1,0 +1,93 @@
+root@udo.com.ve
+ana.gonzalez@gmail.com
+Lisbeth.fernandez@gmail.com
+
+
+Código	Descripción
+100	Continue: La solicitud se ha recibido y se puede continuar con el envío.
+101	Switching Protocols: Cambio de protocolo solicitado por el cliente.
+
+200	OK: La solicitud se completó correctamente y se devolvió el recurso.
+201	Created: Se creó un nuevo recurso a raíz de la solicitud.
+202	Accepted: La solicitud ha sido aceptada para procesamiento, pero aún no se ha completado.
+204	No Content: La solicitud se completó con éxito, pero sin contenido que mostrar.
+
+301	Moved Permanently: El recurso se ha movido de forma permanente a otra URL.
+302	Found: El recurso se encuentra temporalmente en otra ubicación.
+304	Not Modified: El recurso no ha sido modificado desde la última solicitud.
+
+400	Bad Request: La solicitud es inválida o tiene errores de sintaxis.
+401	Unauthorized: Se requiere autenticación para acceder al recurso.
+403	Forbidden: El servidor entiende la solicitud, pero se niega a autorizarla.
+404	Not Found: El recurso solicitado no se encontró en el servidor.
+405	Method Not Allowed: El método HTTP utilizado no está permitido para el recurso.
+408	Request Timeout: La solicitud tardó demasiado en completarse y se agotó el tiempo de espera.
+
+500	Internal Server Error: Error general en el servidor al procesar la solicitud.
+501	Not Implemented: El servidor no soporta la funcionalidad requerida.
+502	Bad Gateway: Respuesta inválida recibida de un servidor ascendente.
+503	Service Unavailable: El servidor no está disponible temporalmente.
+504	Gateway Timeout: El servidor no recibió respuesta a tiempo del servidor ascendente.
+505	HTTP Version Not Supported: La versión de HTTP utilizada no es compatible con el servidor.
+
+Éxito  response.ok({ message: 'message' });	200	Operación exitosa
+Creado	response.created()	201	Nuevo recurso creado
+Sin contenido	response.noContent()	204	Operación exitosa sin respuesta
+Advertencia (personalizado)	response.status(200).send({...})	200	Advertencia informativa dentro de una respuesta exitosa
+Error de cliente	response.badRequest()	400	Datos inválidos
+No autorizado	response.unauthorized()	401	Requiere autenticación
+Prohibido	response.forbidden()	403	No tienes permisos
+No encontrado	response.notFound()	404	Recurso no existe
+Error servidor	response.internalServerError()	500	Error inesperado del backend
+
+
+main.ts
+import type { HttpContext } from '@adonisjs/core/http'
+import SemestreProfesorAulaService from '../../controllers/semestre_profesor_aula/service.js'
+
+const SemestreProfesorAulaService_ = new SemestreProfesorAulaService();
+
+
+export default class SemestreProfesorAulController {
+
+
+        
+
+}
+
+service.ts
+import Semestre from '../../models/universidad/semestre.js'
+
+export default class SemestreProfesorAulaService {
+
+
+
+}
+
+
+INSERT INTO materia.materia  (nombre, descripcion)
+VALUES ('Formulación y evaluación de proyectos de inversión (230-4604)', 'La formulación y evaluación de proyectos es el proceso sistemático de diseñar, analizar y valorar la viabilidad técnica, económica y financiera de una idea antes de su ejecución. Su objetivo es determinar si un proyecto es rentable y factible, minimizando riesgos y optimizando recursos');
+
+INSERT INTO materia.unidades (nombre, unidad, descripcion, id_materia) VALUES 
+('Aspectos Generales del Proyecto', 'UNIDAD I', 'En esta sección se presentan los antecedentes, objetivos y justificación del proyecto, definiendo su propósito, alcance y relevancia dentro del contexto en el que se desarrolla', 1),
+('El Estudio del Mercado', 'UNIDAD II', 'Se analiza la oferta, la demanda, la competencia y otros factores clave del mercado para evaluar la viabilidad comercial del proyecto y determinar su potencial éxito.', 1),
+('La Ingeniería del Proyecto', 'UNIDAD III', 'Aquí se describen los aspectos técnicos del proyecto, incluyendo los procesos de producción, tecnología requerida, infraestructura y recursos necesarios para su implementación.', 1),
+('Tamaño y localización del Proyecto', 'UNIDAD IV', 'Se define la capacidad de producción del proyecto y se selecciona la ubicación óptima con base en criterios estratégicos como costos, acceso a recursos y cercanía al mercado objetivo.', 1),
+('El Análisis Financiero', 'UNIDAD V', 'Se estudia la inversión requerida, los costos operativos, las fuentes de financiamiento y la rentabilidad esperada, utilizando indicadores financieros como el VAN y la TIR.', 1),
+('Evaluación de Proyectos', 'UNIDAD VI', 'En esta sección se aplican metodologías y herramientas para determinar la factibilidad del proyecto, considerando factores económicos, financieros, sociales y ambientales.', 1);
+
+INSERT INTO materia.contenidos (nombre, descripcion, id_unidad) VALUES 
+('Proyecto. Definición e importancia', 'Explicación del concepto de proyecto y su relevancia en el desarrollo económico y social, destacando su papel en la generación de valor y solución de problemas.', 1),
+('Tipos de proyectos', 'Clasificación de los proyectos según su naturaleza (económicos, sociales, tecnológicos, ambientales, etc.) y su impacto en distintos sectores.', 1),
+('Proyecto y planificación', 'Relación entre la formulación de proyectos y la planificación estratégica, destacando la importancia de una planificación adecuada para el éxito del proyecto.', 1),
+('Etapas de un proyecto', 'Descripción de las fases que atraviesa un proyecto, desde su concepción hasta su evaluación final, incluyendo la preinversión, inversión, operación y cierre.', 1),
+('Selección de proyectos a estudiar', 'Criterios para elegir un proyecto viable a partir de estudios preliminares, considerando aspectos técnicos, financieros y de mercado.', 1),
+('Propósito u objetivo del proyecto', 'Definición clara de la meta del proyecto, estableciendo los resultados esperados y los beneficios que generará.', 1),
+('Características del proyecto', 'Aspectos esenciales del proyecto, como su alcance, duración, recursos involucrados y factores críticos de éxito.', 1),
+('Identificación del proyecto', 'Métodos para reconocer una oportunidad de proyecto, considerando necesidades insatisfechas, tendencias del mercado y problemas a resolver.', 1),
+('Infraestructura física y económica', 'Evaluación de los recursos físicos y financieros necesarios para llevar a cabo el proyecto, incluyendo instalaciones, equipamiento y capital requerido.', 1),
+('Obtención de insumos', 'Identificación de los materiales y recursos esenciales para el desarrollo del proyecto, considerando disponibilidad, costos y logística de abastecimiento.', 1),
+('Realización del proceso', 'Descripción de las acciones y actividades necesarias para ejecutar el proyecto, asegurando su operatividad y cumplimiento de objetivos.', 1),
+('Efectos del proyecto sobre la economía regional y nacional', 'Análisis del impacto económico del proyecto en su área de influencia, incluyendo generación de empleo, aumento del PIB y dinamización de sectores productivos.', 1),
+('Efectos del proyecto sobre la balanza de pagos', 'Evaluación de cómo el proyecto afecta el comercio exterior, las exportaciones e importaciones, así como su contribución al equilibrio financiero del país.', 1),
+('Efectos del proyecto sobre el medio ambiente', 'Identificación de los impactos ambientales del proyecto, considerando medidas de mitigación y sostenibilidad para reducir su huella ecológica.', 1);

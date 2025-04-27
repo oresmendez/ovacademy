@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "unidads",
+  "info": {
+    "singularName": "unidad",
+    "pluralName": "unidads",
+    "displayName": "Unidad",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nombre": {
+      "type": "string"
+    },
+    "materia": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::materia.materia"
+    },
+    "unidad": {
+      "type": "string"
+    },
+    "descripcion": {
+      "type": "blocks"
+    }
+  }
+}

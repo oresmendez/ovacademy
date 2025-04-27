@@ -1,47 +1,75 @@
-
-import User from '../../models/user.js';
+import User from '../../models/authentication/user.js'
 
 export default class UserService {
     
-    async show(field: 'email' | 'id', value: string | number): Promise<User | null> {
+    async crear_usuario(email: string, name: string, surname: string, type_id: number, status_logico: boolean): Promise<User | null> {
         try {
-            const user = await User.query().where(field, value).first();
-            return user || null;
+            return await User.create({
+            email,
+            name, 
+            surname,
+            type_id,
+            status_logico
+            })
         } catch (error) {
-            console.error(`Error obteniendo usuario por ${field} en UserService:`, error.message);
+            console.error('Error creando usuario en UserService:', error.message)
+            return null
+        }
+    }
+
+    async consultar_user_by_email(email: string): Promise<User | null> {
+        try {
+            
+            return await User.query().where('email', email).first();
+
+        } catch (error) {
+            console.error(`Error obteniendo usuario por en UserService:`, error.message);
             return null;
         }
     }
 
+    async consultar_user_si_esta_habilitado(email: string): Promise<User | null> {
+        try {
+            const user = await User.query()
+                .where('email', email)
+                .where('status_logico', true)
+                .first();
+            return user ?? null;
+        } catch (error) {
+            console.error(`Error obteniendo usuario en UserService:`, error.message);
+            return null;
+        }
+    }    
+
     async listado_usuarios(type_id: number): Promise<Partial<User & { semestre?: string; habilitado?: boolean }>[] | null> {
-        // Construcción de la consulta base
+        
         const query = User.query()
             .where('type_id', type_id)
             .select('id', 'email', 'name', 'surname', 'phone', 'status_logico')
-            .orderBy('id', 'desc');
+            .orderBy('id', 'asc');
     
         if (type_id === 1) {
             query
                 .leftJoin(
-                    'authentication.estudiante',
-                    'authentication.estudiante.user_id',
+                    'universidad.estudiante',
+                    'universidad.estudiante.user_id',
                     'authentication.user.id'
                 )
                 .select(
-                    'authentication.estudiante.semestre',
-                    'authentication.estudiante.habilitado'
+                    'universidad.estudiante.semestre',
+                    'universidad.estudiante.habilitado'
                 );
         }
 
         if (type_id === 2) {
             query
                 .leftJoin(
-                    'authentication.profesor',
-                    'authentication.profesor.user_id',
+                    'universidad.profesor',
+                    'universidad.profesor.user_id',
                     'authentication.user.id'
                 )
                 .select(
-                    'authentication.profesor.colegiado'
+                    'universidad.profesor.habilitado'
                 );
         }
     
@@ -56,30 +84,34 @@ export default class UserService {
         // Devolver la lista de usuarios
         return users;
     }
-    
-    
-    
-    
 
-    async store(email: string, type_id: number): Promise<User | null> {
+    async editar_usuario(email: string, name: string, surname: string, phone: string): Promise<User | null> {
         try {
-            const user = await User.create({
-                email,
-                type_id,
-            });
-            return user;
+    
+            const user = await this.consultar_user_by_email(email);
+            
+            if (!user) {
+                console.error('Usuario no encontrado');
+                return null;
+            }
+            
+            user.merge({ name, surname, phone });
+            return user.save();
+
         } catch (error) {
-            console.error('Error creando usuario en UserService:', error.message);
+            console.error('Error editando usuario en UserService:', error.message);
             return null;
         }
     }
 
-    async edit(email: string): Promise<User | null> {
+    async eliminar_usuario(user_id: number): Promise<User | null> {
         try {
-            return await User.findByOrFail('email', email)
+            const user = await User.findOrFail(user_id)
+            await user.delete()
+            return user
         } catch (error) {
-            console.error('Error creando usuario en UserService:', error.message);
+            console.error('Error al eliminar un usuario:', error.message);
             return null;
         }
-    };
+    }
 }

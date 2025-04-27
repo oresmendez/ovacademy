@@ -1,5 +1,5 @@
-'use client'; import { useState, useEffect, apiRest, toast, styled, export_file, Link, textBarHeader} from '@/app/utils/hooks';
-import DataTable_index from '@/app/components/dataTable_index';
+'use client'; import { useState, useEffect, apiRest, toast, styled, export_file, Link, textBarHeader} from '@/app/components/utils/rutas';
+import DataTableIndex from '@/app/components/DataTableIndex';
 
 
 export default function ListarMaterias() {
@@ -115,7 +115,7 @@ export default function ListarMaterias() {
                             fontSize: '1rem',
                         }}
                     >
-                        {row.nombre || 'N/A'}
+                        {row.nombre || 'No disponible'}
                     </div>
                 ),
             sortable: true,
@@ -151,7 +151,7 @@ export default function ListarMaterias() {
             cell: (row) =>
                 row.id === editRowId ? (
                     <>
-                        <button onClick={handleSaveClick} style={{ marginRight: '0.5rem', color: 'green' }}>
+                        <button onClick={handleSaveClick} style={{ marginRight: '0.5rem', color: '#0465ac' }}>
                             Guardar
                         </button>
                         <button onClick={() => setEditRowId(null)} style={{ color: 'red' }}>
@@ -189,7 +189,7 @@ export default function ListarMaterias() {
                     <button className='btn-export btn-excel' onClick={exportToExcel}>Exportar a Excel</button>
                 </div>
             </div>
-            <DataTable_index columns={columns} data={filteredData} />
+            <DataTableIndex columns={columns} data={filteredData} />
         </div>
         </Componente>
     );
@@ -226,11 +226,11 @@ const Componente = styled.div`
     }
 
     .btn-pdf{
-        background-color: #e74c3c;
+        background-color: #0465ac;
     }
 
     .btn-excel{
-        background-color: #27ae60;
+        background-color: #0465ac;
     }
 
 

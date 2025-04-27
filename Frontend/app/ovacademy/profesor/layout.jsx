@@ -1,0 +1,44 @@
+'use client';
+import React, { useEffect } from "react";
+import { useRouter } from 'next/navigation';
+import { apiRest } from '@/app/components/utils/rutas';
+import LayoutDashboard from "../layout";
+import PropTypes from 'prop-types';
+
+const LayoutSecundario = ({ children }) => {
+    const router = useRouter(); // Para redirigir al usuario si es necesario
+
+    useEffect(() => {
+        fetchData();
+    }, [router]);
+
+    const fetchData = async () => {
+        try {
+            
+            // const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/teacher');
+
+            // if (response.status === 401) {
+            //     console.log("Usuario no autorizado. Redirigiendo al inicio de sesión...");
+            //     // router.push('/auth/login'); // Redirigir al inicio de sesión
+            // } else {
+            //     console.log("Datos obtenidos:",  response.data);
+            // }
+        } catch (err) {
+            console.error("Error al realizar la solicitud:", err);
+        }
+    };
+
+    return (
+        <LayoutDashboard showHeader={false}>
+            <div>
+                {children}
+            </div>
+        </LayoutDashboard>
+    );
+};
+
+LayoutSecundario.propTypes = {
+    children: PropTypes.node.isRequired,
+};
+
+export default LayoutSecundario;

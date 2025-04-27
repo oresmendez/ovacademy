@@ -1,4 +1,4 @@
-'use client'; import {toast, useState, apiRest, useRouter, Link, styled, LogoNameWhite, startSession } from '@/app/utils/hooks';
+'use client'; import {toast, useState, apiRest, useRouter, Link, styled, LogoNameWhite } from '@/app/components/utils/rutas';
 
 export default function crear_user() {
     const router = useRouter();
@@ -23,16 +23,24 @@ export default function crear_user() {
             email,
             password,
             type_id: 1,
+            status_logico: "false"
         });
 
         if (response.status === 409) {
             toast.error(response.data.message);
             return router.push('/auth/login');
         }else if (response.status != 200) {
+            setPassword("");
+            setVerifyPassword("");
             return toast.error(response.data.message);
         }
 
-        await startSession(email, password, router);
+        toast.success('Registro exitoso');
+        toast.warning('Comunicate con el profesor para la aprobación');
+
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        return router.push('/');
+
     };
 
     return (
@@ -70,7 +78,7 @@ export default function crear_user() {
                 </form>
                 <p className='create-accont-text mt-20'>
                         Al registrarte estas aceptando que tus datos personales sean vistos o manipulados
-                        por el personal de la academia.
+                        por el personal de la universidad.
                     </p>
                 <Link href="/" passHref>
                     <span className='create-accont-back mt-20 pb-05'>Regresar</span>

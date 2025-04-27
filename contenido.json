@@ -1,0 +1,270 @@
+[
+    {
+        "Materia":"Formulación y Evaluación de Proyectos",
+        "descripcion":"La formulación y evaluación de proyectos es el proceso sistemático de diseñar, analizar y valorar la viabilidad técnica, económica y financiera de una idea antes de su ejecución. Su objetivo es determinar si un proyecto es rentable y factible, minimizando riesgos y optimizando recursos",
+        "unidades":[
+            {
+                "titulo": "Aspectos Generales del Proyecto",
+                "descripcion": "En esta sección se presentan los antecedentes, objetivos y justificación del proyecto, definiendo su propósito, alcance y relevancia dentro del contexto en el que se desarrolla",
+                "Contenidos": [
+                    {
+                        "titulo": "Proyecto. Definición e importancia",
+                        "descripcion": "Explicación del concepto de proyecto y su relevancia en el desarrollo económico y social, destacando su papel en la generación de valor y solución de problemas."
+                    },
+                    {
+                        "titulo": "Tipos de proyectos",
+                        "descripcion": "Clasificación de los proyectos según su naturaleza (económicos, sociales, tecnológicos, ambientales, etc.) y su impacto en distintos sectores."
+                    },
+                    {
+                        "titulo": "Proyecto y planificación",
+                        "descripcion": "Relación entre la formulación de proyectos y la planificación estratégica, destacando la importancia de una planificación adecuada para el éxito del proyecto."
+                    },
+                    {
+                        "titulo": "Etapas de un proyecto",
+                        "descripcion": "Descripción de las fases que atraviesa un proyecto, desde su concepción hasta su evaluación final, incluyendo la preinversión, inversión, operación y cierre."
+                    },
+                    {
+                        "titulo": "Selección de proyectos a estudiar",
+                        "descripcion": "Criterios para elegir un proyecto viable a partir de estudios preliminares, considerando aspectos técnicos, financieros y de mercado."
+                    },
+                    {
+                        "titulo": "Propósito u objetivo del proyecto",
+                        "descripcion": "Definición clara de la meta del proyecto, estableciendo los resultados esperados y los beneficios que generará."
+                    },
+                    {
+                        "titulo": "Características del proyecto",
+                        "descripcion": "Aspectos esenciales del proyecto, como su alcance, duración, recursos involucrados y factores críticos de éxito."
+                    },
+                    {
+                        "titulo": "Identificación del proyecto",
+                        "descripcion": "Métodos para reconocer una oportunidad de proyecto, considerando necesidades insatisfechas, tendencias del mercado y problemas a resolver."
+                    },
+                    {
+                        "titulo": "Infraestructura física y económica",
+                        "descripcion": "Evaluación de los recursos físicos y financieros necesarios para llevar a cabo el proyecto, incluyendo instalaciones, equipamiento y capital requerido."
+                    },
+                    {
+                        "titulo": "Obtención de insumos",
+                        "descripcion": "Identificación de los materiales y recursos esenciales para el desarrollo del proyecto, considerando disponibilidad, costos y logística de abastecimiento."
+                    },
+                    {
+                        "titulo": "Realización del proceso",
+                        "descripcion": "Descripción de las acciones y actividades necesarias para ejecutar el proyecto, asegurando su operatividad y cumplimiento de objetivos"
+                    },
+                    {
+                        "titulo": "Efectos del proyecto sobre la economía regional y nacional",
+                        "descripcion": "Análisis del impacto económico del proyecto en su área de influencia, incluyendo generación de empleo, aumento del PIB y dinamización de sectores productivos."
+                    },
+                    {
+                        "titulo": "Efectos del proyecto sobre la balanza de pagos",
+                        "descripcion": "Evaluación de cómo el proyecto afecta el comercio exterior, las exportaciones e importaciones, así como su contribución al equilibrio financiero del país."
+                    },
+                    {
+                        "titulo": "Efectos del proyecto sobre el medio ambiente",
+                        "descripcion": "Identificación de los impactos ambientales del proyecto, considerando medidas de mitigación y sostenibilidad para reducir su huella ecológica."
+                    }
+                ]
+            },
+            {
+                "titulo": "El Estudio del Mercado",
+                "descripcion": "Se analiza la oferta, la demanda, la competencia y otros factores clave del mercado para evaluar la viabilidad comercial del proyecto y determinar su potencial éxito.",
+                "Contenidos": [
+                    {
+                        "titulo": "Objetivos del estudio de mercado",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Las etapas del estudio de mercado",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Importancia del estudio de mercado",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Demanda",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Comportamiento de la demanda actual",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Estimación de la demanda",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Oferta",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "El producto en el mercado",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Comportamiento de la oferta",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Posibilidades del proyecto",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Situación del producto dentro de los acuerdos económicos. (Pacto Andino, Grupo de los 3, Acuerdos Bilaterales, etc.)",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Comercialización",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Mecanismos de comercialización previstos",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Conclusiones del Estudio del Mercado",
+                        "descripcion": ""
+                    }
+                ]
+            },
+            {
+                "titulo": "La Ingeniería del Proyecto",
+                "descripcion": "Aquí se describen los aspectos técnicos del proyecto, incluyendo los procesos de producción, tecnología requerida, infraestructura y recursos necesarios para su implementación.",
+                "Contenidos": [
+                    {
+                        "titulo": "Análisis de las alternativas técnicas factibles",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Descripción del proceso de transformación",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Posibilidades de expansión de la capacidad instalada",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Inventario de obras físicas",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Características de las obras",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Costos",
+                        "descripcion": ""
+                    }
+                ]
+            },
+            {
+                "titulo": "Tamaño y localización del Proyecto",
+                "descripcion": "Se define la capacidad de producción del proyecto y se selecciona la ubicación óptima con base en criterios estratégicos como costos, acceso a recursos y cercanía al mercado objetivo.",
+                "Contenidos": [
+                    {
+                        "titulo": "Determinación y formas de medir el tamaño del proyecto",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Factores condicionantes del tamaño",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Márgenes utilizados de capacidad",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Justificación del tamaño adoptado",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Localización.",
+                        "descripcion": ""
+                    }
+                ]
+            },
+            {
+                "titulo": "El Análisis Financiero",
+                "descripcion": "Se estudia la inversión requerida, los costos operativos, las fuentes de financiamiento y la rentabilidad esperada, utilizando indicadores financieros como el VAN y la TIR.",
+                "Contenidos": [
+                    {
+                        "titulo": "Inversión",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Calendario de inversiones",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Financiamiento, importancia y organización para la promoción del proyecto",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Estructura y fuentes de la inversión inicial",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Proyección de los estados financieros",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Análisis del presupuesto",
+                        "descripcion": ""
+                    }
+                ]
+            },
+            {
+                "titulo": "Evaluación de Proyectos",
+                "descripcion": "En esta sección se aplican metodologías y herramientas para determinar la factibilidad del proyecto, considerando factores económicos, financieros, sociales y ambientales.",
+                "Contenidos": [
+                    {
+                        "titulo": "Criterios de evaluación derivados de los objetivos del proyecto",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Criterios de evaluación que reflejan los objetivos prioritarios del Ejecutivo Nacional, referentes al desarrollo económico y social del país",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Elementos técnicos",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Elementos financieros",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Elementos sociales",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Indicadores financieros",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Indicadores económicos",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Estructura de valor agregado",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Relación beneficio/costo",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "El valor actual neto",
+                        "descripcion": ""
+                    },
+                    {
+                        "titulo": "Otros",
+                        "descripcion": ""
+                    }
+                ]
+            }
+        ]
+    }
+]
+
+

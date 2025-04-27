@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "materias",
+  "info": {
+    "singularName": "materia",
+    "pluralName": "materias",
+    "displayName": "Materia",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nombre": {
+      "type": "string"
+    },
+    "unidads": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unidad.unidad"
+    },
+    "descripcion": {
+      "type": "blocks"
+    }
+  }
+}

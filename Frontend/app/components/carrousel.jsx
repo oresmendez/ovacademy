@@ -1,9 +1,6 @@
-"use client";
+'use client'; import { styled, Link } from '@/app/components/utils/rutas';
 
-import React from "react";
-import styled from "styled-components";
 import Slider from "react-slick";
-import Link from 'next/link';
 import { MdOutlineLocalLibrary } from "react-icons/md";
 
 import "slick-carousel/slick/slick.css";
@@ -17,7 +14,7 @@ export default function Carrousel({ boxes, settings, sliderRef }) {
                     return (
                         <div key={index} className="carousel-card card">
                             <div className="card-content">
-                                <Link href={`/ovacademy/materias/${box.id}`} passHref>
+                                <Link href={`/ovacademy/estudiante/unidad/${box.id}`} passHref>
                                     <div
                                         className="card-imagen center"
                                         style={{
@@ -33,7 +30,7 @@ export default function Carrousel({ boxes, settings, sliderRef }) {
                                         <MdOutlineLocalLibrary style={{ fontSize: "100px", color: "#efefef" }} />
                                     </div>
                                     <div className="card-content-description">
-                                        <h3 className="card-title">{box.unidad}</h3>
+                                        <h3 className="card-title">{box.modulo}</h3>
                                         <p className="card-type">{box.nombre}</p>
                                     </div>
                                 </Link>

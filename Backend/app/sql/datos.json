@@ -1,0 +1,963 @@
+{
+    "user": [
+      {
+        "name": "Administrador",
+        "email": "root@udo.com.ve",
+        "password": "1",
+        "type_id": 3
+      },
+      {
+        "name": "Ana",
+        "surname": "Gonzalez",
+        "email": "ana.gonzalez@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "Carlos",
+        "surname": "Ramirez",
+        "email": "carlos.ramirez@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "María",
+        "surname": "López",
+        "email": "maria.lopez@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "Luis",
+        "surname": "Fernandez",
+        "email": "luis.fernandez@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "Sofía",
+        "surname": "Martinez",
+        "email": "sofia.martinez@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "Pedro",
+        "surname": "Suarez",
+        "email": "pedro.suarez@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "Lucía",
+        "surname": "Morales",
+        "email": "lucia.morales@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "José",
+        "surname": "Torres",
+        "email": "jose.torres@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "Valentina",
+        "surname": "Diaz",
+        "email": "valentina.diaz@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "Miguel",
+        "surname": "Castro",
+        "email": "miguel.castro@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "Andrea",
+        "surname": "Vargas",
+        "email": "andrea.vargas@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "email": "jorge.herrera@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "Camila",
+        "surname": "Mendoza",
+        "email": "camila.mendoza@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "Daniel",
+        "surname": "Silva",
+        "email": "daniel.silva@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "email": "isabella.reyes@gmail.com",
+        "password": "1",
+        "type_id": 1
+      },
+      {
+        "name": "Elena",
+        "surname": "Campos",
+        "email": "elena.campos@gmail.com",
+        "password": "1",
+        "type_id": 2
+      },
+      {
+        "name": "Carmelys",
+        "surname": "Rodriguez",
+        "email": "carmelys.rodriguez@gmail.com",
+        "password": "1",
+        "type_id": 2
+      },
+      {
+        "name": "Ana",
+        "surname": "Fuentes",
+        "email": "Ana.fuentes@gmail.com",
+        "password": "1",
+        "type_id": 2
+      },
+      {
+        "name": "Patricia",
+        "surname": "Ortega",
+        "email": "patricia.ortega@gmail.com",
+        "password": "1",
+        "type_id": 2
+      },
+      {
+        "name": "Raúl",
+        "surname": "Delgado",
+        "email": "raul.delgado@gmail.com",
+        "password": "1",
+        "type_id": 2
+      },
+      {
+        "name": "Lisbeth",
+        "surname": "Fernandez",
+        "email": "Lisbeth.fernandez@gmail.com",
+        "password": "1",
+        "type_id": 2
+      }
+    ],
+    "semestre":[
+        {
+            "nombre": "I-2024",
+            "fecha_inicio":"2024-03-01", 
+            "fecha_fin":"2024-04-01" 
+        }
+    ],
+    "aula":[
+        {
+            "nombre": "Sección 101", 
+            "ubicacion": "Edificio de matematicas"
+        },
+        {
+            "nombre": "Sección 102", 
+            "ubicacion": "Edificio de ciencias"
+        },
+        {
+            "nombre": "Sección 103", 
+            "ubicacion": "Edificio de matematicas"
+        },
+        {
+            "nombre": "Sección 104", 
+            "ubicacion": "Edificio de biologia"
+        },
+        {
+            "nombre": "Sección 105", 
+            "ubicacion": "Edificio de matematicas"
+        },
+        {
+            "nombre": "Sección 106", 
+            "ubicacion": "Edificio de matematicas"
+        },
+        {
+            "nombre": "Sección 107", 
+            "ubicacion": "Edificio de matematicas"
+        },
+        {
+            "nombre": "Sección 108", 
+            "ubicacion": "Edificio de matematicas"
+        }
+    ],
+    "asignar_profesor_al_aula":[
+        {
+          "aula": 1,
+          "profesor": 22
+        },
+        {
+          "aula": 4,
+          "profesor": 20
+        },
+        {
+          "aula": 2,
+          "profesor": 21
+        },
+        {
+          "aula": 6,
+          "profesor": 20
+        },
+        {
+          "aula": 8,
+          "profesor": 19
+        },
+        {
+          "aula": 7,
+          "profesor": 22
+        }
+    ],
+	"unidades":[
+		{
+			"modulo": "Unidad I",
+			"nombre": "Aspectos Generales del Proyecto",
+			"nota_unidad": "2",
+			"descripcion": "Introduce los conceptos básicos y el marco general para comprender la naturaleza y relevancia de los proyectos en diversas áreas. Proporciona una visión general sobre la selección y definición de proyectos."
+		},
+		{
+			"modulo": "Unidad II",
+			"nombre": "El Estudio del Mercado",
+			"nota_unidad": "2",
+            "descripcion": "Explora los principios y herramientas esenciales para analizar el mercado en el contexto de un proyecto, identificando oportunidades y riesgos."
+		},
+		{
+			"modulo": "Unidad III",
+			"nombre": "La Ingeniería del Proyecto",
+			"nota_unidad": "1.5",
+            "descripcion": "Se centra en el análisis técnico de las alternativas disponibles, los procesos de producción y los recursos necesarios para llevar a cabo el proyecto."
+		},
+		{
+			"modulo": "Unidad IV",
+			"nombre": "Tamaño y localización del Proyecto",
+			"nota_unidad": "1.5",
+            "descripcion": "Examina los factores que determinan el tamaño óptimo del proyecto y su ubicación geográfica ideal para maximizar el éxito."
+		},
+		{
+			"modulo": "Unidad V",
+			"nombre": "El Análisis Financiero",
+			"nota_unidad": "1",
+            "descripcion": "Proporciona un marco para evaluar la viabilidad económica del proyecto a través de herramientas financieras y presupuestarias."
+		},
+		{
+			"modulo": "Unidad VI",
+			"nombre": "Evaluación de Proyectos",
+			"nota_unidad": "2",
+            "descripcion": "Proporciona herramientas para evaluar proyectos desde perspectivas técnicas, financieras y sociales, asegurando su alineación con objetivos estratégicos."
+		}
+	],
+	"contenidos":[
+		{
+			"id_unidad": "1",
+			"nombre": "Proyecto. Definición e importancia",
+            "descripcion": "Se analiza qué es un proyecto y por qué es fundamental para el desarrollo organizacional y social."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Tipos de proyectos",
+            "descripcion": "Exploración de las diversas categorías de proyectos, como sociales, productivos, tecnológicos, entre otros."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Proyecto y planificación",
+            "descripcion": "Se estudia la relación entre los proyectos y la planificación estratégica para garantizar su éxito."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Etapas de un proyecto",
+            "descripcion": "Descripción de las fases principales que conforman el ciclo de vida de un proyecto."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Selección de proyectos a estudiar",
+            "descripcion": "Criterios para identificar y elegir proyectos relevantes para un análisis detallado."
+			
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Propósito u objetivo del proyecto",
+            "descripcion": "Definición de los fines específicos que se busca alcanzar con un proyecto."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Características del proyecto",
+            "descripcion": "Identificación de los elementos distintivos que definen un proyecto específico."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Identificación del proyecto",
+            "descripcion": "Técnicas para determinar y describir un proyecto en su contexto específico."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Infraestructura física y económica",
+            "descripcion": "Evaluación de los recursos físicos y financieros necesarios para llevar a cabo un proyecto."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Obtención de insumos",
+            "descripcion": "Proceso para asegurar la disponibilidad de los recursos necesarios para el proyecto."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Realización del proceso",
+            "descripcion": "Análisis de las actividades principales para ejecutar el proyecto de manera efectiva."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Efectos del proyecto sobre la economía regional y nacional",
+            "descripcion": "Estudio del impacto económico de un proyecto en diferentes niveles."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Efectos del proyecto sobre la balanza de pagos",
+            "descripcion": "Análisis de cómo el proyecto influye en las relaciones comerciales internacionales."
+		},
+		{
+			"id_unidad": "1",
+			"nombre": "Efectos del proyecto sobre el medio ambiente",
+            "descripcion": "Evaluación del impacto ambiental derivado de la implementación del proyecto."
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Objetivos del estudio de mercado.",
+            "descripcion": "Identificación de las metas principales del análisis de mercado dentro del proyecto."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Las etapas del estudio de mercado",
+            "descripcion": "Descripción de los pasos clave en la realización de un estudio de mercado."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Importancia del estudio de mercado",
+            "descripcion": "Explicación de por qué el análisis de mercado es crucial para la viabilidad del proyecto."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Demanda",
+            "descripcion": "Análisis de los requerimientos y necesidades del mercado objetivo."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Comportamiento de la demanda actual",
+            "descripcion": "Estudio de las tendencias actuales en el mercado."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Estimación de la demanda",
+            "descripcion": "Métodos para proyectar el potencial de ventas o uso del producto o servicio."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Oferta",
+			"descripcion": "Análisis de los competidores y las alternativas existentes en el mercado."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "El producto en el mercado",
+            "descripcion": "Evaluación de la posición y competitividad del producto o servicio en el mercado."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Comportamiento de la oferta",
+            "descripcion": "Estudio de cómo los oferentes reaccionan ante las condiciones del mercado."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Posibilidades del proyecto",
+            "descripcion": "Identificación de oportunidades de éxito basadas en los datos de mercado."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Situación del producto dentro de los acuerdos económicos",
+            "descripcion": "Análisis de cómo los tratados y acuerdos comerciales afectan al producto."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Comercialización",
+            "descripcion": "Estrategias para llevar el producto o servicio al mercado objetivo."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Mecanismos de comercialización previstos",
+            "descripcion": "Identificación de los canales y métodos de distribución más adecuados."
+			
+		},
+		{
+			"id_unidad": "2",
+			"nombre": "Conclusiones del Estudio del Mercado",
+            "descripcion": "Resumen de hallazgos clave y recomendaciones derivadas del análisis de mercado."
+			
+		},
+		{
+			"id_unidad": "3",
+			"nombre": "Análisis de las alternativas técnicas factibles",
+            "descripcion": "Evaluación de las diferentes opciones tecnológicas disponibles para el proyecto."
+		},
+		{
+			"id_unidad": "3",
+			"nombre": "Descripción del proceso de transformación",
+            "descripcion": "Detallado de los pasos requeridos para convertir insumos en productos finales."
+		},
+		{
+			"id_unidad": "3",
+			"nombre": "Posibilidades de expansión de la capacidad instalada",
+            "descripcion": "Estudio de la factibilidad de ampliar las operaciones futuras."
+		},
+		{
+			"id_unidad": "3",
+			"nombre": "Inventario de obras físicas",
+                    "descripcion": "Identificación de las instalaciones y equipamiento necesario."
+		},
+		{
+			"id_unidad": "3",
+			"nombre": "Características de las obras",
+            "descripcion": "Especificaciones técnicas de la infraestructura requerida para el proyecto."
+		},
+		{
+			"id_unidad": "3",
+			"nombre": "Costos",
+            "descripcion": "Estimación de los gastos relacionados con las diferentes etapas y elementos del proyecto."
+		},
+		{
+			"id_unidad": "4",
+			"nombre": "Determinación y formas de medir el tamaño del proyecto",
+            "descripcion": "Técnicas para calcular la escala adecuada de un proyecto."
+		},
+		{
+			"id_unidad": "4",
+			"nombre": "Factores condicionantes del tamaño",
+            "descripcion": "Identificación de elementos que afectan la magnitud del proyecto."
+		},
+		{
+			"id_unidad": "4",
+			"nombre": "Márgenes utilizados de capacidad",
+            "descripcion": "Cómo se determina y optimiza el uso de recursos disponibles."
+		},
+		{
+			"id_unidad": "4",
+			"nombre": "Justificación del tamaño adoptado",
+            "descripcion": "Argumentación de la elección del tamaño en función de los objetivos y recursos."
+		},
+		{
+			"id_unidad": "5",
+			"nombre": "Inversión",
+            "descripcion": "Estudio de los recursos financieros requeridos para iniciar el proyecto."
+		},
+		{
+			"id_unidad": "5",
+			"nombre": "Calendario de inversiones",
+            "descripcion": "Planificación del desembolso de recursos a lo largo del tiempo."
+		},
+		{
+			"id_unidad": "5",
+			"nombre": "Financiamiento, importancia y organización para la promoción del proyecto",
+            "descripcion": "Análisis de las fuentes y estructuras de financiamiento disponibles."
+		},
+		{
+			"id_unidad": "5",
+			"nombre": "Estructura y fuentes de la inversión inicial",
+            "descripcion": "Desglose de los aportes financieros necesarios para iniciar el proyecto."
+		},
+		{
+			"id_unidad": "5",
+			"nombre": "Proyección de los estados financieros",
+            "descripcion": "Estimación de los resultados financieros esperados a futuro."
+		},
+		{
+			"id_unidad": "5",
+			"nombre": "Análisis del presupuesto",
+            "descripcion": "Estudio de la asignación de recursos y su efectividad financiera."
+		},
+		{
+			"id_unidad": "6",
+			"nombre": "Criterios de evaluación derivados de los objetivos del proyecto",
+            "descripcion": "Identificación de los indicadores clave para medir el éxito del proyecto."
+		},
+		{
+			"id_unidad": "6",
+			"nombre": "Criterios de evaluación que reflejan los objetivos prioritarios del Ejecutivo Nacional, referentes al desarrollo económico y social del país",
+            "descripcion": "Análisis de alineación del proyecto con las políticas nacionales."
+		},
+		{
+			"id_unidad": "6",
+			"nombre": "Elementos técnicos",
+            "descripcion": "Aspectos técnicos que aseguran la factibilidad del proyecto."
+		},
+		{
+			"id_unidad": "6",
+			"nombre": "Elementos financieros",
+            "descripcion": "Estudio de los aspectos económicos y rentabilidad del proyecto."
+		},
+		{
+			"id_unidad": "6",
+			"nombre": "Elementos sociales",
+            "descripcion": "Evaluación de los impactos del proyecto en la sociedad y comunidades involucradas."
+		},
+		{
+			"id_unidad": "6",
+			"nombre": "Indicadores financieros",
+            "descripcion": "Cálculo de tasas de retorno, valor presente neto y otros indicadores clave."
+		},
+		{
+			"id_unidad": "6",
+			"nombre": "Indicadores económicos",
+            "descripcion": "Medición del impacto económico a nivel local y nacional."
+		}
+	],
+	"evaluaciones": [
+		{
+			"id_unidad": "1",
+			"type_id": "1",
+			"nota_evaluacion": "0.2",
+			"palabras": "html,css,javascript,servidor,cliente"
+		},
+		{
+			"id_unidad": "1",
+			"type_id": "1",
+			"nota_evaluacion": "0.4",
+			"palabras": "web,navegador,dom,api,etiqueta"
+		},
+		{
+			"id_unidad": "1",
+			"type_id": "2",
+			"nota_evaluacion": "0.3",
+			"cuestionario": [
+				{
+				"pregunta": "¿Qué significa HTML?",
+				"opciones": ["Hoja de estilo", "Lenguaje de marcado", "Lenguaje de programación", "Base de datos"],
+				"respuesta": "Lenguaje de marcado"
+				},
+				{
+				"pregunta": "¿Cuál es el lenguaje para dar estilo a una web?",
+				"opciones": ["HTML", "CSS", "JavaScript", "SQL"],
+				"respuesta": "CSS"
+				},
+				{
+				"pregunta": "¿Qué hace JavaScript en una página web?",
+				"opciones": ["Dar color", "Crear estructura", "Agregar interactividad", "Guardar datos"],
+				"respuesta": "Agregar interactividad"
+				}
+			]
+		},
+		{
+			"id_unidad": "1",
+			"type_id": "2",
+			"nota_evaluacion": "0.5",
+			"cuestionario": [
+				{
+				"pregunta": "¿Qué es el DOM?",
+				"opciones": ["Un servidor", "Una API", "El modelo de objetos del documento", "Un lenguaje"],
+				"respuesta": "El modelo de objetos del documento"
+				},
+				{
+				"pregunta": "¿Qué empresa desarrolla Chrome?",
+				"opciones": ["Microsoft", "Mozilla", "Apple", "Google"],
+				"respuesta": "Google"
+				},
+				{
+				"pregunta": "¿Qué significa CSS?",
+				"opciones": ["Cascading Style Sheets", "Central Style Source", "Creative Style System", "Control Style Server"],
+				"respuesta": "Cascading Style Sheets"
+				}
+			]
+		},
+		{
+			"id_unidad": "1",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "Explica la diferencia entre HTML, CSS y JavaScript en una página web.",
+			  "¿Por qué es importante entender el modelo cliente-servidor en el desarrollo web?",
+			  "¿Qué pasos seguirías para diseñar una base de datos para una tienda en línea?"
+			]
+		},
+		{
+			"id_unidad": "1",
+			"type_id": "3",
+			"nota_evaluacion": "0.2",
+			"preguntas": [
+			  "¿Qué papel cumple el navegador en la visualización de una página web?",
+			  "Menciona y describe brevemente tres etiquetas básicas de HTML."
+			]
+		},
+		{
+			"id_unidad": "1",
+			"type_id": "3",
+			"nota_evaluacion": "0.3",
+			"preguntas": [
+			  "¿Cómo se comunican el cliente y el servidor en una aplicación web?",
+			  "Explica el rol de JavaScript en la manipulación del DOM."
+			]
+		},
+		{
+			"id_unidad": "2",
+			"type_id": "1",
+			"nota_evaluacion": "0.3",
+			"palabras": "base,datos,sql,tabla,registro"
+		},
+		{
+			"id_unidad": "2",
+			"type_id": "1",
+			"nota_evaluacion": "0.1",
+			"palabras": "consulta,campo,clave,relacion,atributo"
+		},
+		{
+			"id_unidad": "2",
+			"type_id": "2",
+			"nota_evaluacion": "0.4",
+			"cuestionario": [
+				{
+				"pregunta": "¿Qué es una base de datos?",
+				"opciones": ["Un servidor", "Un archivo", "Una colección organizada de datos", "Un programa"],
+				"respuesta": "Una colección organizada de datos"
+				},
+				{
+				"pregunta": "¿Qué lenguaje se usa para manejar bases de datos?",
+				"opciones": ["HTML", "SQL", "CSS", "Python"],
+				"respuesta": "SQL"
+				},
+				{
+				"pregunta": "¿Qué es una tabla?",
+				"opciones": ["Un gráfico", "Un conjunto de campos y registros", "Una clave", "Una columna"],
+				"respuesta": "Un conjunto de campos y registros"
+				},
+				{
+				"pregunta": "¿Qué es una clave primaria?",
+				"opciones": ["Un valor duplicado", "Un identificador único", "Una contraseña", "Un campo oculto"],
+				"respuesta": "Un identificador único"
+				}
+			]
+		},
+		{
+			"id_unidad": "2",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "Describe cómo se relacionan las tablas dentro de una base de datos relacional.",
+			  "¿Qué ventajas ofrece el uso de claves primarias y foráneas?"
+			]
+		},
+		{
+			"id_unidad": "2",
+			"type_id": "3",
+			"nota_evaluacion": "0.4",
+			"preguntas": [
+			  "¿Qué pasos seguirías para diseñar una base de datos para una tienda en línea?"
+			]
+		},
+		{
+			"id_unidad": "2",
+			"type_id": "3",
+			"nota_evaluacion": "0.5",
+			"preguntas": [
+			  "¿Qué tipos de relaciones pueden existir entre tablas en una base de datos y para qué sirven?",
+			  "Describe cómo se haría una consulta básica en SQL para obtener datos específicos."
+			]
+		},
+		{
+			"id_unidad": "3",
+			"type_id": "1",
+			"nota_evaluacion": "0.1",
+			"palabras": "algoritmo,variable,funcion,bucle,condicion"
+		},
+		{
+			"id_unidad": "3",
+			"type_id": "2",
+			"nota_evaluacion": "0.1",
+			"cuestionario": [
+				{
+				"pregunta": "¿Qué es un algoritmo?",
+				"opciones": ["Un software", "Una lista de instrucciones", "Un lenguaje", "Un bucle"],
+				"respuesta": "Una lista de instrucciones"
+				},
+				{
+				"pregunta": "¿Qué es una variable?",
+				"opciones": ["Un valor constante", "Un tipo de función", "Un espacio para guardar datos", "Una estructura de control"],
+				"respuesta": "Un espacio para guardar datos"
+				},
+				{
+				"pregunta": "¿Qué estructura permite repetir instrucciones?",
+				"opciones": ["Condicional", "Bucle", "Función", "Clase"],
+				"respuesta": "Bucle"
+				}
+			]
+		},
+		{
+			"id_unidad": "3",
+			"type_id": "2",
+			"nota_evaluacion": "0.1",
+			"cuestionario": [
+				{
+				"pregunta": "¿Qué palabra clave se usa para definir una función en JavaScript?",
+				"opciones": ["var", "let", "function", "return"],
+				"respuesta": "function"
+				},
+				{
+				"pregunta": "¿Qué operador lógico representa 'y'?",
+				"opciones": ["||", "!", "==", "&&"],
+				"respuesta": "&&"
+				},
+				{
+				"pregunta": "¿Qué se usa para evaluar condiciones?",
+				"opciones": ["Funciones", "Variables", "Condicionales", "Arrays"],
+				"respuesta": "Condicionales"
+				}
+			]
+		},
+		{
+			"id_unidad": "3",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "Explica el funcionamiento de un bucle y da un ejemplo.",
+			  "¿Por qué es importante definir funciones al programar?"
+			]
+		},
+		{
+			"id_unidad": "3",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "Describe un escenario en el que usarías una estructura condicional.",
+			  "¿Cuál es la importancia de las variables dentro de un algoritmo?"
+			]
+		},
+		{
+			"id_unidad": "3",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "¿Qué diferencias hay entre un bucle for y un bucle while?",
+			  "Menciona un ejemplo en el que sea útil usar una función dentro de un algoritmo."
+			]
+		},
+		{
+			"id_unidad": "4",
+			"type_id": "1",
+			"nota_evaluacion": "0.1",
+			"palabras": "react,componentes,estado,props,hooks"
+		},
+		{
+			"id_unidad": "4",
+			"type_id": "1",
+			"nota_evaluacion": "0.1",
+			"palabras": "jsx,render,evento,useEffect,useState"
+		},
+		{
+			"id_unidad": "4",
+			"type_id": "2",
+			"nota_evaluacion": "0.1",
+			"cuestionario": [
+				{
+				"pregunta": "¿Qué es React?",
+				"opciones": ["Un lenguaje", "Una librería de UI", "Un servidor", "Un CMS"],
+				"respuesta": "Una librería de UI"
+				},
+				{
+				"pregunta": "¿Qué es JSX?",
+				"opciones": ["Una API", "Un lenguaje de backend", "Una extensión de sintaxis para JavaScript", "Un framework"],
+				"respuesta": "Una extensión de sintaxis para JavaScript"
+				},
+				{
+				"pregunta": "¿Qué hook se usa para manejar estado?",
+				"opciones": ["useEffect", "useState", "useParams", "useHook"],
+				"respuesta": "useState"
+				}
+			]
+		},
+		{
+			"id_unidad": "4",
+			"type_id": "2",
+			"nota_evaluacion": "0.1",
+			"cuestionario": [
+				{
+				"pregunta": "¿Qué es un componente?",
+				"opciones": ["Una página", "Una función reutilizable de UI", "Un script", "Un archivo CSS"],
+				"respuesta": "Una función reutilizable de UI"
+				},
+				{
+				"pregunta": "¿Qué hook se usa para efectos secundarios?",
+				"opciones": ["useState", "useEffect", "useMemo", "useCallback"],
+				"respuesta": "useEffect"
+				},
+				{
+				"pregunta": "¿Qué propiedad se usa para pasar datos a componentes?",
+				"opciones": ["state", "props", "hooks", "render"],
+				"respuesta": "props"
+				}
+			]
+		},
+		{
+			"id_unidad": "5",
+			"type_id": "1",
+			"nota_evaluacion": "0.1",
+			"palabras": "python,lista,tupla,diccionario,condicional"
+		},
+		{
+			"id_unidad": "5",
+			"type_id": "1",
+			"nota_evaluacion": "0.1",
+			"palabras": "bucle,funcion,clase,modulo,paquete"
+		},
+		{
+			"id_unidad": "5",
+			"type_id": "2",
+			"nota_evaluacion": "0.1",
+			"cuestionario": [
+				{
+				"pregunta": "¿Qué es una lista en Python?",
+				"opciones": ["Una función", "Un tipo de dato que guarda varios valores", "Una clase", "Un paquete"],
+				"respuesta": "Un tipo de dato que guarda varios valores"
+				},
+				{
+				"pregunta": "¿Qué palabra se usa para definir funciones?",
+				"opciones": ["func", "define", "def", "function"],
+				"respuesta": "def"
+				},
+				{
+				"pregunta": "¿Qué símbolo se usa para comentarios en Python?",
+				"opciones": ["//", "#", "/*", "--"],
+				"respuesta": "#"
+				}
+			]
+		},
+		{
+			"id_unidad": "6",
+			"type_id": "1",
+			"nota_evaluacion": "0.1",
+			"palabras": "seguridad,hash,token,autenticacion,encriptacion"
+		},
+		{
+			"id_unidad": "6",
+			"type_id": "1",
+			"nota_evaluacion": "0.1",
+			"palabras": "jwt,firewall,contraseña,privacidad,acceso"
+		},
+		{
+			"id_unidad": "6",
+			"type_id": "2",
+			"nota_evaluacion": "0.1",
+			"cuestionario": [
+				{
+				"pregunta": "¿Qué es un token?",
+				"opciones": ["Un virus", "Una contraseña", "Un medio de autenticación", "Un firewall"],
+				"respuesta": "Un medio de autenticación"
+				},
+				{
+				"pregunta": "¿Qué hace el hashing?",
+				"opciones": ["Cifra datos", "Guarda datos", "Convierte datos a un valor fijo", "Elimina datos"],
+				"respuesta": "Convierte datos a un valor fijo"
+				},
+				{
+				"pregunta": "¿Qué es JWT?",
+				"opciones": ["Un protocolo", "Un tipo de token", "Un lenguaje", "Un sistema operativo"],
+				"respuesta": "Un tipo de token"
+				}
+			]
+		},
+		{
+			"id_unidad": "4",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "¿Qué beneficios ofrece el uso de componentes en React?",
+			  "Explica cómo funciona el hook useEffect y da un ejemplo de uso."
+			]
+		},
+		{
+			"id_unidad": "5",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "Describe las diferencias entre listas, tuplas y diccionarios en Python.",
+			  "¿Cuál es la utilidad de crear clases en un programa?"
+			]
+		},
+		{
+			"id_unidad": "6",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "Explica qué es la autenticación y cómo se implementa en una aplicación web.",
+			  "¿Por qué es importante la encriptación de datos en aplicaciones modernas?"
+			]
+		},
+		{
+			"id_unidad": "4",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "¿Por qué se recomienda el uso de props en lugar de variables globales en React?"
+			]
+		},
+		{
+			"id_unidad": "5",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "Escribe una función simple en Python que reciba dos números y devuelva el mayor.",
+			  "¿Qué diferencia hay entre un módulo y un paquete en Python?"
+			]
+		},
+		{
+			"id_unidad": "6",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "¿Cómo protegerías una API REST contra accesos no autorizados?",
+			  "Explica con tus palabras qué hace un firewall en una red."
+			]
+		},
+		{
+			"id_unidad": "4",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "Explica cómo funcionan los estados (state) en un componente de React.",
+			  "¿Qué ventajas ofrece React frente a manipular el DOM directamente?"
+			]
+		},
+		{
+			"id_unidad": "5",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+			  "¿Qué elementos hacen de Python un lenguaje fácil de aprender?",
+			  "¿Para qué usarías una clase en un programa y cómo se define?"
+			]
+		},
+		{
+			"id_unidad": "6",
+			"type_id": "3",
+			"nota_evaluacion": "0.1",
+			"preguntas": [
+				"¿Qué riesgos puede tener una aplicación si no se protege adecuadamente la autenticación?",
+				"Describe un caso real donde sería necesario el uso de tokens de acceso."
+			]
+		}
+	]
+  }
+  

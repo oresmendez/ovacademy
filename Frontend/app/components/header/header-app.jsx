@@ -1,12 +1,5 @@
-'use client';
+"use client"; import { styled, LogoName, BurguerButton, IconGroup } from '@/app/components/utils/rutas';
 
-import React from 'react';
-import styled from 'styled-components';
-import '@/app/globals.css';
-
-import LogoName from '@/app/components/logo-name';
-import BurguerButton from '@/app/components/header/BurguerButton';
-import IconGroup from '@/app/components/header/IconGroup';
 
 export default function Header({ handleClick, status }) {
     

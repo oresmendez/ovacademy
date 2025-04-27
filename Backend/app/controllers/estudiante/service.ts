@@ -1,9 +1,9 @@
-import Estudiante from '../../models/estudiante.js';
+import Estudiante from '../../models/universidad/estudiante.js';
 
 
 export default class EstudianteService {
 
-    async store(user_id: number): Promise<Estudiante | null> {
+    async create_estudiante(user_id: number): Promise<Estudiante | null> {
         try {
             const user = await Estudiante.create({
                 user_id,

@@ -359,3 +359,33 @@ text-decoration: none; /* Sin subrayado al hacer hover */
     transform: rotate(360deg);
   }
 }
+
+.form-wrapper {
+  margin: 50px 0;
+  background: #fff;
+  font-family: var(--font-lexend);
+}
+
+@media (max-width: 500px) {
+  .form-wrapper {
+    padding: 20px;
+  }
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #555;
+  font-weight: 600;
+}
+
+.botones-exportar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem; /* espacio entre botones */
+  align-items: center;
+}

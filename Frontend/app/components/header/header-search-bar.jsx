@@ -1,10 +1,10 @@
-'use client'; import { styled, textBarHeader } from '@/app/utils/hooks';
+'use client'; import { styled, textBarHeader, PropTypes } from '@/app/components/utils/rutas';
 
-export default function HeaderSearchBar() {
+export default function HeaderSearchBar({ bgcolor }) {
     const { headerText } = textBarHeader(); // Obtener el texto del contexto
 
     return (
-        <Componente>
+        <Componente bgcolor={bgcolor}>
             <div className="container-search-bar center-left">
                 <div className="search-bar-text-details">
                     {headerText} 
@@ -57,7 +57,8 @@ const Componente = styled.div`
     /* 🖥️ Monitores grandes y pantallas Full HD (1441px - 2559px) */
     @media (min-width: 1441px) and (max-width: 2559px) {
         .container-search-bar {
-            background-color: darkcyan;
+            background-color: ${props => props.bgcolor || '#0465ac'};
+            /* background-color: #0c2c46; */
             height: 2.35rem;
         }
         .search-bar-text-details {
@@ -67,7 +68,7 @@ const Componente = styled.div`
         /* 🖥️ Escritorios estándar (1025px - 1440px) */
     @media (min-width: 1025px) and (max-width: 1440px) {
         .container-search-bar {
-            background-color: green;
+            background-color: darkcyan;
             height: 2.35rem;
         }
         .search-bar-text-details {
@@ -119,3 +120,7 @@ const Componente = styled.div`
 
 
 `;
+
+HeaderSearchBar.propTypes = {
+    bgcolor: PropTypes.string.isRequired,
+};

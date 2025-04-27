@@ -1,4 +1,4 @@
-'use client';   import { useState, useRouter, Link, styled, apiRest, LogoNameWhite } from '@/app/utils/hooks';
+'use client';   import { useState, useRouter, Link, styled, apiRest, LogoNameWhite } from '@/app/components/utils/rutas';
 
 export default function () {
     const router = useRouter();
