@@ -1,7 +1,11 @@
-'use client'; import { styled, apiRest, toast, useState, useEffect, export_file, useRouter, DataTableIndex, ButtonAccion, InputSearch } from '@/app/components/utils/rutas';
-
+'use client'; import { styled, apiRest, toast, useState, useEffect, export_file, useRouter, DataTableIndex, ButtonAccion, InputSearch, Spinner, MessageError } from '@/app/components/utils/rutas';
+import { TbEyeEdit } from "react-icons/tb";
 
 export default function ListarProfesores() {
+
+    const [showSpinner, setShowSpinner] = useState(false);
+	const [isLoadingRespuestas, setIsLoadingRespuestas] = useState(true);
+
     const [data, setData] = useState([]);
     const [filterText, setFilterText] = useState('');
     const [editRowId, setEditRowId] = useState(null);
@@ -13,20 +17,19 @@ export default function ListarProfesores() {
     }, []);
 
     const obtenerProfesores = async () => {
-        try {
-
-            const url = `http://localhost:3333/ovacademy/user?type_id=2` 
+        
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/user?type_id=2`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setData(response.data.data);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
                 setData([]);
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
             setData([]);
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
     };
 
     const filteredData = data.filter(
@@ -45,28 +48,46 @@ export default function ListarProfesores() {
     };
 
     const handleVer = async (email) => {
+        setShowSpinner(true)
         router.push(`/ovacademy/administrador/profesores/${email}`);
     };
 
     const handleDeleteClick = async (email) => {
-        try {
-            const response = await apiRest.fetchDelete('http://localhost:3333/ovacademy/user', { email });
-            console.log(response);
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/user`;
+            const response = await apiRest.fetchDelete(url, { email });
+    
             if (response.status === 200) {
-                toast.success('Usuario Actualizado');
+                let nuevoEstado;
                 setData((prevData) =>
-                    prevData.map((item) =>
-                        item.email === email ? { ...item, status_logico: !item.status_logico } : item
-                    )
+                    prevData.map((item) => {
+                        if (item.email === email) {
+                            nuevoEstado = !item.status_logico;
+                            return { ...item, status_logico: nuevoEstado };
+                        }
+                        return item;
+                    })
                 );
+    
+                toast.info(
+                    <span>
+                      Profesor <strong>{email}</strong>{' '}
+                      <span style={{ color: nuevoEstado ? 'blue' : 'red' }}>
+                        {nuevoEstado ? 'habilitado' : 'inhabilitado'}
+                      </span>
+                    </span>
+                  );
+                  
             } else {
                 toast.error('Ocurrió un error');
             }
         } catch (err) {
             console.log(err);
             toast.error('Error al conectar con el servidor.');
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);}
     };
+    
+    
 
     const exportToPDF = () => {
         const name = 'profesores.pdf';
@@ -123,30 +144,45 @@ export default function ListarProfesores() {
         },
         {
             name: '',
-            grow: 1.5,
+            grow: 0.5,
             cell: (row) => (
                 <>
-                    <button onClick={() => handleVer(row.email)} style={{ color: '#0465ac' }}>Ver</button>
+                    <button onClick={() => handleVer(row.email)} style={{ color: '#0465ac' }}><TbEyeEdit  size={28}/></button>
                 </>
             ),
         }        
     ];
 
-    return (
-        <Componente>
-        <div style={{ padding: '1rem', fontFamily: 'Lexend Deca, sans-serif' }}>
-            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div className="botones-exportar">
-                    <ButtonAccion onClick={exportToPDF}>Exportar a PDF</ButtonAccion> 
-                    <ButtonAccion onClick={exportToExcel}>Exportar a Excel</ButtonAccion> 
-                    <ButtonAccion onClick={obtenerProfesores} loading={true} ></ButtonAccion> 
-                </div>
-                <InputSearch filterText={filterText} setFilterText={setFilterText} />
-            </div>
-            <DataTableIndex columns={columns} data={filteredData} />
-        </div>
-        </Componente>
-    );
+    let contenido;
+
+    if (showSpinner || isLoadingRespuestas) {
+        contenido = <Spinner show={showSpinner} />;
+    } else {
+        contenido = (
+            <Componente>
+                {
+                    data.length === 0 ? (
+                        <MessageError message={"No se encuentran profesores matriculados para esta materia"}/>
+                    ) : (
+                        <div style={{ padding: '1rem', fontFamily: 'Lexend Deca, sans-serif' }}>
+                            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div className="botones-exportar">
+                                    <ButtonAccion onClick={exportToPDF}>Exportar a PDF</ButtonAccion> 
+                                    <ButtonAccion onClick={exportToExcel}>Exportar a Excel</ButtonAccion> 
+                                    <ButtonAccion onClick={obtenerProfesores} loading={true} ></ButtonAccion> 
+                                </div>
+                                <InputSearch filterText={filterText} setFilterText={setFilterText} />
+                            </div>
+                            <DataTableIndex columns={columns} data={filteredData} />
+                        </div>
+                    )
+                }
+                
+            </Componente>
+        );
+    }
+
+	return contenido;
 }
 
 const Componente = styled.div`

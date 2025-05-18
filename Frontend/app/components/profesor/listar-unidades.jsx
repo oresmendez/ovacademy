@@ -20,7 +20,7 @@ export default function ListarUnidades() {
 
     const obtenerUnidades = async () => {
         try {
-            const url = `http://localhost:3333/ovacademy/unidades/profesor`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/profesor`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 console.log(response.data.data)
@@ -37,7 +37,7 @@ export default function ListarUnidades() {
 
     const obtenerUnidadByID = async (id) => {
         try {
-            const url = `http://localhost:3333/ovacademy/unidades/${id}`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/${id}`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setidUnidad(response.data.data.id);
@@ -73,8 +73,7 @@ export default function ListarUnidades() {
     
     const editar_unidad = async () => {
         try {
-
-            const url = `http://localhost:3333/ovacademy/unidades`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades`
             const response = await apiRest.fetchPut(url, {
                 id: idUnidad, 
                 modulo,
@@ -97,8 +96,7 @@ export default function ListarUnidades() {
     
     const handleDeleteClick = async (id, modulo) => {
         try {
-
-            const url = `http://localhost:3333/ovacademy/unidades/${id}`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/${id}`
             const response = await apiRest.fetchDelete(url);
             console.log(response);
             if (response.status === 200) {
@@ -276,13 +274,13 @@ export default function ListarUnidades() {
         );
     }
 
-return (
-    <Componente>
-        <div style={{ padding: '1rem', fontFamily: 'Lexend Deca, sans-serif' }}>
-            {contenido}
-        </div>
-    </Componente>
-);
+    return (
+        <Componente>
+            <div style={{ padding: '1rem', fontFamily: 'Lexend Deca, sans-serif' }}>
+                {contenido}
+            </div>
+        </Componente>
+    );
 
     
 }

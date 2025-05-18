@@ -25,7 +25,7 @@ export default function CrearUnidades({ TabClick }) {
   
 	const crear_unidad = async (values) => {
 		try {
-		const url = `http://localhost:3333/ovacademy/unidades`;
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades`
 		const response = await apiRest.fetchPost(url, values);
 
 		if (response.status === 200) {

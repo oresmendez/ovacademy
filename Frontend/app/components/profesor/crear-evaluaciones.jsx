@@ -21,7 +21,8 @@ export default function CrearEvaluaciones_({ TabClick }) {
 
 	const obtenerUnidades = async () => {
         try {
-            const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/unidades/profesor');
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/profesor`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 const unidadesFormateadas = response.data.data.map((unidades) => ({
 					value: unidades.id,
@@ -45,7 +46,8 @@ export default function CrearEvaluaciones_({ TabClick }) {
 
 	const obtenerTypeEvaluaciones = async () => {
         try {
-            const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/evaluaciones/TypeEvaluaciones');
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/TypeEvaluaciones`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 const TypeEvaluacionesFormateadas = response.data.data.map((typeEvaluaciones) => ({
 					value: typeEvaluaciones.id,

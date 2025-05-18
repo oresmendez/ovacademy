@@ -139,3 +139,11 @@ export const getTokenFromCookies = () => {
         return '';
     }
 };
+
+export const removeCookie = () => {
+
+    Cookies.remove('user-data', {
+        secure: true,
+        sameSite: 'Strict',
+    });
+};

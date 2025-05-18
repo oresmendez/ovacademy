@@ -28,7 +28,7 @@ export default function MiProfile() {
 const Componente = styled.div`
   
   .layout-body {
-    max-width: 110rem !important;
+    max-width: 115rem !important;
   }
   
 `;

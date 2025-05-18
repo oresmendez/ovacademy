@@ -1,7 +1,15 @@
 "use client"; 
-import { styled, apiRest, useState, useEffect, toast, PropTypes } from '@/app/components/utils/rutas';
+import { styled, apiRest, useState, useEffect, useRouter, toast, PropTypes, ButtonSave, Spinner, ModalField } from '@/app/components/utils/rutas';
 
 export default function EditarMateria_() {
+
+	const router = useRouter();
+
+	const [showSpinner, setShowSpinner] = useState(false);
+	const [isLoadingRespuestas, setIsLoadingRespuestas] = useState(true);
+
+	const [visible, setVisible] = useState(false);
+
 	const [nombre, setNombre] = useState("");
 	const [objetivo, setObjetivo] = useState("");
 	const [descripcion, setDescripcion] = useState("");
@@ -10,21 +18,26 @@ export default function EditarMateria_() {
 		obtener_materia();
 	}, []);
 
+
 	const obtener_materia = async () => {
-		try {
-			const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/materia');
+		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/materia`
+			const response = await apiRest.fetchGet(url);
 			setNombre(response.data.nombre);
 			setObjetivo(response.data.objetivo);
 			setDescripcion(response.data.descripcion);
+			await new Promise(resolve => setTimeout(resolve, 800));
 		} catch (error) {
 			console.error(error);
-		}
+		}finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
 	};
 
 	const editar_Materia = async () => {
-		try {
+		setVisible(false)
+		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/materia`
 			const response = await apiRest.fetchPut(
-				"http://localhost:3333/ovacademy/materia",
+				url,
 				{ nombre, objetivo, descripcion }
 			);
 
@@ -36,31 +49,47 @@ export default function EditarMateria_() {
 			}
 		} catch (error) {
 			console.error(error);
-		}
+		}finally { clearTimeout(timeout); setShowSpinner(false);}
 	};
 
-	return (
-		<Component>
-			<div className="form-wrapper">
-				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-						editar_Materia();
-					}}
-					className="space-y-4"
-				>
-					<InputField label="Nombre de la materia" value={nombre} onChange={setNombre} placeholder="Nombre de la materia" required />
-					<InputField label="Slogan / Objetivo" value={objetivo} onChange={setObjetivo} placeholder="Slogan / Objetivo" required />
-					<TextAreaField label="Descripción" value={descripcion} onChange={setDescripcion} placeholder="Descripción" required />
-					<div className="center">
-						<button type="submit" className="btn-primary mt-10">
-							Guardar
-						</button>
-					</div>
-				</form>
-			</div>
-		</Component>
-	);
+	let contenido;
+
+    if (showSpinner || isLoadingRespuestas) {
+        contenido = <Spinner show={showSpinner} />;
+    } else {
+        contenido = (
+            <Component>
+				<div className="form-wrapper">
+					<form>
+						<InputField label="Nombre de la materia" value={nombre} onChange={setNombre} placeholder="Nombre de la materia" required />
+						<InputField label="Slogan / Objetivo" value={objetivo} onChange={setObjetivo} placeholder="Slogan / Objetivo" required />
+						<TextAreaField label="Descripción" value={descripcion} onChange={setDescripcion} placeholder="Descripción" required />
+						
+						<div className='center'>
+							<ButtonSave className="mt-10 mr-10" animation={false} onClick={() => setVisible(true)}>Guardar</ButtonSave>
+							<ButtonSave bgColor="#d5dbdb" hoverColor="#bfc9ca" className="mt-10" onClick={() => router.push('/ovacademy/administrador/dashboard')}>Regresar</ButtonSave>
+						</div>
+					</form>
+				</div>
+				<ModalField 
+					visible={visible} 
+					cerrarModal={() => setVisible(false)} 
+					onclick={() => editar_Materia()}
+					width={"700"}
+					height={"100"}
+					title={"¿Estas seguro?"}
+					mensaje={
+						<>
+							¿Que deseas editar el detalle de la materia? <br /><br />
+						</>
+					}
+				/>
+			</Component>
+        );
+    }
+
+
+	return contenido;
 }
 
 const InputField = ({ label, type = "text", value, onChange, placeholder, required = false }) => (

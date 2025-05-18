@@ -1,6 +1,6 @@
 // ------------------REACT------------------- 
 
-// "use client";
+"use client";
 // import {
 //     useState, useEffect, useRef, useContext, createContext,
 //     useParams, useRouter, usePathname, useSearchParams,
@@ -39,9 +39,6 @@ export { Cookies };
 
 import EditorContent from '@/app/components/editor-content';
 export { EditorContent };
-
-import Crucigrama from '@/app/components/crucigrama';
-export { Crucigrama };
 
 import DataTableIndex from '@/app/components/DataTableIndex';
 export { DataTableIndex };
@@ -116,6 +113,9 @@ export { SelectField };
 import WrapperTitleRegister from '@/app/components/utils/boveda-components/wrapper-title-register';
 export { WrapperTitleRegister };
 
+import MessageError from '@/app/components/utils/boveda-components/message-error';
+export { MessageError };
+
 
 // ------------------HEADER------------------- 
 
@@ -143,6 +143,10 @@ export { Header };
 import Nav from '@home/components/header/nav/main';
 export { Nav };
 
+// ------------------FOOTER------------------- 
+
+import Footer from '@home/components/footer/footer';
+export { Footer };
 
 // ------------------NAVEGACION------------------- 
 

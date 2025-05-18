@@ -36,7 +36,7 @@ export default function MateriasUnidades() {
    
     const obtenerUnidad = async () => {
         let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-            const url = `http://localhost:3333/ovacademy/unidades/${idUnidad}`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/${idUnidad}`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setNameUnidad(`${response.data.data.modulo} - ${response.data.data.nombre}`);
@@ -50,7 +50,7 @@ export default function MateriasUnidades() {
 
     const obtenerAllUnidades = async () => {
         let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-            const url = `http://localhost:3333/ovacademy/unidades/estudiante`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/estudiante`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setAllUnidades(response.data.data);
@@ -63,7 +63,7 @@ export default function MateriasUnidades() {
 
     const obtenerContenidosByUnidad = async () => {
         let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-            const url = `http://localhost:3333/ovacademy/contenido/${idUnidad}`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/contenido/${idUnidad}`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setContenidos(response.data)

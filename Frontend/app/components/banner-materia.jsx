@@ -14,7 +14,8 @@ export default function Banner_Materia() {
 
     const obtener_materia = async () => {
 		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-			const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/materia');
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/materia`
+			const response = await apiRest.fetchGet(url);
 			setNombre(response.data.nombre);
 			setObjetivo(response.data.objetivo);
 		} catch (error) {

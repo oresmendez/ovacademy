@@ -23,17 +23,17 @@ export default function MateriasUnidades() {
 
         const fetchData = async () => {
             try {
-
-                const Materia_ = await apiRest.fetchGet('http://localhost:3333/ovacademy/materia');
+                
+                const Materia_ = await apiRest.fetchGet(`${process.env.NEXT_PUBLIC_API_URL}/materia`);
                 setMateria(Materia_.data[0]);
 
-                const Unidades_ = await apiRest.fetchGet(`http://localhost:3333/ovacademy/unidades/${unidad}`);
+                const Unidades_ = await apiRest.fetchGet(`${process.env.NEXT_PUBLIC_API_URL}/unidades/${unidad}`);
                 setUnidades(Unidades_.data);
                 
-                const all_Unidades_ = await apiRest.fetchGet(`http://localhost:3333/ovacademy/unidades`);
+                const all_Unidades_ = await apiRest.fetchGet(`${process.env.NEXT_PUBLIC_API_URL}/unidades`);
                 setAllUnidades(all_Unidades_.data);
 
-                const Contenido_ = await apiRest.fetchGet(`http://localhost:3333/ovacademy/contenido/${unidad}`);
+                const Contenido_ = await apiRest.fetchGet(`${process.env.NEXT_PUBLIC_API_URL}/contenido/${unidad}`);
                 setContenido(Contenido_.data);
 
             } catch (err) {

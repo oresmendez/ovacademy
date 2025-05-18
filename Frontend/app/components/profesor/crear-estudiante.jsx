@@ -19,7 +19,8 @@ export default function CrearEstudiante ({ TabClick }) {
 		try {
 			const { email, password, name, surname } = values;
 
-			const url = `http://localhost:3333/ovacademy/user`
+			
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/user`
 			const response = await apiRest.fetchPost( url,
 				{
 					email,

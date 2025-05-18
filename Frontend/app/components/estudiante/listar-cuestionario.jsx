@@ -19,7 +19,7 @@ export default function Cuestionario({ idEvaluacion, notaEvaluacion, id_estudian
 	const obtenerCuestionario = async () => {
 
 		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-			const url = `http://localhost:3333/ovacademy/evaluaciones/cuestionario/${idEvaluacion}`
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/cuestionario/${idEvaluacion}`
 			const response = await apiRest.fetchGet(url);
 			if (response.status === 200) {
 				
@@ -38,8 +38,7 @@ export default function Cuestionario({ idEvaluacion, notaEvaluacion, id_estudian
 	const obtener_respuestas_cuestionarios = async (preguntasAPI, ids) => {
 
 		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-			
-			const url = `http://localhost:3333/ovacademy/evaluaciones/RespuestaCuestionario/${ids}`;
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/RespuestaCuestionario/${ids}`
 			const response = await apiRest.fetchGet(url, { id_estudiante: id_estudiante });
 			if (response.status === 200 && response.data.data.length > 0) {
 				const respuestasGuardadas = {};

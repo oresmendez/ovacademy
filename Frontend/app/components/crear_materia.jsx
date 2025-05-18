@@ -55,7 +55,8 @@ export default function Crear_materia({ statusTab }) {
 
     const manejarEnvio = async (e) => {
         e.preventDefault();
-        const response = await apiRest.fetchPost('http://localhost:3333/ovacademy/subject/store', datos);
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/subject/store`
+        const response = await apiRest.fetchPost(url, datos);
 
         if (response.status === 201) {
                 

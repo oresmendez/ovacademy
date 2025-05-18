@@ -1,43 +1,44 @@
-'use client'; import { apiRest, toast, gestorCookie } from '@/app/components/utils/rutas';
+'use client';
+import { apiRest, toast, gestorCookie } from '@/app/components/utils/rutas';
 
-export const startSession = async (email, password, router) => {
-    
+export const startSession = async (email, password) => {
     try {
-
         if (!email || !password) {
             toast.error('Por favor, completa todos los campos.');
-            return;
+            return { error: true };
         }
 
-        const url = `http://localhost:3333/ovacademy/auth/login`
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`
         const response = await apiRest.fetchPost(url, {
             email,
             password,
         });
 
         if (response.status === 200) {
-
             await gestorCookie.create_cookie(response.data);
 
-            if(response.data.type === 1){
-                router.push('/ovacademy/estudiante/dashboard');
-            }else if (response.data.type === 2){
-                router.push('/ovacademy/profesor/dashboard');
-            }else if (response.data.type === 3){
-                router.push('/ovacademy/administrador/dashboard');
-            }else{
+            let path = '';
+            if (response.data.type === 1) {
+                path = '/ovacademy/estudiante/dashboard';
+            } else if (response.data.type === 2) {
+                path = '/ovacademy/profesor/dashboard';
+            } else if (response.data.type === 3) {
+                path = '/ovacademy/administrador/dashboard';
+            } else {
                 toast.error('Usuario no autorizado');
-                return
+                return { error: true };
             }
 
             toast.success('Bienvenido');
-
+            return { success: true, redirectTo: path };
         } else {
             toast.error(response.data.message || 'Error inesperado');
+            return { error: true };
         }
+
     } catch (err) {
-        toast.dismiss(loadingToastId);
         toast.error('Error al conectar con el servidor');
         console.error('Error:', err);
+        return { error: true };
     }
 };

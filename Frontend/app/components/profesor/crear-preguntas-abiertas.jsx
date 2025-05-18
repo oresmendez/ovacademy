@@ -8,7 +8,7 @@ export default function ComponenteTest({id_unidad, type_id, nota_evaluacion, Tab
 	const crear_preguntas_abiertas = async () => {
 
         try {
-			const url = `http://localhost:3333/ovacademy/evaluaciones`
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones`
 			const response = await apiRest.fetchPost(url,
 				{ id_unidad, type_id, nota_evaluacion, preguntas: preguntas }
 			);

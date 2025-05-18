@@ -1,4 +1,4 @@
-"use client"; import { styled, apiRest, useState, toast, PropTypes } from '@/app/components/utils/rutas';
+"use client"; import { styled, apiRest, useState, toast, PropTypes, ButtonSave, ModalField } from '@/app/components/utils/rutas';
 
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -8,102 +8,82 @@ import TextField from "@mui/material/TextField";
 
 export default function CrearSemestre_({ setActiveTab }) {
 
-  const [nombre, setNombre] = useState("");
-  const [fechaInicio, setFechaInicio] = useState(null);
-  const [fechaFin, setFechaFin] = useState(null);
+	const [visible, setVisible] = useState(false);
 
-  const ValidarFechas = async () => {
-    try {
+	const [nombre, setNombre] = useState("");
+	const [fechaInicio, setFechaInicio] = useState(null);
 
-		if (fechaInicio && fechaFin && fechaFin < fechaInicio) {
-			toast.error("La fecha de fin no puede ser menor a la fecha de inicio.");
-			setFechaInicio(null);
-            setFechaFin(null);
-			return false; // Detener la ejecución si la validación falla
+	const registrar = async () => {
+		setVisible(false)
+		try {
+
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/semestre`
+			const response = await apiRest.fetchPost(
+				url,
+				{
+				nombre,
+				fecha_inicio: fechaInicio ? fechaInicio.toISOString().split("T")[0] : "",
+				}
+			);
+
+			if (response.status === 200) {
+				toast.success(response.data.message);
+				setActiveTab(1);
+			} else if (response.status === 403) {
+				toast.error(response.data.message);
+			} else {
+				toast.error(response.data.message);
+			}
+
+		} catch (error) {
+			console.error("Error capturado en catch:", error);
+      toast.error("Error al crear el semestre");
 		}
+	};
 
-		return true;
-		
-    } catch (error) {
-		console.error("Ocurrio un error al validar las fechas")
-        return false;
-    }
+	return (
 
-  }
-
-  const registrar = async () => {
-
-    try {
-
-        if (!(await ValidarFechas())) return false;
-
-        const response = await apiRest.fetchPost(
-            "http://localhost:3333/ovacademy/semestre",
-            {
-            nombre,
-            fecha_inicio: fechaInicio ? fechaInicio.toISOString().split("T")[0] : "",
-            fecha_fin: fechaFin ? fechaFin.toISOString().split("T")[0] : "",
-            }
-        );
-
-        if (response.status === 200) {
-            toast.success(response.data.message);
-            setActiveTab(1);
-        } else if (response.status === 403) {
-            toast.error(response.data.message);
-            setActiveTab(2);
-        } else {
-            toast.error(response.data.message);
-        }
-
-    } catch (error) {
-        toast.error("Error al crear el semestre");
-    }
-    
-  };
-
-  return (
-
-    <Component>
-      <div className="form-wrapper">
-        <form
-          id="formSemestre"
-          onSubmit={(e) => {
-            e.preventDefault();
-            registrar();
-          }}
-          className="space-y-4"
-        >
-          <InputField label="Nombre del Semestre" value={nombre} onChange={setNombre} placeholder="Nombre" required />
-          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-              <div className=''>
-                <DatePicker
-                    label="Fecha de Inicio"
-                    value={fechaInicio}
-                    onChange={(newValue) => setFechaInicio(newValue)}
-                    slots={{ textField: (params) => <TextField {...params} fullWidth /> }}
-                />
-
-              </div>
-              <div className='mt-10'>
-                <DatePicker
-                    label="Fecha de Fin"
-                    value={fechaFin}
-                    onChange={(newValue) => setFechaFin(newValue)}
-                    slots={{ textField: (params) => <TextField {...params} fullWidth /> }}
-                />
-              </div>
-          </LocalizationProvider>
-
-          <div className="center">
-            <button type="submit" className="btn-primary mt-10">
-              Guardar
-            </button>
-          </div>
-        </form>
-      </div>
-    </Component>
-    );
+		<Component className=''>
+		<div className="form-wrapper">
+			<form
+			id="formSemestre"
+			onSubmit={(e) => {
+				e.preventDefault();
+			}}
+				className="space-y-4"
+				>
+				<InputField label="Nombre del Semestre" value={nombre} onChange={setNombre} placeholder="Nombre" required />
+				<LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+					<div className="form-group">
+					<label className="form-label">Fecha de Inicio</label>
+					<DatePicker
+						value={fechaInicio}
+						onChange={(newValue) => setFechaInicio(newValue)}
+						slots={{ textField: (params) => <TextField {...params} fullWidth /> }}
+					/>
+					</div>
+				</LocalizationProvider>
+				<div className='center'>
+					<ButtonSave className="mt-10 mr-10" animation={false} onClick={() => setVisible(true)}>Guardar</ButtonSave>
+					<ButtonSave bgColor="#d5dbdb" hoverColor="#bfc9ca" className="mt-10" onClick={() => router.push('/ovacademy/administrador/dashboard')}>Regresar</ButtonSave>
+				</div>
+			</form>
+		</div>
+		<ModalField 
+			visible={visible} 
+			cerrarModal={() => setVisible(false)} 
+			onclick={() => registrar()}
+			width={"700"}
+			height={"100"}
+			title={"¿Estas seguro?"}
+			mensaje={
+				<>
+					¿Que deseas registrar un nuevo semestre? <br /><br />
+				</>
+			}
+		/>
+		</Component>
+	);
 }
 
 const InputField = ({ label, type = "text", value, onChange, placeholder, required = false }) => (
@@ -139,9 +119,10 @@ CrearSemestre_.propTypes = {
 
 const Component = styled.div`
   .form-wrapper {
-    margin: 50px 0;
+    
     background: #fff;
     border-radius: 12px;
+    width:100%;
   }
 
   .form-title {

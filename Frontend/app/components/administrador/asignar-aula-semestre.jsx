@@ -1,10 +1,19 @@
 "use client";
 
-import { styled, apiRest, useState, useEffect, Select, toast, ModalField} from '@/app/components/utils/rutas';
+import { styled, apiRest, useState, useEffect, Select, toast, ModalField, ButtonAccion, ButtonSave, Spinner} from '@/app/components/utils/rutas';
 
 
 
 export default function Asignar_aula_profesor() {
+
+    const [showSpinner, setShowSpinner] = useState(false);
+	const [isLoadingRespuestas, setIsLoadingRespuestas] = useState(true);
+
+    const [seccionSeleccionada, setseccionSeleccionada] = useState(false);
+    
+    const [idAula, setidAula] = useState("");
+    const [nombreAula, setnombreAula] = useState("");
+    const [ubicacion, setubicacion] = useState("");
 
     const [semestreActivo, setSemestreActivo] = useState([]);
     const [aulas, setAulas] = useState([]);
@@ -14,6 +23,7 @@ export default function Asignar_aula_profesor() {
     const [aulaSeleccionada, setAulaSeleccionada] = useState(null);
 
     const [visible, setVisible] = useState(false);
+    const [visibleEliminar, setvisibleEliminar] = useState(false);
     const abrirModal = (idAula) => {
         setAulaSeleccionada(idAula);
         setVisible(true);
@@ -29,6 +39,7 @@ export default function Asignar_aula_profesor() {
         listarProfesores();
         obtenerAulasConProfesor();
         listarAulas();
+        setseccionSeleccionada(false);
     };
 
     useEffect(() => {
@@ -38,9 +49,8 @@ export default function Asignar_aula_profesor() {
 
     const registrar = async (id, idProfesor) => {
         
-        try {
-
-            const url = `http://localhost:3333/ovacademy/semestre/aula`
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/semestre/aula`
             const response = await apiRest.fetchPost(url, {
                 aula: id,
                 profesor: idProfesor
@@ -59,6 +69,23 @@ export default function Asignar_aula_profesor() {
 
         } catch (error) {
             toast.error("Error al crear profesor.");
+        }finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
+    };
+
+    const handleDeleteClick = async () => {
+        try {
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/id/${idAula}`
+            const response = await apiRest.fetchDelete(url);
+            if (response.status === 200) {
+                toast.success(`Sección Eliminada`);
+                recargar()
+                setVisible(false)
+            } else {
+                console.error('Error al editar el aula');
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error('Error al conectar con el servidor.');
         }
     };
 
@@ -74,9 +101,9 @@ export default function Asignar_aula_profesor() {
             return;
         }
 
-        try {
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
 
-            const url = `http://localhost:3333/ovacademy/semestre/aula`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/semestre/aula`
             const response = await apiRest.fetchDelete(url, {
                 aula: aula.id,
                 profesor: aula.profesor
@@ -93,14 +120,14 @@ export default function Asignar_aula_profesor() {
         } catch (error) {
             toast.error("Error al eliminar el profesor.", error);
             console.error("Error al eliminar el profesor.", error);
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
         
       };
     
     const obtenerSemestreActivo = async () => {
-        try {
-
-            const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/semestre/activo');
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/semestre/activo`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setSemestreActivo(response.data.data[0]);
             } else {
@@ -109,12 +136,13 @@ export default function Asignar_aula_profesor() {
         } catch (error) {
             console.error('Error al conectar con el servidor:', err);
             setSemestreActivo([]);
-        }   
+        }finally { clearTimeout(timeout); setShowSpinner(false);}
     };
 
     const listarAulas = async () => {
-        try {
-            const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/aula');
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/aula`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 const aulasObtenidas = response.data.data;
     
@@ -128,19 +156,20 @@ export default function Asignar_aula_profesor() {
                 });
     
                 setAulas(aulasConAsignaciones);
+                await new Promise(resolve => setTimeout(resolve, 700));
             } else {
                 setAulas([]);
             }
         } catch (error) {
             console.error('Error al conectar con el servidor:', error);
             setAulas([]);
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
     };
     
-
     const listarProfesores = async () => {
-        try {
-            const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/user?type_id=2');
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/user?type_id=2`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 const profesoresFormateados = response.data.data.map((prof) => ({
                     value: prof.id,
@@ -153,12 +182,13 @@ export default function Asignar_aula_profesor() {
         } catch (error) {
             console.error('Error al conectar con el servidor:', error);
             setProfesoresDisponibles([]);
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);}
     };
 
     const obtenerAulasConProfesor = async () => {
-        try {
-            const response = await apiRest.fetchGet("http://localhost:3333/ovacademy/aula/profesorWithAula");
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/profesorWithAula`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setAulasConProfesor(response.data.data);
             } else {
@@ -167,94 +197,243 @@ export default function Asignar_aula_profesor() {
         } catch (error) {
             console.error("Error al obtener asignaciones:", error);
             setAulasConProfesor([]);
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);}
     };
-    
 
-    return (
-        <Component>
-            <div className="container">
-                <h2 className="titulo mb-20">🏫 Secciones Disponible - Semestre {semestreActivo.nombre}</h2>
+    const editar_seccion = async () => {
+        
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/`
+            const response = await apiRest.fetchPut(url,
+                { id: idAula, nombre: nombreAula, ubicacion:ubicacion }
+            );
+            if (response.status === 200) {
+                recargar()
+                setVisible(false)
+            } else {
+                console.error('Error al editar el aula');
+            }
+        } catch (error) {
+            console.error("Error al editar el aula:", error);
+        }finally { clearTimeout(timeout); setShowSpinner(false);}
+    };
 
-                {(semestreActivo.length === 0 || aulas.length === 0 || profesoresDisponibles.length === 0) ? (
-                    <div className='DivNoDisponible'>
-                        <p>Para habilitar esta sección, debes tener registrado un semestre, un profesor y al menos una sección</p>
-                    </div>
-                ) : (
-                    <>
-                        <div className="grid mt-20">
-                            {aulas.map((aula) => (
-                                <div key={aula.id} className="card mt-8">
-                                    <h3>{aula.nombre}</h3>
-                                    <Select
-                                        options={aula.profesor ? [] : profesoresDisponibles}
-                                        placeholder="Asignar profesor"
-                                        value={profesoresDisponibles.find((p) => p.value === aula.profesor) || null}
-                                        onChange={(selectedOption) =>
-                                            registrar(aula.id, selectedOption ? selectedOption.value : null)
-                                        }
-                                        isClearable
-                                        isDisabled={!!aula.profesor} // <-- Desactiva si ya tiene profesor
-                                        menuPortalTarget={typeof window !== 'undefined' ? document.body : null}
-                                        styles={{
-                                            control: (base) => ({
-                                                ...base,
-                                                fontFamily: 'var(--font-lexend)',
-                                            }),
-                                            menu: (base) => ({
-                                                ...base,
-                                                fontFamily: 'var(--font-lexend)',
-                                            }),
-                                            option: (base) => ({
-                                                ...base,
-                                                fontFamily: 'var(--font-lexend)',
-                                            }),
-                                            menuPortal: (base) => ({
-                                                ...base,
-                                                zIndex: 9999,
-                                            }),
-                                        }}
-                                    />
-                                    {aula.profesor && (
+    const obtenerSeccionId = async (id) => {
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/${id}`
+            const response = await apiRest.fetchGet(url);
+            console.log(response)
+            if (response.status === 200) {
+                setidAula(response.data.data.id);
+                setnombreAula(response.data.data.nombre);
+                setubicacion(response.data.data.ubicacion);
+                await new Promise(resolve => setTimeout(resolve, 800));
+                setseccionSeleccionada(true);
+            } else {
+                console.error('La respuesta de la API no contiene datos válidos.');
+            }
+        } catch (err) {
+            console.error('Error al conectar con el servidor:', err);
+        }finally { clearTimeout(timeout); setShowSpinner(false);}
+    };
+
+    let contenido;
+
+    if (showSpinner || isLoadingRespuestas) {
+        contenido = <Spinner show={showSpinner} />;
+    } else if (seccionSeleccionada) {
+        contenido = (
+            <>
+                <div className="header-edicion center-left">
+                    <ButtonAccion onClick={() => setseccionSeleccionada(false)}>Atrás</ButtonAccion>
+                    <ButtonSave bgColor="#e74c3c" hoverColor="#c0392b" className="ml-10" onClick={() => setvisibleEliminar(true)} animation={false}> Eliminar Sección</ButtonSave>
+                </div>
+
+                <div className="form-wrapper">
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                        }}
+                        className="space-y-4"
+                    >
+                        <div className="form-row">
+                            <div className="form-item">
+                                <InputField
+                                    label="Nombre de la Sección"
+                                    value={nombreAula}
+                                    onChange={setnombreAula}
+                                    placeholder="nombre"
+                                    required
+                                />
+                            </div>
+                            <div className="form-item nombre">
+                                <InputField
+                                    label="Ubicación"
+                                    value={ubicacion}
+                                    onChange={setubicacion}
+                                    placeholder="Ubicación"
+                                    required
+                                />
+                            </div>
+
+                        </div>
+                        
+                        <div className='center'>
+							<ButtonSave type="submit" className="mt-10 mr-10" onClick={() => setVisible(true)}>Guardar</ButtonSave>
+							<ButtonSave bgColor="#d5dbdb" hoverColor="#bfc9ca" className="mt-10" onClick={() => setseccionSeleccionada(false)}>Regresar</ButtonSave>
+						</div>
+                    </form>
+                    <ModalField 
+                        visible={visible} 
+                        cerrarModal={() => setVisible(false)} 
+                        onclick={() => editar_seccion()}
+                        width={"700"}
+                        height={"100"}
+                        title={"¿Estas seguro?"}
+                        mensaje={
+                            <>
+                                ¿Que deseas editar el detalle de esta Sección? <br /><br />
+                            </>
+                        }
+                    />
+                    <ModalField 
+                        visible={visibleEliminar} 
+                        cerrarModal={() => setvisibleEliminar(false)} 
+                        onclick={() => handleDeleteClick()}
+                        width={"700"}
+                        height={"100"}
+                        title={"¿Estas seguro?"}
+                        mensaje={
+                            <>
+                                ¿Que deseas eliminar Sección? <br /><br />
+                            </>
+                        }
+                    />
+                </div>
+            </>
+        );
+    } else {
+        contenido = (
+            <>
+                <div className="container">
+                    <h2 className="titulo mb-20">🏫 Secciones Disponible - Semestre {semestreActivo.nombre}</h2>
+
+                    {(semestreActivo.length === 0 || aulas.length === 0 || profesoresDisponibles.length === 0) ? (
+                        <div className='DivNoDisponible'>
+                            <p>Para habilitar esta sección, debes tener registrado un semestre, un profesor y al menos una sección</p>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="grid mt-20">
+                                {aulas.map((aula) => (
+                                    <div key={aula.id} className="card mt-8">
+                                        <h3>{aula.nombre}</h3>
+                                        <Select
+                                            options={aula.profesor ? [] : profesoresDisponibles}
+                                            placeholder="Vincular profesor"
+                                            value={profesoresDisponibles.find((p) => p.value === aula.profesor) || null}
+                                            onChange={(selectedOption) =>
+                                                registrar(aula.id, selectedOption ? selectedOption.value : null)
+                                            }
+                                            isClearable
+                                            isDisabled={!!aula.profesor} // <-- Desactiva si ya tiene profesor
+                                            menuPortalTarget={typeof window !== 'undefined' ? document.body : null}
+                                            styles={{
+                                                control: (base) => ({
+                                                    ...base,
+                                                    fontFamily: 'var(--font-lexend)',
+                                                }),
+                                                menu: (base) => ({
+                                                    ...base,
+                                                    fontFamily: 'var(--font-lexend)',
+                                                }),
+                                                option: (base) => ({
+                                                    ...base,
+                                                    fontFamily: 'var(--font-lexend)',
+                                                }),
+                                                menuPortal: (base) => ({
+                                                    ...base,
+                                                    zIndex: 9999,
+                                                }),
+                                            }}
+                                        />
+                                        <button
+                                            className="btn-editar mr-10"
+                                            onClick={() => obtenerSeccionId(aula.id)}
+                                        >
+                                            Editar
+                                        </button>
                                         <button
                                             className="btn-limpiar"
-                                            onClick={() => abrirModal(aula.id)}
+                                            onClick={aula.profesor ? () => abrirModal(aula.id) : undefined}
+                                            disabled={!aula.profesor}
                                         >
-                                            Eliminar
+                                            Desvincular
                                         </button>
-                                    )}
 
-                                </div>
-                            ))}
-                        </div>
-                    </>
-                )}
-            </div>
-            <ModalField 
-                visible={visible} 
-                cerrarModal={cerrarModal} 
-                onclick={eliminar}
-                width={"700"}
-                height={"300"}
-                title={"¿Estas seguro?"}
-                mensaje={
-                    <>
-                        ¿Estás seguro que deseas remover este profesor de esta sección? <br /><br />
-                        Al confirmar, estarías eliminando{' '}
-                        <span style={{ color: 'red', fontWeight: 'bold' }}>permanentemente</span> su asignación actual y{' '}
-                        <strong>todo el avance</strong> de los estudiantes asociados.
-                    </>
-                }
-            />
-        </Component>
 
-    );
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
+                </div>
+                <ModalField 
+                    visible={visible} 
+                    cerrarModal={cerrarModal} 
+                    onclick={eliminar}
+                    width={"700"}
+                    height={"300"}
+                    title={"¿Estas seguro?"}
+                    mensaje={
+                        <>
+                            ¿Estás seguro que deseas remover este profesor de esta sección? <br /><br />
+                            Al confirmar, estarías eliminando{' '}
+                            <span style={{ color: 'red', fontWeight: 'bold' }}>permanentemente</span> su asignación actual y{' '}
+                            <strong>todo el avance</strong> de los estudiantes asociados.
+                        </>
+                    }
+                />
+            </>
+        );
+    }
+
+    return <Component>{contenido}</Component>;
+    
 }
 
 
-  
+const InputField = ({ label, type = "text", value, onChange, placeholder, required = false }) => (
+    <div className="form-group">
+        <label className="form-label">{label}</label>
+        <input
+            type={type}
+            className="form-input"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={placeholder}
+            required={required}
+        />
+    </div>
+);
 
 const Component = styled.div`
+
+    .btn-editar {
+        margin-top: 10px;
+        background: #0466ac;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .btn-editar:hover {
+        background: #0056b3;
+    }
 
     .btn-limpiar {
         margin-top: 10px;
@@ -271,6 +450,13 @@ const Component = styled.div`
     .btn-limpiar:hover {
         background: #c0392b;
     }
+
+    .btn-limpiar:disabled {
+        background: #faf5f5;
+        color: #666;
+        cursor: not-allowed;
+    }
+
 
 
   .container {
@@ -361,4 +547,116 @@ const Component = styled.div`
   .btn-guardar:hover {
     background: #0056b3;
   }
+
+  
+    .form-row {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .form-item {
+        flex: 1;
+    }
+
+    .form-item.nombre {
+        flex: 3;
+    }
+
+    .form-item.evaluativo {
+        flex: 1;
+    }
+
+    .label-row{
+        border-radius: 5px;
+        width: 100%;
+    }
+
+    .label-status-user{
+        color: white;
+        border-radius: 5px;
+        padding: 5px 10px;  
+    }
+
+    .btn-register-teacher{
+        background-color: blue;
+    }
+
+    .btn-export{
+        padding: 0.5rem 1rem;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-pdf{
+        background-color: #0465ac;
+    }
+
+    .btn-excel{
+        background-color: #0465ac;
+    }
+
+    .form-wrapper {
+        margin: 50px 0;
+        background: #fff;
+        border-radius: 12px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #555;
+        font-weight: 600;
+    }
+
+    .form-input,
+    .form-textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .form-textarea {
+        resize: none; /* Evita que se pueda redimensionar */
+        overflow-y: auto; /* Barra de desplazamiento si se pasa el contenido */
+        height: 150px; /* Tamaño fijo */
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+        border-color: #0465ac;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        outline: none;
+    }
+
+    .btn-primary {
+        width: 20%;
+        padding: 12px;
+        background: #0465ac;
+        color: white;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+
+    @media (max-width: 500px) {
+        .form-wrapper {
+        padding: 20px;
+        }
+    }
 `;

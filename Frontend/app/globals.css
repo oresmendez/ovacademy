@@ -315,15 +315,23 @@ text-decoration: none; /* Sin subrayado al hacer hover */
 }
 
 .layout-body {
+  flex: 1;
   max-width: 100rem;
-  height: 100vh !important;
   width: 100%;
+  min-height: 84vh;
   margin: 6rem auto 0 auto;
   box-sizing: border-box;
-  overflow-y: scroll;
-  scrollbar-width: none; /* Ocultar la barra en Firefox */
-  -ms-overflow-style: none; /* Ocultar la barra en Internet Explorer */
+  padding: 1rem;
+
+  /* Quitar altura fija y scroll forzado */
+  height: auto;
+  overflow-y: auto;
+
+  /* Ocultar barra de scroll si quieres, pero opcional */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+
 
 .layout-body::-webkit-scrollbar {
   display: none; /* Ocultar la barra en WebKit */

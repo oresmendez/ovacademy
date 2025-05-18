@@ -37,7 +37,7 @@ export default function Administrador_Materia() {
 
 	const obtenerUnidad = async () => {
         try {
-            const url = `http://localhost:3333/ovacademy/unidades/${idUnidad}`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/${idUnidad}`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setNameUnidad(`${response.data.data.modulo} - ${response.data.data.nombre}`);
@@ -50,7 +50,7 @@ export default function Administrador_Materia() {
 
 	const obtenerEvaluaciones = async () => {
 		try {
-			const url = `http://localhost:3333/ovacademy/evaluaciones/${idUnidad}`
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/${idUnidad}`
 			const response = await apiRest.fetchGet(url);
 			if (response.status === 200) {
 				seEvaluaciones(response.data);
@@ -119,7 +119,7 @@ export default function Administrador_Materia() {
 const Componente = styled.div`
     
     .layout-body {
-      max-width: 110rem !important;
+      max-width: 115rem !important;
     }
 
     .tabs-container {

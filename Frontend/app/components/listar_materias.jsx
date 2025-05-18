@@ -58,7 +58,8 @@ export default function ListarMaterias() {
             )
         );
 
-        const response = await apiRest.fetchPut('http://localhost:3333/ovacademy/subject/unidades', editRowData);
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/subject/unidades`
+        const response = await apiRest.fetchPut(url, editRowData);
         
         if (response.status === 200) {
             toast.success('Unidad Actualizada exitosamente');

@@ -1,49 +1,56 @@
-'use client'; import { useEffect, styled, Link, BannerMateria, textBarHeader } from '@/app/components/utils/rutas';
+'use client'; import { useState, useEffect, styled, Link, BannerMateria, textBarHeader, Footer, Spinner } from '@/app/components/utils/rutas';
 
 export default function DashboardPage() {
 
+    const [isClient, setIsClient] = useState(false);
     const { setHeaderText } = textBarHeader();
 
     useEffect(() => {
-        setHeaderText((<> Dashboard</>));
+        setHeaderText((<> Inicio</>));
+        const timeout = setTimeout(() => {
+            setIsClient(true);
+        }, 500);
+        return () => clearTimeout(timeout);
     }, []);
+
+    if (!isClient) {
+        return <Spinner show={true} />;
+    }
 
     return (
         <Componente>
-            <div className='layout-body'>
-                <div className='container-body'>
-                    <BannerMateria />
-                    <div className='center mt-20'>
-                        <div className='container-element m-10 center-column'>
-                            <span className='container-element-tittle mt-10'>Estudiantes</span>
-                            <Link href="/ovacademy/profesor/estudiantes" passHref className="button">
-                                Entrar
-                            </Link>
-                        </div>
-                        <div className='container-element m-10 center-column'>
-                            <span className='container-element-tittle mt-10'>Unidades</span>
-                            <Link href="/ovacademy/profesor/unidades" passHref className="button">
-                                Entrar
-                            </Link>
-                        </div>
-                        <div className='container-element m-10 center-column'>
-                            <span className='container-element-tittle mt-10'>Contenidos</span>
-                            <Link href="/ovacademy/profesor/contenidos" passHref className="button">
-                                Entrar
-                            </Link>
-                        </div>
-                        <div className='container-element m-10 center-column'>
-                            <span className='container-element-tittle mt-10'>Evaluaciones</span>
-                            <Link href="/ovacademy/profesor/evaluaciones" passHref className="button">
-                                Entrar
-                            </Link>
-                        </div>
-                    </div>                   
+            <div className="dashboard-wrapper">
+                <div className='layout-body'>
+                    <div className='container-body'>
+                        <BannerMateria />
+                        <div className='center mt-20'>
+                            {secciones.map(({ nombre, ruta }) => (
+                                <div key={nombre} className='container-element m-10 center-column'>
+                                    <span className='container-element-tittle mt-10'>{nombre}</span>
+                                    <Link href={ruta} passHref className="button">
+                                        Entrar
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>                   
+                    </div>
                 </div>
+                
+
             </div>
+            <Footer />
+
+
         </Componente>
     );
 }
+
+const secciones = [
+    { nombre: 'Estudiantes', ruta: '/ovacademy/profesor/estudiantes' },
+    { nombre: 'Unidades', ruta: '/ovacademy/profesor/unidades' },
+    { nombre: 'Contenidos', ruta: '/ovacademy/profesor/contenidos' },
+    { nombre: 'Evaluaciones', ruta: '/ovacademy/profesor/evaluaciones' },
+];
 
 const Componente = styled.div`
 

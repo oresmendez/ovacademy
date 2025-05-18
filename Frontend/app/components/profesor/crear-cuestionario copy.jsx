@@ -64,8 +64,9 @@ export default function CrearCuestionario({ id_unidad, type_id, nota_evaluacion,
         console.log('Cuestionario guardado:', cuestionarioFinal);
 
         try {
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones`
             const response = await apiRest.fetchPost(
-                "http://localhost:3333/ovacademy/evaluaciones",
+                url,
                 { id_unidad, type_id, nota_evaluacion, cuestionario: cuestionarioFinal }
             );
 

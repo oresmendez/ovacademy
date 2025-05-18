@@ -17,7 +17,7 @@ export default function crear_sopadeletras({id_unidad, type_id, nota_evaluacion,
     const obtener_sopadeletras = async () => {
 		
         try {
-            const url = `http://localhost:3333/ovacademy/evaluaciones/SopaDeLetras/${idEvaluacion}`
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/SopaDeLetras/${idEvaluacion}`
 			const response = await apiRest.fetchGet(url);
 			if (response.status === 200) {
 				const palabrasData = response.data.data[0]?.palabras;
@@ -39,8 +39,9 @@ export default function crear_sopadeletras({id_unidad, type_id, nota_evaluacion,
 		}
 		
         try {
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones`
 			const response = await apiRest.fetchPost(
-				"http://localhost:3333/ovacademy/evaluaciones",
+				url,
 				{ id_unidad, type_id, nota_evaluacion, palabras: palabras.join() }
 			);
 
@@ -59,8 +60,9 @@ export default function crear_sopadeletras({id_unidad, type_id, nota_evaluacion,
   const editar_sopadeletras = async () => {
 		
         try {
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/SopaDeLetras`
 			const response = await apiRest.fetchPut(
-				"http://localhost:3333/ovacademy/evaluaciones/SopaDeLetras",
+				url,
 				{ evaluacion_id: idEvaluacion,  palabras: palabras.join() }
 			);
 

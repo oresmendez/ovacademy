@@ -12,7 +12,7 @@ export default function ListarEstudiantes() {
     const obtenerEstudiantes = async () => {
         
         try {
-            const url = `http://localhost:3333/ovacademy/user?type_id=1`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/user?type_id=1`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setData(response.data.data);
@@ -32,7 +32,8 @@ export default function ListarEstudiantes() {
     
     const handleDeleteClick = async (email) => {
         try {
-            const response = await apiRest.fetchDelete('http://localhost:3333/ovacademy/user', { email });
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/user`
+            const response = await apiRest.fetchDelete(url, { email });
             console.log(response);
             if (response.status === 200) {
                 toast.success(`Usuario ${email} actualizado`);

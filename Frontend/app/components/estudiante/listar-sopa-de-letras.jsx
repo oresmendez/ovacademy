@@ -25,8 +25,7 @@ export default function ListarSopaDeletras({ idEvaluacion, idUnidad, typeId, not
 	const obtenerPalabrasSopadeLetras = async () => {
 
 		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-
-			const url = `http://localhost:3333/ovacademy/evaluaciones/SopaDeLetras/${idEvaluacion}`
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/SopaDeLetras/${idEvaluacion}`
             const response = await apiRest.fetchGet(url);
 
             if (response.status === 200) {
@@ -51,8 +50,7 @@ export default function ListarSopaDeletras({ idEvaluacion, idUnidad, typeId, not
 
 	const obtener_Respuestas_SopadeLetras = async (sopaId) => {
 		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-			
-			const url = `http://localhost:3333/ovacademy/evaluaciones/RespuestaSopaDeLetras/${sopaId}`
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/RespuestaSopaDeLetras/${sopaId}`
             const response = await apiRest.fetchGet(url, { id_estudiante: id_estudiante });
             if (response.status === 200) {
 				setGrid(response.data.data[0].matrix)

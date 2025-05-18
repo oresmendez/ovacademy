@@ -27,7 +27,7 @@ export default function CrearCuestionario({ id_unidad, type_id, nota_evaluacion,
     const obtener_cuestionario = async () => {
 		
         try {
-            const url = `http://localhost:3333/ovacademy/evaluaciones/cuestionario/${idEvaluacion}`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/cuestionario/${idEvaluacion}`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setevaluacionData(response.data.data);
@@ -67,8 +67,9 @@ export default function CrearCuestionario({ id_unidad, type_id, nota_evaluacion,
         console.log('Cuestionario guardado:', cuestionarioFinal);
 		
         try {
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/cuestionario`
 			const response = await apiRest.fetchPut(
-				"http://localhost:3333/ovacademy/evaluaciones/cuestionario",
+				url,
 				{ evaluacion_id: idEvaluacion,  cuestionario: cuestionarioFinal }
 			);
 
@@ -165,8 +166,9 @@ export default function CrearCuestionario({ id_unidad, type_id, nota_evaluacion,
         console.log('Cuestionario guardado:', cuestionarioFinal);
 
         try {
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones`
             const response = await apiRest.fetchPost(
-                "http://localhost:3333/ovacademy/evaluaciones",
+                url,
                 { id_unidad, type_id, nota_evaluacion, cuestionario: cuestionarioFinal }
             );
 

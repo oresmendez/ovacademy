@@ -1,4 +1,4 @@
-'use client'; import { useState, useEffect, styled, apiRest, toast, Select, export_file, DataTableIndex, ButtonAccion, InputSearch, ModalField, Spinner } from '@/app/components/utils/rutas';
+'use client'; import { useState, useEffect, styled, apiRest, toast, Select, export_file, DataTableIndex, ButtonAccion, InputSearch, ModalField, Spinner, MessageError } from '@/app/components/utils/rutas';
 
 export default function ListarEstudiantes() {
     const [data, setData] = useState([]);
@@ -26,9 +26,15 @@ export default function ListarEstudiantes() {
     };
     const cerrarModal = () => setVisible(false);
 
+    const recargarAulaSeleccionada = () => {
+        if (aulaSeleccionada) {
+            obtenerEstudiantes(aulaSeleccionada.value);
+        }
+    };
+    
     const obtenerAula = async () => {
 		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-			const url = 'http://localhost:3333/ovacademy/aula/profesor'
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/profesor`
 			const response = await apiRest.fetchGet(url);
             console.log(response)
 			if (response.status === 200) {
@@ -56,7 +62,7 @@ export default function ListarEstudiantes() {
     const obtenerEstudiantes = async () => {
         
         let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-            const url = `http://localhost:3333/ovacademy/aula/estudiantesByAula`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/estudiantesByAula`
             const response = await apiRest.fetchPost(url, {
                 aulaId :aulaSeleccionada.value
             }); 
@@ -64,7 +70,6 @@ export default function ListarEstudiantes() {
             if (response.status === 200) {
                 setData(response.data.data);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
                 setData([]);
             }
 
@@ -77,7 +82,7 @@ export default function ListarEstudiantes() {
 
     const obtener_detalles_aula = async (aula_id) => {
         let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-            const url = `http://localhost:3333/ovacademy/aula/obtenerAulabyaulaID/${aula_id}`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/obtenerAulabyaulaID/${aula_id}`
             const response = await apiRest.fetchGet(url); 
             if (response.status === 200) {
                 setdetallesaula(response.data.data.habilitado);
@@ -93,7 +98,8 @@ export default function ListarEstudiantes() {
 
     const desmatricularEstudiante = async (id) => {
         try {
-            const response = await apiRest.fetchDelete(`http://localhost:3333/ovacademy/aula/desmatricular/${id}`);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/desmatricular/${id}`
+            const response = await apiRest.fetchDelete(url);
             
             if (response.status === 200) {
                 obtenerEstudiantes(aulaSeleccionada.value);
@@ -110,7 +116,8 @@ export default function ListarEstudiantes() {
     const habilitar_desahbilitar_seccion = async () => {
        
         try {
-            const response = await apiRest.fetchDelete(`http://localhost:3333/ovacademy/semestre/aula/${aulaSeleccionada.value}`);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/semestre/aula/${aulaSeleccionada.value}`
+            const response = await apiRest.fetchDelete(url);
     
             if (response.status === 200) {
                 toast.success(`Sección Habilitada`);
@@ -164,13 +171,13 @@ export default function ListarEstudiantes() {
             selector: (row) => row.name || 'No disponible', 
             sortable: true, 
             grow: 2.2,
-            center: true 
+            $center: true 
         },
         {   name: 'Apellido', 
             selector: (row) => row.surname || 'No disponible', 
             sortable: true, 
             grow: 2.2,
-            center: true 
+            $center: true 
         },
         {
             name: 'Nota Final',
@@ -182,7 +189,7 @@ export default function ListarEstudiantes() {
             },
             sortable: true,
             grow: 1.6,
-            center: true
+            $center: true
         },
         {
             name: 'Nota Redondeada',
@@ -194,7 +201,7 @@ export default function ListarEstudiantes() {
             },
             sortable: true,
             grow: 2.5,
-            center: true
+            $center: true
         },
         {
             name: 'Estado académico',
@@ -214,7 +221,7 @@ export default function ListarEstudiantes() {
             },
             sortable: true,
             grow: 2.5,
-            center: true
+            $center: true
         }
            
     ];
@@ -239,12 +246,10 @@ export default function ListarEstudiantes() {
         contenido = (
             <Componente>
                 <div style={{ padding: '1rem', fontFamily: 'Lexend Deca, sans-serif' }}>
-                    <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div className="botones-exportar">
-                            <ButtonAccion onClick={exportToPDF}>Exportar a PDF</ButtonAccion> 
-                            <ButtonAccion onClick={exportToExcel}>Exportar a Excel</ButtonAccion> 
-                            <ButtonAccion onClick={obtenerAula} loading={true} ></ButtonAccion> 
-                            <div>
+                    <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                            {/* Selector de Aulas (siempre visible) */}
+                            <div style={{ flexGrow: 1, minWidth: '200px' }}>
                                 <Select
                                     options={aulas}
                                     placeholder="Selecciona..."
@@ -254,20 +259,31 @@ export default function ListarEstudiantes() {
                                     isClearable
                                 />
                             </div>
+
+                            {/* Botones Exportar y Recargar (solo si hay estudiantes) */}
+                            {filteredData.length > 0 && (
+                                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                                    <ButtonAccion onClick={exportToPDF}>Exportar a PDF</ButtonAccion> 
+                                    <ButtonAccion onClick={exportToExcel}>Exportar a Excel</ButtonAccion> 
+                                    <ButtonAccion onClick={recargarAulaSeleccionada} loading={true} ></ButtonAccion> 
+                                    <InputSearch filterText={filterText} setFilterText={setFilterText} />
+                                </div>
+                            )}
+
+                            {/* Cerrar Sección (siempre visible si está habilitada) */}
+                            {detallesaula && (
+                                <ButtonAccion color="#cb192a" onClick={abrirModal}>
+                                    Cerrar Sección
+                                </ButtonAccion>
+                            )}
                         </div>
-                        <InputSearch filterText={filterText} setFilterText={setFilterText} />
-                        {detallesaula && (
-                            <ButtonAccion color="#cb192a" onClick={abrirModal}>
-                                Cerrar Sección
-                            </ButtonAccion>
-                        )}
+
+                        
                         
                     </div>
                     {
                         aulaSeleccionada && filteredData.length === 0 ? (
-                            <p style={{ padding: '1rem', fontWeight: 'bold', color: '#c62828' }}>
-                                No existen estudiantes matriculados para esta sección.
-                            </p>
+                            <MessageError message={"No se encuentran estudiantes matriculados para esta sección"}/>
                         ) : (
                             <DataTableIndex
                             columns={detallesaula ? [...columnasBase, columnaAccion] : columnasBase}

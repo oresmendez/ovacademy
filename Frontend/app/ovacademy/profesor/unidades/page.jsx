@@ -71,7 +71,7 @@ export default function Administrador_Materia() {
 const Componente = styled.div`
 
     .layout-body {
-      max-width: 110rem !important;
+      max-width: 115rem !important;
     }
 
     .tabs-container {

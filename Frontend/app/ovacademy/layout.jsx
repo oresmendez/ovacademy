@@ -13,3 +13,6 @@ export default function LayoutPrincipal ({ children }) {
 LayoutPrincipal.propTypes = {
     children: PropTypes.node.isRequired,
 };
+
+
+

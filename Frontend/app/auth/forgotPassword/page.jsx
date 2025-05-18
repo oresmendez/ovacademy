@@ -9,7 +9,8 @@ export default function () {
         event.preventDefault();
     
         try {
-            const data = await apiRest.fetchPost('http://localhost:3333/ovacademy/login', {
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/login`
+            const data = await apiRest.fetchPost(url, {
                 email, 
                 password, 
             });   

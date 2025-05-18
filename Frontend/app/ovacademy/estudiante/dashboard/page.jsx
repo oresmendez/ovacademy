@@ -1,4 +1,4 @@
-'use client'; import { useState, useEffect, styled, apiRest, textBarHeader, BannerMateria, CarrouselMain, Spinner } from '@/app/components/utils/rutas';
+'use client'; import { useState, useEffect, styled, apiRest, textBarHeader, BannerMateria, CarrouselMain, Spinner, Footer } from '@/app/components/utils/rutas';
 import { FaExclamationCircle } from 'react-icons/fa'; // Asegúrate de instalar react-icons
 
 export default function DashboardPage() {
@@ -18,7 +18,7 @@ export default function DashboardPage() {
 
     const obtenerUnidades = async () => {
         let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-            const url = `http://localhost:3333/ovacademy/unidades/estudiante`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/estudiante`
             const response = await apiRest.fetchGet(url);
             console.log(response)
             if (response.status === 200) {
@@ -44,11 +44,15 @@ export default function DashboardPage() {
                             <CarrouselMain boxes={unidades} tittle={"Unidades Disponibles"} description={"Descubre una amplia selección de unidades diseñadas para ampliar tus conocimientos y fortalecer tus habilidades en áreas clave"}/>
                         </>
                     ) : (
-                        <div style={containerStyle}>
-                            <FaExclamationCircle style={iconStyle} />
-                            <h2 style={titleStyle}>No estás matriculado</h2>
-                            <p style={messageStyle}>Usted no se encuentra aún matriculado. Por favor, contacte a su profesor para que actualice su estado.</p>
-                        </div>
+                        <>
+                            <div style={containerStyle}>
+                                <FaExclamationCircle style={iconStyle} />
+                                <h2 style={titleStyle}>No estás matriculado</h2>
+                                <p style={messageStyle}>Usted no se encuentra aún matriculado. Por favor, contacte a su profesor para que actualice su estado.</p>
+                            </div>
+                            
+                            <Footer />
+                        </>
                     )}
                 </div>
             </div>

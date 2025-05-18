@@ -1,27 +1,21 @@
-'use client'; import {usePathname, Image, styled} from '@/app/components/utils/rutas';
+'use client'; import {Image, styled, PropTypes} from '@/app/components/utils/rutas';
 
 export default function RootLayoutAuth({ children }) {
-
-    const pathname = usePathname();
-    const isAuthPage = pathname?.startsWith('/auth/teacher');
 
     return (
         <Componente>
             
             <div className="layout-auth">
                 <div className="auth-container">
-                    {!isAuthPage && (
-                        <Image
-                            src="/fondo-login.png"
-                            alt="Background Image"
-                            fill
-                            priority
-                            style={{
-                                objectFit: "cover",
-                            }}
-                        />
-                    )}
-                    {isAuthPage && <div>{children}</div>}
+                    <Image
+                        src="/fondo-login.png"
+                        alt="Background Image"
+                        fill
+                        // priority
+                        style={{
+                            objectFit: "cover",
+                        }}
+                    />
                 </div>
                 <div className="auth-container-content">
                     {children}
@@ -32,7 +26,16 @@ export default function RootLayoutAuth({ children }) {
     );
 }
 
+RootLayoutAuth.propTypes = {
+    children: PropTypes.node,
+};
+
 const Componente = styled.div`
+
+.parent-container {
+  position: relative;
+}
+
 
     .layout-auth {
         margin: 0;
@@ -49,8 +52,14 @@ const Componente = styled.div`
     }
 
     .auth-container-content {
-        width: 100%;
-        height: 100%;
-        overflow-y: auto;
+        opacity: 0;
+        animation: fadeIn 0.6s ease forwards;
     }
+
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+
 `;

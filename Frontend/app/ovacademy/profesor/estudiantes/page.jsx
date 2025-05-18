@@ -1,4 +1,4 @@
-'use client'; import { useState, styled, CrearEstudiante, ListarEstudiantes, ListarEstudianteSeccion, WrapperTitleRegister, textBarHeader, useEffect, AsociarEstudianteSemestre, Link} from '@/app/components/utils/rutas';
+'use client'; import { useState, styled, CrearEstudiante, ListarEstudiantes, Footer, ListarEstudianteSeccion, WrapperTitleRegister, textBarHeader, useEffect, AsociarEstudianteSemestre, Link} from '@/app/components/utils/rutas';
 
 
 export default function Administrador_Materia() {
@@ -72,6 +72,7 @@ export default function Administrador_Materia() {
           </div>
         </div>
       </div>
+      <Footer />
     </Componente>
   );
 }
@@ -79,7 +80,7 @@ export default function Administrador_Materia() {
 const Componente = styled.div`
     
     .layout-body {
-      max-width: 110rem !important;
+      max-width: 115rem !important;
     }
 
     .tabs-container {

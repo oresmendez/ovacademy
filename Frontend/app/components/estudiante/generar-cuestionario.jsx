@@ -12,7 +12,7 @@ export default function Cuestionario({ preguntas, notaEvaluacion, idEvaluacion }
 	const guardar_cuestionario = async (id, respuestaUsuario) => {
 		
 		try {
-			const url = "http://localhost:3333/ovacademy/evaluaciones/SaveCuestionario";
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/SaveCuestionario`
 			const response = await apiRest.fetchPost(url, {
 				cuestionario_id: id,
 				respuesta: respuestaUsuario,
@@ -27,7 +27,7 @@ export default function Cuestionario({ preguntas, notaEvaluacion, idEvaluacion }
 
 	const enviarNotaEvaluacion = async (notaEvaluacionCalculada, idEvaluacion) => {
 		try {
-			const url = "http://localhost:3333/ovacademy/evaluaciones/SaveNotaEstudiante";
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/SaveNotaEstudiante`
 			const response = await apiRest.fetchPost(url, {
 				nota_evaluacion: notaEvaluacionCalculada.toFixed(2),
 				evaluacion_id: idEvaluacion

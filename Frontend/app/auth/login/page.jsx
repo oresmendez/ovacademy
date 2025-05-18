@@ -1,27 +1,41 @@
-'use client'; import {Cookies, useState, useEffect, useRouter, Link, styled, LogoNameWhite, startSession } from '@/app/components/utils/rutas';
+'use client'; import {useState, useEffect, useRouter, Link, styled, LogoNameWhite, startSession, gestorCookie, Spinner } from '@/app/components/utils/rutas';
 
 export default function Login() {
-
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const router = useRouter();
+
+    const [showSpinner, setShowSpinner] = useState(false);
+    const [isHydrated, setIsHydrated] = useState(false);
+    const [isLeaving, setIsLeaving] = useState(false);
+
 
     useEffect(() => {
-        Cookies.remove('user-data', {
-            secure: true,
-            sameSite: 'Strict',
-        });
+        gestorCookie.removeCookie();
+        setIsHydrated(true);
     }, []);
 
     const handleRequest = async (event) => {
         event.preventDefault();
-        await startSession(email, password, router);
+    
+        const result = await startSession(email, password);
+    
+        if (result?.success) {
+            setIsLeaving(true);
+            setTimeout(() => {
+                router.push(result.redirectTo);
+            }, 600);
+        }
     };
+    
+    if (!isHydrated || showSpinner) {
+        return <Spinner show={true} />;
+    }
 
     return (
         <Componente>
             <div className="layout-authentication center">
-                <div className="authentication-content">
+                <div className={`authentication-content ${isLeaving ? 'fade-out' : ''}`}>
                     <LogoNameWhite />
                     <form className="form-login mt-30" onSubmit={handleRequest}>
                         <input
@@ -39,7 +53,7 @@ export default function Login() {
                         <button type="submit" className="button-login">Entrar</button>
                     </form>
                     <Link href="/auth/forgotPassword" passHref>
-                        <span className="forgot-password pt-10">Olvidaste tu contraseña</span>
+                        {/* <span className="forgot-password pt-10">Olvidaste tu contraseña</span> */}
                     </Link>
                     <div className="dont-account mt-20 center">
                         <span className="dont-account-text">¿No tienes una cuenta?</span>
@@ -47,6 +61,8 @@ export default function Login() {
                             <button className="register-button mr-10">Crear</button>
                         </Link>
                     </div>
+                <Link href="/" passHref className="center back-home mt-20 pb-05"> Home
+                </Link> 
                 </div>
             </div>
         </Componente>
@@ -54,6 +70,21 @@ export default function Login() {
 }
 
 const Componente = styled.div`
+
+    .back-home{
+        display: inline-block;
+        color: white;
+
+        display: Flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .back-home:hover{
+        text-decoration: underline; 
+        cursor: pointer;
+        
+    }
 
     .layout-authentication {
         display: flex;
@@ -96,6 +127,7 @@ const Componente = styled.div`
     .dont-account {
         justify-content: space-between;
         color: white;
+        cursor: pointer;
     }
 
     .register-button {
@@ -111,4 +143,30 @@ const Componente = styled.div`
         color: white;
         flex-direction: column;
     }
+
+    .fade-out {
+    animation: fadeOut 0.6s ease forwards;
+        
+    .create-accont-text{
+        color: white;
+        text-align: justify;
+        font-size: 1.1rem;
+        font-weight: 200;
+    }
+
+    
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
 `;
+

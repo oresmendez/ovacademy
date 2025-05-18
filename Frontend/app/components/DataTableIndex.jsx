@@ -1,8 +1,22 @@
-'use client'; import { styled } from '@/app/components/utils/rutas';
+'use client'; import { styled, useState, useEffect, Spinner } from '@/app/components/utils/rutas';
 
 import DataTable from 'react-data-table-component';
 
 export default function DataTableIndex({ columns, data }) {
+
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setIsClient(true);
+        }, 500);
+        return () => clearTimeout(timeout);
+    }, []);
+
+    if (!isClient) {
+        return <Spinner show={true} />;
+    }
+
     return (
         <Componente>
             <div className='mt-20 index-datatable'>

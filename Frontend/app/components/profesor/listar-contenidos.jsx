@@ -28,8 +28,8 @@ export default function ListarContenidos() {
 
     const obtenerUnidades = async () => {
         try {
-            
-            const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/unidades/profesor');
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/profesor`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setUnidades(response.data.data);
                 const unidadesFormateadas = response.data.data.map((unidades) => ({
@@ -63,7 +63,8 @@ export default function ListarContenidos() {
 
     const obtenerContenidoByID = async (id) => {
         try {
-            const response = await apiRest.fetchGet(`http://localhost:3333/ovacademy/contenido/${id}`);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/contenido/${id}`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setDataContenidos(response.data);
             } else {
@@ -78,7 +79,8 @@ export default function ListarContenidos() {
 
     const obtenerContenidoDetailsByID = async (id, id_unidad) => {
         try {
-            const response = await apiRest.fetchGet(`http://localhost:3333/ovacademy/contenido/contenidoDetalles/${id}`);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/contenido/contenidoDetalles/${id}`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 seleccionarUnidadPorId(id_unidad);
                 setIdContenido(response.data.id);
@@ -110,7 +112,8 @@ export default function ListarContenidos() {
     
     const handleDeleteClick = async (id) => {
         try {
-            const response = await apiRest.fetchDelete(`http://localhost:3333/ovacademy/contenido/${id}`);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/contenido/${id}`
+            const response = await apiRest.fetchDelete(url);
             console.log(response);
             if (response.status === 200) {
                 toast.success(`Elemento actualizado`);

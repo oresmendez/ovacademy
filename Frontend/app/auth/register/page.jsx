@@ -19,7 +19,8 @@ export default function crear_user() {
             return toast.error('Las contraseñas no coinciden.');
         }
 
-        const response = await apiRest.fetchPost('http://localhost:3333/ovacademy/user', {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/user`
+        const response = await apiRest.fetchPost(url, {
             email,
             password,
             type_id: 1,
@@ -81,7 +82,7 @@ export default function crear_user() {
                         por el personal de la universidad.
                     </p>
                 <Link href="/" passHref>
-                    <span className='create-accont-back mt-20 pb-05'>Regresar</span>
+                    <span className='create-accont-back mt-20 pb-05'>Home</span>
                 </Link>                
             </div>
         </div>

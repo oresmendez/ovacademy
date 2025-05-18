@@ -1,4 +1,4 @@
-'use client'; import { styled, useState, useEffect, apiRest, toast, Select } from '@/app/components/utils/rutas';
+'use client'; import { styled, useState, useEffect, apiRest, toast, Select, MessageError } from '@/app/components/utils/rutas';
 
 export default function SelectAulaEstudiantes() {
 
@@ -9,13 +9,12 @@ export default function SelectAulaEstudiantes() {
 
 
 	useEffect(() => {   
-		obtenerEstudiantesInscritos();
 		obtenerAula();
 	}, []);
 
   	const obtenerAula = async () => {
 		try {
-			const url = 'http://localhost:3333/ovacademy/aula/profesor'
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/profesor`
 			const response = await apiRest.fetchGet(url);
 			if (response.status === 200) {
 				const aulasFormateadas = response.data.data.map((aulas) => ({
@@ -23,6 +22,7 @@ export default function SelectAulaEstudiantes() {
 					label: aulas.nombreAula,
 				}));
 				setAulas(aulasFormateadas);
+				obtenerEstudiantesInscritos();
 			} else {
 				console.error('La respuesta de la API no contiene datos válidos.');
 			}
@@ -33,7 +33,8 @@ export default function SelectAulaEstudiantes() {
 
 	const obtenerEstudiantesInscritos = async () => {
 		try {
-			const url = 'http://localhost:3333/ovacademy/aula/estudiantesInscritos'
+
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/estudiantesInscritos`
 			const response = await apiRest.fetchGet(url);
 			if (response.status === 200) {
 				obtenerEstudiantesNoInscritos(response.data.estudiantesInscritos)
@@ -47,7 +48,8 @@ export default function SelectAulaEstudiantes() {
 
 	const obtenerEstudiantesNoInscritos = async (estudiantesInscritos) => {
 		try {
-			const url = 'http://localhost:3333/ovacademy/user?type_id=1';
+
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/user?type_id=1`
 			const response = await apiRest.fetchGet(url);
 	
 			if (response.status === 200) {
@@ -94,7 +96,7 @@ export default function SelectAulaEstudiantes() {
 			return;
 		}
 
-		const url = "http://localhost:3333/ovacademy/aula/asociarEstudiante"
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/asociarEstudiante`
 		const response = await apiRest.fetchPost( url,
 			transformarDatos()
 		);
@@ -111,40 +113,52 @@ export default function SelectAulaEstudiantes() {
     
   	};
 
-  return (
-	<Component>
-		<div className="container">
-			<div className="campo">
-				<label className="label">Selecciona un Sección</label>
-				<Select
-				options={aulas}
-				placeholder="Selecciona un sección..."
-				value={aulaSeleccionada}
-				onChange={setAulaSeleccionada}
-				styles={customStyles}
-				isClearable
-				/>
-			</div>
 
-			<div className="campo">
-			<label className="label">
-				{estudiantesSeleccionados.length <= 1 ? 'Selecciona Estudiante' : 'Selecciona Estudiantes'}
-			</label>
-				<Select
-				options={estudiantes}
-				isMulti
-				placeholder="Selecciona estudiantes..."
-				value={estudiantesSeleccionados}
-				onChange={setEstudiantesSeleccionados}
-				styles={customStyles}
-				/>
-			</div>
-			<div className='center pt-10'>
-				<button className="boton" onClick={guardarData}>Guardar</button>
-			</div>
-		</div>
-	</Component>
-  );
+	  let contenido;
+
+	  if (!aulas.length) {
+		  contenido = (
+				<MessageError message={"No tienes una sección asignada por el momento."}/>
+		  );
+	  } else {
+		  contenido = (
+			  <Component>
+				  <div className="container">
+					  <div className="campo">
+						  <label className="label">Selecciona un Sección</label>
+						  <Select
+							  options={aulas}
+							  placeholder="Selecciona un sección..."
+							  value={aulaSeleccionada}
+							  onChange={setAulaSeleccionada}
+							  styles={customStyles}
+							  isClearable
+						  />
+					  </div>
+  
+					  <div className="campo">
+						  <label className="label">
+							  {estudiantesSeleccionados.length <= 1 ? 'Selecciona Estudiante' : 'Selecciona Estudiantes'}
+						  </label>
+						  <Select
+							  options={estudiantes}
+							  isMulti
+							  placeholder="Selecciona estudiantes..."
+							  value={estudiantesSeleccionados}
+							  onChange={setEstudiantesSeleccionados}
+							  styles={customStyles}
+						  />
+					  </div>
+					  <div className='center pt-10'>
+						  <button className="boton" onClick={guardarData}>Guardar</button>
+					  </div>
+				  </div>
+			  </Component>
+		  );
+	  }
+  
+	  return contenido;
+  
 }
 
 const customStyles = {

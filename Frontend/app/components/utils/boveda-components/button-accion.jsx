@@ -31,7 +31,7 @@ export default function ButtonAccion({
     };
 
     return (
-        <Component color={color} padding={padding}>
+        <Component $color={color} $padding={padding}>
             <button
                 type={type}
                 onClick={handleClick}
@@ -47,13 +47,13 @@ export default function ButtonAccion({
 const Component = styled.div`
 
     .btn-accion {
-        padding: ${({ padding }) => padding};
+        padding: ${({ $padding }) => $padding};
         color: white;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         font-size: 1.1rem;
-        background-color: ${({ color }) => color}; /* Aquí usamos la prop */
+        background-color: ${({ $color }) => $color};
         display: flex;
         align-items: center;
         justify-content: center;

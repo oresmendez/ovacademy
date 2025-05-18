@@ -66,7 +66,8 @@ export default function ListarUnidades() {
 
     const obtenerUnidades = async () => {
         try {
-            const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/unidades/profesor');
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/profesor`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 const unidades = response.data.data;
                 const unidadesConNotas = await Promise.all(
@@ -93,7 +94,7 @@ export default function ListarUnidades() {
     const obtenerEstudiantes = async () => {
        
         try {
-            const url = `http://localhost:3333/ovacademy/aula/estudiantesByAula`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/estudiantesByAula`
             const response = await apiRest.fetchPost(url, {
                 aulaId :aulaSeleccionada.value
             }); 
@@ -132,7 +133,7 @@ export default function ListarUnidades() {
 
     const obtenerAula = async () => {
         try {
-            const url = 'http://localhost:3333/ovacademy/aula/profesor';
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/profesor`
             const response = await apiRest.fetchGet(url);
             console.log(response);
     
@@ -161,7 +162,7 @@ export default function ListarUnidades() {
     const obtener_evaluaciones = async (idUnidad, modulo) => {
         
         try {
-            const url = `http://localhost:3333/ovacademy/evaluaciones/${idUnidad}`;
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/${idUnidad}`
             const response = await apiRest.fetchGet(url);
             
             if (response.status === 200) {
@@ -194,7 +195,8 @@ export default function ListarUnidades() {
 
     const obtener_nota_by_unidad = async (unidadId) => {
         try {
-            const response = await apiRest.fetchGet(`http://localhost:3333/ovacademy/evaluaciones/NotaEstudiante/${estudianteId}/${unidadId}`);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/NotaEstudiante/${estudianteId}/${unidadId}`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 const datos = response.data.data;
                 const sumaNotas = datos.reduce((total, item) => total + parseFloat(item.notaEvaluacion), 0);
@@ -210,7 +212,8 @@ export default function ListarUnidades() {
 
     const obtener_nota_by_evaluaciones = async (evaluacion_id) => {
         try {
-            const response = await apiRest.fetchGet(`http://localhost:3333/ovacademy/evaluaciones/NotaEstudiante/nota/${estudianteId}/${evaluacion_id}`);
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/NotaEstudiante/nota/${estudianteId}/${evaluacion_id}`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 return response.data.data;
             } else {
@@ -224,7 +227,8 @@ export default function ListarUnidades() {
 
     const obtenerTypeEvaluaciones = async () => {
         try {
-            const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/evaluaciones/TypeEvaluaciones');
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/TypeEvaluaciones`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setTypesEvaluaciones(response.data.data);
             } else {

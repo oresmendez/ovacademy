@@ -88,7 +88,7 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
             }));
 
         try {
-            const url = "http://localhost:3333/ovacademy/evaluaciones/SavePreguntasAbiertas";
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/SavePreguntasAbiertas`
             const response = await apiRest.fetchPost(url, { respuestas: respuestasFormateadas });
             
             if (response.status === 200) {
@@ -106,7 +106,8 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
 
     const enviarNotaEvaluacion = async () => {
         try {
-            const url = "http://localhost:3333/ovacademy/evaluaciones/SaveNotaEstudiante";
+
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/SaveNotaEstudiante`
             const response = await apiRest.fetchPost(url, {
                 nota_evaluacion: 0,
                 evaluacion_id: idEvaluacion
@@ -124,7 +125,8 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
 
     const obtener_type_escala_apreciacion = async () => {
         try {
-            const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/evaluaciones/TypeEscalaApreciacion');
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/TypeEscalaApreciacion`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setTiposApreciacion(response.data.data);
             } else {
@@ -168,7 +170,7 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
     
     const editarCalificacion = async (datosParaEnviar) => {
         try {
-            const url = "http://localhost:3333/ovacademy/evaluaciones/NotaEstudiante";
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/NotaEstudiante`
             const response = await apiRest.fetchPut(url, { 
                 estudiante_id: id_estudiante,
                 evaluacion_id: idEvaluacion,
@@ -199,7 +201,7 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
 
     
         try {
-            const url = "http://localhost:3333/ovacademy/evaluaciones/preguntasAbiertas";
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/preguntasAbiertas`
             const response = await apiRest.fetchPut(url, { calificacion: datosParaEnviar });
     
             if (response.status === 200) {

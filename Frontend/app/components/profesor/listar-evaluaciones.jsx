@@ -26,7 +26,7 @@ export default function ListarEvaluaciones({ idUnidad, modulo, setCerrandoEvalua
 
     const obtener_evaluaciones = async () => {
         try {
-            const url = `http://localhost:3333/ovacademy/evaluaciones/${idUnidad}`;
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/${idUnidad}`
             const response = await apiRest.fetchGet(url);
             console.log(response)
             if (response.status === 200) {
@@ -43,7 +43,8 @@ export default function ListarEvaluaciones({ idUnidad, modulo, setCerrandoEvalua
 
     const obtenerTypeEvaluaciones = async () => {
         try {
-            const response = await apiRest.fetchGet('http://localhost:3333/ovacademy/evaluaciones/TypeEvaluaciones');
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/TypeEvaluaciones`
+            const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setTypesEvaluaciones(response.data.data);
             } else {

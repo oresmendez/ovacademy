@@ -182,7 +182,7 @@ export default function SopaInteractiva({ id_sopa, palabrasMeta, notaEvaluacion,
 		}
 	
 		try {
-			const url = "http://localhost:3333/ovacademy/evaluaciones/SaveSopaDeLetras";
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/SaveSopaDeLetras`
 			const response = await apiRest.fetchPost( url,
 				{ sopa_id: id_sopa , matrix: grid }
 			);
@@ -200,8 +200,7 @@ export default function SopaInteractiva({ id_sopa, palabrasMeta, notaEvaluacion,
 	
 	const enviarNotaEvaluacion = async (notaEvaluacionCalculada, idEvaluacion) => {
 		try {
-
-			const url = "http://localhost:3333/ovacademy/evaluaciones/SaveNotaEstudiante";
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/SaveNotaEstudiante`
 			const response = await apiRest.fetchPost(url, {
 				nota_evaluacion: parseFloat(notaEvaluacionCalculada).toFixed(2),
 				evaluacion_id: idEvaluacion

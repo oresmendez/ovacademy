@@ -16,7 +16,7 @@ export default function CrearContenido ({ TabClick }) {
 
 	const obtenerUnidades = async () => {
 		try {
-			const url = `http://localhost:3333/ovacademy/unidades/profesor`;
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/profesor`
 			const response = await apiRest.fetchGet(url);
 			if (response.status === 200) {
 				const unidadesFormateadas = response.data.data.map((unidad) => ({
@@ -45,8 +45,8 @@ export default function CrearContenido ({ TabClick }) {
 
 	const crearContenido = async (values) => {
 		try {
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/contenido`
 			const { unidad, nombre, descripcion } = values;
-			const url = `http://localhost:3333/ovacademy/contenido`;
 			const response = await apiRest.fetchPost(url, {
 				id_unidad: unidad.value,
 				nombre,

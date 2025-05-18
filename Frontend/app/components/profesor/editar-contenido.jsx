@@ -43,7 +43,7 @@ export default function EditarContenido({ descripcion, setDescripcion, idConteni
 
         
         try {
-            const url = `http://localhost:3333/ovacademy/contenido`
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/contenido`
             const response = await apiRest.fetchPut(url, {
                 id: idContenido, 
                 nombre, 

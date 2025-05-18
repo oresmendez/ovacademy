@@ -15,8 +15,7 @@ export default function ListarPreguntasAbiertas({ idEvaluacion, idUnidad, typeId
 	const obtener_preguntas_abiertas = async () => {
 		
 		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-
-			const url = `http://localhost:3333/ovacademy/evaluaciones/preguntasAbiertas/${idEvaluacion}`
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/preguntasAbiertas/${idEvaluacion}`
             const response = await apiRest.fetchGet(url);
 
             if (response.status === 200) {
@@ -38,8 +37,7 @@ export default function ListarPreguntasAbiertas({ idEvaluacion, idUnidad, typeId
 	const obtener_respuestas_preguntas = async (ids) => {
 
 		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-			
-			const url = `http://localhost:3333/ovacademy/evaluaciones/RespuestaPreguntasAbiertas/${ids}`;
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/RespuestaPreguntasAbiertas/${ids}`
 			const response = await apiRest.fetchGet(url, { id_estudiante: id_estudiante });
 			if (response.status === 200) {
 				console.log(response.data.data)
