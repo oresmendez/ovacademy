@@ -6,10 +6,12 @@ import { DateTime } from 'luxon';
 
 export default class TokenService {
 
+    private readonly tokenModel = Token;
+
     async crear_token(user_id: number, type_id: number): Promise<Token | null> {
         try {
             const tokenGenerado = (await promisify(randomBytes)(16)).toString('hex');
-            const nuevoToken = await Token.create({
+            const nuevoToken = await this.tokenModel.create({
                 user_id,
                 type_id,
                 token: tokenGenerado,
@@ -26,7 +28,7 @@ export default class TokenService {
 
     async ObtenerUserbyToken(token: string): Promise<Array<Token> | null> {
         try {
-            return await Token.query()
+            return await this.tokenModel.query()
             .select('user_id', 'type_id')
             .where('token', token);
             // .where('expires_at', '>', DateTime.now().toSQL());
@@ -35,9 +37,6 @@ export default class TokenService {
             return null;
         }
     }
-    
-
-
     
 
 }

@@ -1,40 +1,44 @@
 
 import type { HttpContext } from '@adonisjs/core/http'
-
 import UnidadService from '../../controllers/unidades/service.js'
-const UnidadService_ = new UnidadService();
-
 import TokenController from '../token/main.js';
-const TokenController_ = new TokenController();
-
-import SemestreProfesorAulController from '../semestre_profesor_aula/main.js';
-const SemestreProfesorAulController_ = new SemestreProfesorAulController();
-
+import SemestreProfesorAulaController from '../semestre_profesor_aula/main.js';
 import EstudianteAulaController from '../estudiante_aula/main.js';
-const EstudianteAulaController_ = new EstudianteAulaController();
 
 export default class UnidadesController {
 
-    consultar_unidades_by_user = async (user_id: number) => {
-        return await UnidadService_.obtenerUnidades(user_id);
+    private readonly UnidadService_: UnidadService;
+    private readonly TokenController_: TokenController;
+    private readonly SemestreProfesorAulaController_: SemestreProfesorAulaController;
+    private readonly EstudianteAulaController_: EstudianteAulaController;
+    private user_id: number | null = null;
+
+    constructor() {
+        this.user_id = null;
+        this.UnidadService_ = new UnidadService();
+        this.TokenController_ = new TokenController();
+        this.SemestreProfesorAulaController_ = new SemestreProfesorAulaController();
+        this.EstudianteAulaController_ = new EstudianteAulaController();
     }
 
-    consultar_unidad_by_ID = async (unidad_id: number) => {
-        return await UnidadService_.obtenerUnidadesByID(unidad_id);
+    private readonly consultar_unidades_by_user = async (user_id: number) => {
+        return await this.UnidadService_.obtenerUnidades(user_id);
     }
 
-    public async create_unidad({ request, response }: HttpContext) {
+    readonly consultar_unidad_by_ID = async (unidad_id: number) => {
+        return await this.UnidadService_.obtenerUnidadesByID(unidad_id);
+    }
+
+    public async create_unidad(ctx: HttpContext) {  
+        
+        const { request, response } = ctx;
+        
         try {
+
+            this.user_id = await this.TokenController_.get_user_id_by_token(ctx);
+            if (!this.user_id) return; 
             
-            const token = request.header('token');
-            if (!token) {return response.unauthorized({ message: 'Token requerido' });}
-            const userByToken = await TokenController_.obtenerUserByToken(token);
-
-            if (!(userByToken && userByToken.length > 0)) {
-                return response.notFound({ message: 'No se encontro un token valido de usuario' });
-            }
-
-            const unidades = await this.consultar_unidades_by_user(userByToken[0].user_id);
+            const unidades = await this.consultar_unidades_by_user(this.user_id);
             let totalNotas = 0;
 
             if (unidades && unidades.length > 0) {
@@ -53,9 +57,8 @@ export default class UnidadesController {
                 });
             }
             
-            const unidad = await UnidadService_.crear_unidad(modulo, nombre, descripcion, userByToken[0].user_id, nota_unidad)
-
-            if (!unidad) {
+            
+            if (!await this.UnidadService_.crear_unidad(modulo, nombre, descripcion, this.user_id, nota_unidad)) {
                 return response.status(400).send({ 
                     message: 'Error al crear la unidad', 
                     success: false 
@@ -74,19 +77,16 @@ export default class UnidadesController {
         }
     }
 
-    public async get_unidades_by_profesor({ request, response }: HttpContext) {
+    public async get_unidades_by_profesor(ctx: HttpContext) {
+
+        const { response } = ctx;
     
         try {
-            const token = request.header('token');
 
-            if (!token) {return response.unauthorized({ message: 'Token requerido' });}
-            const userByToken = await TokenController_.obtenerUserByToken(token);
+            this.user_id = await this.TokenController_.get_user_id_by_token(ctx);
+            if (!this.user_id) return; 
 
-            if (!(userByToken && userByToken.length > 0)) {
-                return response.notFound({ message: 'No se encontro un token valido de usuario' });
-            }
-
-            const unidades = await this.consultar_unidades_by_user(userByToken[0].user_id);
+            const unidades = await this.consultar_unidades_by_user(this.user_id);
     
             if (!unidades) {
                 return response.status(400).send({ 
@@ -109,29 +109,25 @@ export default class UnidadesController {
         }
     }
 
-    public async get_unidades_by_estudiante({ request, response }: HttpContext) {
+    public async get_unidades_by_estudiante(ctx: HttpContext) {
+
+        const { response } = ctx;
     
         try {
 
-            const token = request.header('token');
+            this.user_id = await this.TokenController_.get_user_id_by_token(ctx);
+            if (!this.user_id) return; 
 
-            if (!token) {return response.unauthorized({ message: 'Token requerido' });}
-            const userByToken = await TokenController_.obtenerUserByToken(token);
-
-            if (!(userByToken && userByToken.length > 0)) {
-                return response.notFound({ message: 'No se encontro un token valido de usuario' });
-            }
-
-            const Aula_estudiante = await EstudianteAulaController_.consultar_aula_by_estudiante(userByToken[0].user_id);
+            const Aula_estudiante = await this.EstudianteAulaController_.consultar_aula_by_estudiante(this.user_id);
 
             let Aula_profesor;
             if (Aula_estudiante) {
-                Aula_profesor = await SemestreProfesorAulController_.obtener_datos_aula(
+                Aula_profesor = await this.SemestreProfesorAulaController_.obtener_datos_aula(
                     Aula_estudiante.semestre_profesor_aula_id
                 );
             }
 
-            const unidades = await UnidadService_.obtenerUnidades(Aula_profesor.profesor_id);
+            const unidades = await this.UnidadService_.obtenerUnidades(Aula_profesor.profesor_id);
     
             if (!unidades) {
                 return response.status(400).send({ 
@@ -154,8 +150,6 @@ export default class UnidadesController {
         }
     }
 
-
-
     public async get_UnidadById({ params, response }: HttpContext) {
 
         try {
@@ -176,12 +170,15 @@ export default class UnidadesController {
         }
     }
 
-    public async edit_unidad_by_Id({ request, response }: HttpContext) {
+    public async edit_unidad_by_Id(ctx: HttpContext) {
+
+        const { request, response } = ctx;
+
         try {
             
             const { id, modulo, nombre, nota_unidad, descripcion } = request.only(['id', 'modulo', 'nombre', 'nota_unidad', 'descripcion']);
             
-            const unidad = await UnidadService_.obtenerUnidadesByID(id);
+            const unidad = await this.UnidadService_.obtenerUnidadesByID(id);
     
             if (!unidad) {
                 return response.status(404).json({
@@ -221,7 +218,7 @@ export default class UnidadesController {
         
         try {
             
-            const unidad = await UnidadService_.obtenerUnidadesByID(params.id);
+            const unidad = await this.UnidadService_.obtenerUnidadesByID(params.id);
     
             if (!unidad) {
                 return response.status(404).json({

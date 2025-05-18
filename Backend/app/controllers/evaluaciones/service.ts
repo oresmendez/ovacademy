@@ -2,9 +2,11 @@ import Evaluaciones from '../../models/universidad/evaluaciones.js';
 
 export default class EvaluacionesService {
 
+    private readonly evaluacionesModel = Evaluaciones;
+
     async create_evaluacion(id_unidad: number, type_id: number, nota_evaluacion: number): Promise<Evaluaciones | null> {
         try {
-            const user = await Evaluaciones.create({
+            const user = await this.evaluacionesModel.create({
                 id_unidad,
                 type_id,
                 nota_evaluacion
@@ -18,7 +20,7 @@ export default class EvaluacionesService {
 
     async eliminar_evaluacion(id: number): Promise<Evaluaciones | null> {
         try {
-            const evaluacion = await Evaluaciones.findOrFail(id)
+            const evaluacion = await this.evaluacionesModel.findOrFail(id)
             await evaluacion.delete()
             return evaluacion
         } catch (error) {
@@ -29,7 +31,7 @@ export default class EvaluacionesService {
 
     async obtenerEvaluacionesByID(id: number): Promise<Evaluaciones[] | false> {
         try {
-            const resultado = await Evaluaciones.query().where('id', id).orderBy('id', 'asc')
+            const resultado = await this.evaluacionesModel.query().where('id', id).orderBy('id', 'asc')
             
             if (!Array.isArray(resultado)) {
                 return false;
@@ -44,7 +46,7 @@ export default class EvaluacionesService {
 
     async obtenerEvaluacionesByID_Unidad(id: number): Promise<Evaluaciones[] | false> {
         try {
-            const resultado = await Evaluaciones.query().where('id_unidad', id).orderBy('id', 'asc')
+            const resultado = await this.evaluacionesModel.query().where('id_unidad', id).orderBy('id', 'asc')
             
             if (!Array.isArray(resultado)) {
                 return false;

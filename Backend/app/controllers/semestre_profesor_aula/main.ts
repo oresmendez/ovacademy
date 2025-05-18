@@ -10,7 +10,7 @@ import TokenController from '../token/main.js';
 const TokenController_ = new TokenController();
 
 
-export default class SemestreProfesorAulController {
+export default class SemestreProfesorAulaController {
 
     obtener_datos_aula = async (id: number) => {
         
@@ -21,6 +21,11 @@ export default class SemestreProfesorAulController {
         }
 
         return aula
+    }
+
+    get_todas_aulas_con_profesor = async (semestre: number) => {
+        
+        return  await SemestreProfesorAulaService_.obtener_todas_aulas_con_profesor(semestre);
     }
 
     public async asociar_profesor_aula({ request, response }: HttpContext) {
@@ -86,14 +91,13 @@ export default class SemestreProfesorAulController {
 
         try {
 
-
             const semestreActivo = await SemestreController_.obtenerSemestreActivo();
             
             if (!(semestreActivo && semestreActivo.length > 0)) {
                 return response.notFound({ message: 'No se encontro ningun semestre activo' });
             }
-
-            const AulasByProfesor = await SemestreProfesorAulaService_.obtener_todas_aulas_con_profesor(semestreActivo[0].id);
+;
+            const AulasByProfesor = await this.get_todas_aulas_con_profesor(semestreActivo[0].id);
     
             if (!AulasByProfesor) {
                 return response.notFound({ message: 'No se encontro ningun aula asociada' });

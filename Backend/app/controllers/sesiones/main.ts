@@ -1,12 +1,17 @@
 import type { HttpContext } from '@adonisjs/core/http'
 
 import SesioneService from './service.js'
-const SesioneService_ = new SesioneService();
-
 import TokenController from '../token/main.js';
-const TokenController_ = new TokenController();
 
 export default class SesioneController {
+
+    private readonly SesioneService_: SesioneService;
+    private readonly TokenController_: TokenController;
+
+    constructor() {
+        this.SesioneService_ = new SesioneService();
+        this.TokenController_ = new TokenController();
+    }
 
     consultar_user_by_email = async (email: string) => {
 
@@ -26,7 +31,7 @@ export default class SesioneController {
 
     create_password = async (user_id: number, password: string) => {
 
-        if (!await SesioneService_.store(user_id, password)) {
+        if (!await this.SesioneService_.store(user_id, password)) {
             return false
         }
         return true
@@ -34,7 +39,7 @@ export default class SesioneController {
 
     readonly #createApiToken = async (userId: number, userTypeId: number) => {
         try {
-            return await TokenController_.create_token(userId, userTypeId);
+            return await this.TokenController_.create_token(userId, userTypeId);
         } catch (error) {
             console.error('Error al crear el token:', error);
             return null;
@@ -43,7 +48,7 @@ export default class SesioneController {
 
     readonly #verify_password = async (userId, password) => {
         try {
-            const token = await SesioneService_.verify_password(userId, password);
+            const token = await this.SesioneService_.verify_password(userId, password);
             return token;
         } catch (error) {
             console.error('Error al verificar el token:', error);
@@ -104,7 +109,7 @@ export default class SesioneController {
             });
         }
 
-        if (!(await SesioneService_.cambiar_contrasena(user.id, password))) {
+        if (!(await this.SesioneService_.cambiar_contrasena(user.id, password))) {
             return response.status(400).send({ 
                 message: 'No se pudo cambiar la contrasena'
             });

@@ -1,4 +1,5 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { DateTime } from 'luxon' 
 
 export default class Semestre extends BaseModel {
 
@@ -14,7 +15,7 @@ export default class Semestre extends BaseModel {
   declare date_start: Date;
   
   @column.date()
-  declare date_end: Date;
+  declare date_end: DateTime;
 
   @column()
   declare active: boolean;

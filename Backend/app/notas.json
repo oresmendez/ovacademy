@@ -48,7 +48,7 @@ import SemestreProfesorAulaService from '../../controllers/semestre_profesor_aul
 const SemestreProfesorAulaService_ = new SemestreProfesorAulaService();
 
 
-export default class SemestreProfesorAulController {
+export default class SemestreProfesorAulaController {
 
 
         

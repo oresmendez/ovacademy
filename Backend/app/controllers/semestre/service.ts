@@ -2,12 +2,11 @@ import Semestre from '../../models/universidad/semestre.js'
 
 export default class SemestreService {
 
-    async crear_semestre(nombre: string, date_start: Date, date_end: Date): Promise<Semestre | null> {
+    async crear_semestre(nombre: string, date_start: Date): Promise<Semestre | null> {
         try {
             return await Semestre.create({
                 nombre,
                 date_start, 
-                date_end
             })
         } catch (error) {
             console.error('Error creando semestre en SemestreService:', error.message)
@@ -32,6 +31,17 @@ export default class SemestreService {
         } catch (error) {
             console.error('Error obteniendo todos los semestres:', error);
             return null;
+        }
+    }
+
+    async obtenerSemestreByID(id: number): Promise<Semestre | false> {
+        try {
+            const semestre = await Semestre.find(id); 
+            if (!semestre) return false;
+            return semestre;
+        } catch (error) {
+                console.error('Error obteniendo una Semestre:', error);
+                return false; // Retorna false si ocurre un error
         }
     }
 

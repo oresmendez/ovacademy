@@ -1,36 +1,45 @@
 import type { HttpContext } from '@adonisjs/core/http'
 
 import UserService from './service.js';
-const UserService_ = new UserService();
-
 import SesioneController from '../sesiones/main.js';
-const SesioneController_ = new SesioneController();
-
 import AdministradorController from '../administrador/main.js';
-const AdministradorController_ = new AdministradorController();
-
 import EstudianteController from '../estudiante/main.js';
-const EstudianteController_ = new EstudianteController();
-
 import ProfesorController from '../profesor/main.js';
-const ProfesorController_ = new ProfesorController();
 
 export default class UsersController {
 
+    private readonly UserService_: UserService;
+    private readonly SesioneController_: SesioneController;
+    private readonly AdministradorController_: AdministradorController;
+    private readonly EstudianteController_: EstudianteController;
+    private readonly ProfesorController_: ProfesorController;
+
+    constructor() {
+        this.UserService_ = new UserService();
+        this.SesioneController_ = new SesioneController();
+        this.AdministradorController_ = new AdministradorController();
+        this.EstudianteController_ = new EstudianteController();
+        this.ProfesorController_ = new ProfesorController();
+    }
+
     create_user = async (email: string, name: string, surname: string, type_id: number, status_logico: boolean) => {
-        return await UserService_.crear_usuario(email.toLowerCase(), name, surname, type_id, status_logico)
+        return await this.UserService_.crear_usuario(email.toLowerCase(), name, surname, type_id, status_logico)
     }
 
     delete_user = async (id: number) => {
-        return await UserService_.eliminar_usuario(id)
+        return await this.UserService_.eliminar_usuario(id)
     }
 
     consultar_user_by_email = async (email: string) => {
-        return await UserService_.consultar_user_by_email(email)
+        return await this.UserService_.consultar_user_by_email(email)
+    }
+
+    consultar_user_by_ID = async (id: number) => {
+        return await this.UserService_.consultar_user_by_ID(id)
     }
 
     consultar_user_si_esta_habilitado = async (email: string) => {
-        return await UserService_.consultar_user_si_esta_habilitado(email)
+        return await this.UserService_.consultar_user_si_esta_habilitado(email)
     }
 
     public async create_usuario({ request, response }: HttpContext) {
@@ -47,7 +56,7 @@ export default class UsersController {
                 });
             }
 
-            if (!await SesioneController_.create_password(user.id, password)) {
+            if (!await this.SesioneController_.create_password(user.id, password)) {
                 this.delete_user(user.id)
                 return response.status(400).send({ 
                     message: 'error en ecriptar la contrasena', 
@@ -56,7 +65,7 @@ export default class UsersController {
             }
 
             if (type_id === 1) {
-                if (!await EstudianteController_.create_estudiante(user.id)) {
+                if (!await this.EstudianteController_.create_estudiante(user.id)) {
                     this.delete_user(user.id)
                     return response.status(400).send({ 
                         message: 'error en la creacion del estudiante', 
@@ -66,7 +75,7 @@ export default class UsersController {
             }
 
             if (type_id === 2) {
-                if (!await ProfesorController_.create_profesor(user.id)) {
+                if (!await this.ProfesorController_.create_profesor(user.id)) {
                     this.delete_user(user.id)
                     return response.status(400).send({ 
                         message: 'error en la creacion del profesor', 
@@ -76,7 +85,7 @@ export default class UsersController {
             }
 
             if (type_id === 3) {
-                if (!await AdministradorController_.create_administrador(user.id)) {
+                if (!await this.AdministradorController_.create_administrador(user.id)) {
                     this.delete_user(user.id)
                     return response.status(400).send({ 
                         message: 'error en la creacion del administrador', 
@@ -109,7 +118,7 @@ export default class UsersController {
                 });
             }
 
-            const user = await UserService_.listado_usuarios(type_id);
+            const user = await this.UserService_.listado_usuarios(type_id);
             
             if (!user || user.length === 0) {
                 return response.status(404).json({
@@ -157,7 +166,7 @@ export default class UsersController {
 
         const { email, name, surname, phone } = request.only(['email', 'name', 'surname', 'phone'])
         
-        if (!await UserService_.editar_usuario(email, name, surname, phone)) {
+        if (!await this.UserService_.editar_usuario(email, name, surname, phone)) {
             return response.status(400).send({ 
                 message: 'no se pudo actualizar el usuario', 
                 success: false 
@@ -184,6 +193,33 @@ export default class UsersController {
             }
     
             user.status_logico = !user.status_logico;
+    
+            await user.save();
+    
+            return response.status(200).json({
+                success: true,
+            });
+
+        } catch (error) {
+            console.error(error);
+            return response.status(500)
+        }
+    }
+
+    public async eliminar_usuario({ params, response }: HttpContext) {
+        
+        try {
+            
+            const { email } = params;
+            const user = await this.consultar_user_by_email(email);
+    
+            if (!user) {
+                return response.status(404).json({
+                    message: 'Usuario no encontrado',
+                });
+            }
+    
+            user.eliminado = !user.eliminado;
     
             await user.save();
     

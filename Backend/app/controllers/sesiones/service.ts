@@ -4,30 +4,22 @@ import hash from '@adonisjs/core/services/hash'
 
 export default class SesioneService {
 
-    /**----------------------------------------------------------
-     * @author      : Orestes Fleitas
-     * @DateCreate  : 20 dic 2024
-     * @DateUpdate  : 20 dic 2024
-     * @Name        : verify_password
-     * @details     : Verifica el ID y la contraseña del Usuario
-     * @returnTrue  : Retorna Verdadero si la contraseña y el usuario es correcto
-     * @returnFalse : Retorna False si la contraseña es invalida
-    */
+    private readonly sesioneModel = Sesione;
+    private readonly hashModel = hash;
 
     async verify_password(id: number, password: string): Promise<boolean> {
         
-        const response = await Sesione.find(id)
+        const response = await this.sesioneModel.find(id)
     
         if (!response ) {
             return false;
         }
 
         if (await hash.verify(response.password, password)) {
-            console.log('Logeo exitoso');
+
             return true;
         }
 
-        console.log('El password es incorrecto.');
         return false;       
 
     } 
@@ -46,8 +38,8 @@ export default class SesioneService {
         
         try {
 
-            const encryptPassword = await hash.make(password);
-            const sessionUser = await Sesione.create({
+            const encryptPassword = await this.hashModel.make(password);
+            const sessionUser = await this.sesioneModel.create({
                 user_id,
                 password: encryptPassword,
             });
@@ -62,7 +54,7 @@ export default class SesioneService {
     async cambiar_contrasena(id: number, password: string): Promise<boolean> {
         
         try {
-            const user = await Sesione.find(id)
+            const user = await this.sesioneModel.find(id)
         
             if (!user ) {
                 return false;

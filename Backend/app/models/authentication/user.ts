@@ -23,6 +23,9 @@ export default class User extends BaseModel {
   declare status_logico: boolean;
 
   @column()
+  declare eliminado: boolean;
+
+  @column()
   declare type_id: number;
 
   @column.dateTime({ autoCreate: true })

@@ -15,8 +15,9 @@ CREATE TABLE authentication.user (
     name VARCHAR(100), -- Nombre
     surname VARCHAR(100), -- Apellido
     phone VARCHAR(20), -- Teléfono único
-    status_logico BOOLEAN NOT NULL, -- Estado lógico por defecto
     type_id INT NOT NULL, -- Clave foránea al tipo de usuario
+    status_logico BOOLEAN NOT NULL, -- Estado lógico por defecto
+    eliminado BOOLEAN DEFAULT FALSE NOT NULL, -- Estado lógico por defecto
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha de creación del usuario
     update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha de actualización
     FOREIGN KEY (type_id) REFERENCES authentication.type_user (id) ON DELETE CASCADE -- Relación con type_user
@@ -87,7 +88,7 @@ CREATE TABLE universidad.semestre (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(50),
     date_start DATE NOT NULL, 
-    date_end DATE NOT NULL,
+    date_end DATE,
     active BOOLEAN DEFAULT TRUE NOT NULL 
 );
 
@@ -95,10 +96,8 @@ DROP TABLE IF EXISTS universidad.aula CASCADE;
 CREATE TABLE universidad.aula (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(50),
-    ubicacion VARCHAR(50)
-    
-    -- puedes agregar hora de ingreso al aula, hora de salida
-    -- el horario no puede ir en aula, si no cuando se le asigna un aula a un smeestre
+    ubicacion VARCHAR(50),
+    active BOOLEAN DEFAULT TRUE NOT NULL 
 );
 
 DROP TABLE IF EXISTS universidad.semestre_profesor_aula CASCADE;

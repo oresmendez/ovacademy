@@ -1,28 +1,33 @@
 import type { HttpContext } from '@adonisjs/core/http'
 
 import UnidadesController from '../unidades/main.js';
-const UnidadesController_ = new UnidadesController();
-
 import EvaluacionesService from './service.js';
-const EvaluacionesService_ = new EvaluacionesService();
-
 import SopaDeLetrasController from '../sopa_de_letras/main.js';
-const SopaDeLetrasController_ = new SopaDeLetrasController();
-
 import CuestionariosController from '../cuestionarios/main.js';
-const CuestionariosController_ = new CuestionariosController();
-
 import PreguntasAbiertasController from '../preguntas_abiertas/main.js';
-const PreguntasAbiertasController_ = new PreguntasAbiertasController();
 
 export default class EvaluacionesController {
 
+    private readonly UnidadesController_: UnidadesController;
+    private readonly EvaluacionesService_: EvaluacionesService;
+    private readonly SopaDeLetrasController_: SopaDeLetrasController;
+    private readonly CuestionariosController_: CuestionariosController;
+    private readonly PreguntasAbiertasController_: PreguntasAbiertasController;
+
+    constructor() {
+        this.UnidadesController_ = new UnidadesController();
+        this.EvaluacionesService_ = new EvaluacionesService();
+        this.SopaDeLetrasController_ = new SopaDeLetrasController();
+        this.CuestionariosController_ = new CuestionariosController();
+        this.PreguntasAbiertasController_ = new PreguntasAbiertasController();
+    }
+
     obtener_evaluaciones_By_Unidad = async (id_unidad: number) => {
-        return await EvaluacionesService_.obtenerEvaluacionesByID_Unidad(id_unidad);
+        return await this.EvaluacionesService_.obtenerEvaluacionesByID_Unidad(id_unidad);
     }
 
     delete_evaluacion = async (id: number) => {
-        return await EvaluacionesService_.eliminar_evaluacion(id)
+        return await this.EvaluacionesService_.eliminar_evaluacion(id)
     }
 
     public async create_evaluacion({ request, response }: HttpContext) {
@@ -30,7 +35,7 @@ export default class EvaluacionesController {
             
             const { id_unidad, type_id, nota_evaluacion} = request.only(['id_unidad', 'type_id', 'nota_evaluacion'])
 
-            const unidad = await UnidadesController_.consultar_unidad_by_ID(id_unidad);
+            const unidad = await this.UnidadesController_.consultar_unidad_by_ID(id_unidad);
 
             const evaluaciones = await this.obtener_evaluaciones_By_Unidad(id_unidad);
             let totalNotas = 0;
@@ -54,7 +59,7 @@ export default class EvaluacionesController {
                 }
             }
             
-            const evaluacion = await EvaluacionesService_.create_evaluacion(id_unidad, type_id, nota_evaluacion)
+            const evaluacion = await this.EvaluacionesService_.create_evaluacion(id_unidad, type_id, nota_evaluacion)
             
             if (!evaluacion) {
                 return response.status(400).send({ 
@@ -66,7 +71,7 @@ export default class EvaluacionesController {
             if (parseInt(type_id) === 1) {
                 const { palabras } = request.only(['palabras'])
 
-                if (!await SopaDeLetrasController_.create_SopaDeLetras(evaluacion.id, palabras)) {
+                if (!await this.SopaDeLetrasController_.create_SopaDeLetras(evaluacion.id, palabras)) {
                     this.delete_evaluacion(evaluacion.id)
                     return response.status(400).send({ 
                         message: 'error en la de la sopa de letras', 
@@ -83,7 +88,7 @@ export default class EvaluacionesController {
                     const opciones = item.opciones;
                     const respuesta_correcta = item.respuesta;
             
-                    const creado = await CuestionariosController_.create_cuestionario(
+                    const creado = await this.CuestionariosController_.create_cuestionario(
                         evaluacion.id,
                         pregunta,
                         opciones,
@@ -105,7 +110,7 @@ export default class EvaluacionesController {
             
                 for (const item of preguntas) {
             
-                    const creado = await PreguntasAbiertasController_.create_PreguntasAbiertas(
+                    const creado = await this.PreguntasAbiertasController_.create_PreguntasAbiertas(
                         evaluacion.id,
                         item,
                     );

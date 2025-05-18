@@ -13,4 +13,7 @@ export default class Aula extends BaseModel {
   @column()
   declare ubicacion: string
 
+  @column()
+  declare active: boolean;
+
 }

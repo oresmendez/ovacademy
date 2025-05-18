@@ -150,11 +150,11 @@ class TestDatosOvacademy:
         self.cargar_semestre()
         self.cargar_aula()
 
-        self.iniciar_sesion_user("Lisbeth.fernandez@gmail.com", "1")
-        self.cargar_unidades()
-        self.cargar_contenido()
+        # self.iniciar_sesion_user("Lisbeth.fernandez@gmail.com", "1")
+        # self.cargar_unidades()
+        # self.cargar_contenido()
 
-        self.cargar_evaluaciones()
+        # self.cargar_evaluaciones()
 
 
         
