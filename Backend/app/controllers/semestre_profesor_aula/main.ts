@@ -34,12 +34,10 @@ export default class SemestreProfesorAulaController {
 
             const { aula, profesor} = request.only(['aula', 'profesor']);
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
-            if (!(semestreActivo && semestreActivo.length > 0)) {
-                return response.notFound({ message: 'No se encontro ningun semestre activo' });
-            }
+            const semestre = await SemestreController_.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
-            await SemestreProfesorAulaService_.crear_asociacion_profesorAulaSemestre(semestreActivo[0].id, profesor, aula);
+            await SemestreProfesorAulaService_.crear_asociacion_profesorAulaSemestre(semestre.id, profesor, aula);
 
             return response.status(200).json({
                 message: 'Proceso de asociación finalizado',
@@ -69,13 +67,11 @@ export default class SemestreProfesorAulaController {
                 return response.notFound({ message: 'No se encontro un token valido de usuario' });
             }
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
+            const semestre = await SemestreController_.obtenerSemestreActivo();
             
-            if (!(semestreActivo && semestreActivo.length > 0)) {
-                return response.notFound({ message: 'No se encontro ningun semestre activo' });
-            }
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
-            const AulasByProfesor = await SemestreProfesorAulaService_.obtenerAulaAsociadaProfesor(semestreActivo[0].id, userByToken[0].user_id);
+            const AulasByProfesor = await SemestreProfesorAulaService_.obtenerAulaAsociadaProfesor(semestre.id, userByToken[0].user_id);
     
             if (!AulasByProfesor) {
                 return response.notFound({ message: 'No se encontro ningun aula asociada' });
@@ -88,17 +84,15 @@ export default class SemestreProfesorAulaController {
     }
 
     public async obtener_todas_aulas_con_profesor({ request, response }: HttpContext) {
-
+        
         try {
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
+            const semestre = await SemestreController_.obtenerSemestreActivo();
             
-            if (!(semestreActivo && semestreActivo.length > 0)) {
-                return response.notFound({ message: 'No se encontro ningun semestre activo' });
-            }
-;
-            const AulasByProfesor = await this.get_todas_aulas_con_profesor(semestreActivo[0].id);
-    
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
+            
+            const AulasByProfesor = await this.get_todas_aulas_con_profesor(semestre.id);
+            console.log(AulasByProfesor)
             if (!AulasByProfesor) {
                 return response.notFound({ message: 'No se encontro ningun aula asociada' });
             }
@@ -113,15 +107,13 @@ export default class SemestreProfesorAulaController {
         
         try {
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
+            const semestre = await SemestreController_.obtenerSemestreActivo();
             
-            if (!(semestreActivo && semestreActivo.length > 0)) {
-                return response.notFound({ message: 'No se encontro ningun semestre activo' });
-            }
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
             const { aula, profesor} = request.only(['aula', 'profesor']);
 
-            const aulaProfesor = await SemestreProfesorAulaService_.obtener_detalles_profesor_aula(semestreActivo[0].id, profesor, aula);
+            const aulaProfesor = await SemestreProfesorAulaService_.obtener_detalles_profesor_aula(semestre.id, profesor, aula);
 
             if (!aulaProfesor) {
                 return response.status(404).json({ message: 'Estudiante no encontrado' })
@@ -140,11 +132,9 @@ export default class SemestreProfesorAulaController {
             
         try {
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
+            const semestre = await SemestreController_.obtenerSemestreActivo();
             
-            if (!(semestreActivo && semestreActivo.length > 0)) {
-                return response.notFound({ message: 'No se encontro ningun semestre activo' });
-            }
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
             const token = request.header('token');
             if (!token) {return response.unauthorized({ message: 'Token requerido' });}
@@ -155,7 +145,7 @@ export default class SemestreProfesorAulaController {
                 return response.notFound({ message: 'No se encontro un token valido de usuario' });
             }
             
-            const aulaProfesor = await SemestreProfesorAulaService_.obtener_detalles_profesor_aula(semestreActivo[0].id, userByToken[0].user_id, params.aula_id);
+            const aulaProfesor = await SemestreProfesorAulaService_.obtener_detalles_profesor_aula(semestre.id, userByToken[0].user_id, params.aula_id);
     
             if (!aulaProfesor) {
                 return response.status(404).json({
@@ -181,11 +171,9 @@ export default class SemestreProfesorAulaController {
         
         try {
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
+            const semestre = await SemestreController_.obtenerSemestreActivo();
             
-            if (!(semestreActivo && semestreActivo.length > 0)) {
-                return response.notFound({ message: 'No se encontro ningun semestre activo' });
-            }
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
             const token = request.header('token');
             if (!token) {return response.unauthorized({ message: 'Token requerido' });}
@@ -196,7 +184,7 @@ export default class SemestreProfesorAulaController {
                 return response.notFound({ message: 'No se encontro un token valido de usuario' });
             }
 
-            const aulaProfesor = await SemestreProfesorAulaService_.obtener_detalles_profesor_aula(semestreActivo[0].id, userByToken[0].user_id, params.aula_id);
+            const aulaProfesor = await SemestreProfesorAulaService_.obtener_detalles_profesor_aula(semestre.id, userByToken[0].user_id, params.aula_id);
 
             if (!aulaProfesor) {
                 return response.notFound({ message: 'No se encontro ningun aula' });

@@ -33,4 +33,10 @@ export default class Unidad extends BaseModel {
   @column()
   declare status: boolean;
 
+  @column()
+  declare is_deleted: boolean;
+
+  @column.dateTime({ serializeAs: null })
+  declare deleted_at: DateTime | null;
+
 }

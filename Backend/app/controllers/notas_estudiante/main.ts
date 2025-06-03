@@ -49,15 +49,15 @@ export default class NotaEstudianteController {
             const userByToken = await TokenController_.obtenerUserByToken(token);
             if (!(userByToken && userByToken.length > 0)) {return response.notFound({ message: 'No se encontro un token valido de usuario' });}
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
-            if (!(semestreActivo && semestreActivo.length > 0)) {return response.notFound({ message: 'No se encontro ningun semestre activo' });}
+            const semestre = await SemestreController_.obtenerSemestreActivo();
+			if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
             const { nota_evaluacion, evaluacion_id } = request.only(['nota_evaluacion', 'evaluacion_id'])
             
-            if (!await NotaEstudianteService_.registrar_nota_estudiante(parseFloat(nota_evaluacion), userByToken[0].user_id, evaluacion_id, semestreActivo[0].id)) {
+            if (!await NotaEstudianteService_.registrar_nota_estudiante(parseFloat(nota_evaluacion), userByToken[0].user_id, evaluacion_id, semestre.id)) {
                 return response.badRequest({ message: 'Error en crear la nota' });
             }else{
-				const nota = await this.sumar_notas_estudiante(userByToken[0].user_id, semestreActivo[0].id);
+				const nota = await this.sumar_notas_estudiante(userByToken[0].user_id, semestre.id);
 				if (!nota) {return response.badRequest({ message: 'Error al sumar las notas' });}
 				
 				const actualizar_nota = await EstudianteAulaController_.editar_nota_final(userByToken[0].user_id, nota);
@@ -151,18 +151,18 @@ export default class NotaEstudianteController {
     public async edit_nota({ request, response }: HttpContext) {
 		try {
 
-			const semestreActivo = await SemestreController_.obtenerSemestreActivo();
-            if (!(semestreActivo && semestreActivo.length > 0)) {return response.notFound({ message: 'No se encontro ningun semestre activo' });}
+			const semestre = await SemestreController_.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 			
 			const { estudiante_id, evaluacion_id, nota_evaluacion } = request.only(['estudiante_id', 'evaluacion_id', 'nota_evaluacion']);
 			
-			const nota = await NotaEstudianteService_.editar_nota(estudiante_id, evaluacion_id, semestreActivo[0].id, nota_evaluacion);
+			const nota = await NotaEstudianteService_.editar_nota(estudiante_id, evaluacion_id, semestre.id, nota_evaluacion);
 			if (!nota) {
 				return response.status(404).json({
 					message: 'nota no encontrado',
 				});
 			}else{
-				const nota = await this.sumar_notas_estudiante(estudiante_id, semestreActivo[0].id);
+				const nota = await this.sumar_notas_estudiante(estudiante_id, semestre.id);
 				if (!nota) {return response.badRequest({ message: 'Error al sumar las notas' });}
 				
 				const actualizar_nota = await EstudianteAulaController_.editar_nota_final(estudiante_id, nota);

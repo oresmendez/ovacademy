@@ -150,6 +150,8 @@ CREATE TABLE universidad.unidades (
     status BOOLEAN DEFAULT TRUE NOT NULL, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BOOLEAN DEFAULT FALSE NOT NULL, 
+    deleted_at TIMESTAMP DEFAULT NULL,
 
     FOREIGN KEY (profesor_id) REFERENCES universidad.profesor (user_id) ON DELETE CASCADE
 );
@@ -163,6 +165,8 @@ CREATE TABLE universidad.contenidos (
     status BOOLEAN DEFAULT TRUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BOOLEAN DEFAULT FALSE NOT NULL, 
+    deleted_at TIMESTAMP DEFAULT NULL,
 
     FOREIGN KEY (id_unidad) REFERENCES universidad.unidades (id) ON DELETE CASCADE
 );
@@ -182,6 +186,8 @@ CREATE TABLE universidad.evaluaciones (
     status BOOLEAN DEFAULT TRUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BOOLEAN DEFAULT FALSE NOT NULL, 
+    deleted_at TIMESTAMP DEFAULT NULL,
 
     FOREIGN KEY (type_id) REFERENCES universidad.type_evaluaciones (id) ON DELETE CASCADE, 
     FOREIGN KEY (id_unidad) REFERENCES universidad.unidades (id) ON DELETE CASCADE
@@ -262,6 +268,8 @@ CREATE TABLE universidad.preguntas_abiertas (
     id SERIAL PRIMARY KEY,
     evaluacion_id INT NOT NULL,
     pregunta TEXT NOT NULL,
+    is_deleted BOOLEAN DEFAULT FALSE NOT NULL, 
+    deleted_at TIMESTAMP DEFAULT NULL,
 
     FOREIGN KEY (evaluacion_id) REFERENCES universidad.evaluaciones (id) ON DELETE CASCADE
 );

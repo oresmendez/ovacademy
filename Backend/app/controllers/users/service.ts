@@ -46,6 +46,7 @@ export default class UserService {
             const user = await this.userModel.query()
                 .where('email', email)
                 .where('status_logico', true)
+                .where('eliminado', false)
                 .first();
             return user ?? null;
         } catch (error) {

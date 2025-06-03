@@ -12,7 +12,7 @@ export default class Semestre extends BaseModel {
   declare nombre: string
 
   @column.date()
-  declare date_start: Date;
+  declare date_start: DateTime;
   
   @column.date()
   declare date_end: DateTime;

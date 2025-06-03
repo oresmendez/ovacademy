@@ -19,7 +19,7 @@ export default class CuestionariosService {
 
     async obtener_cuestionario(evaluacion_id: number): Promise<Array<Cuestionarios> | null> {
         try {
-            const cuestionario = await Cuestionarios.query().where('evaluacion_id', evaluacion_id).orderBy('evaluacion_id', 'asc');
+            const cuestionario = await Cuestionarios.query().where('evaluacion_id', evaluacion_id).orderBy('evaluacion_id', 'asc').orderBy('id', 'asc');
             return cuestionario.length > 0 ? cuestionario : null;
         } catch (error) {
             console.error('Error obteniendo todas el cuestionario:', error);

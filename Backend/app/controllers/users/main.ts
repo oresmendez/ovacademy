@@ -48,6 +48,8 @@ export default class UsersController {
 
             const { email, password, name="", surname="", type_id, status_logico=true } = request.only(['email', 'password', 'name', 'surname', 'type_id', 'status_logico'])
             const user = await this.create_user(email, name, surname, type_id, status_logico)
+
+            console.log(user)
             
             if (!user) {
                 return response.status(400).send({ 

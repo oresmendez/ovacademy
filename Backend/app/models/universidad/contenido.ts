@@ -1,4 +1,4 @@
-
+import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 
 export default class Contenido extends BaseModel {
@@ -25,5 +25,11 @@ export default class Contenido extends BaseModel {
 
   @column()
   declare status: boolean;
+
+  @column()
+  declare is_deleted: boolean;
+
+  @column.dateTime({ serializeAs: null })
+  declare deleted_at: DateTime | null;
 
 }

@@ -22,8 +22,8 @@ export default class EvaluacionesController {
         this.PreguntasAbiertasController_ = new PreguntasAbiertasController();
     }
 
-    obtener_evaluaciones_By_Unidad = async (id_unidad: number) => {
-        return await this.EvaluacionesService_.obtenerEvaluacionesByID_Unidad(id_unidad);
+    obtener_evaluaciones_By_Unidad = async (id_unidad: number, status: string = "true") => {
+        return await this.EvaluacionesService_.obtenerEvaluacionesByID_Unidad(id_unidad, status);
     }
 
     delete_evaluacion = async (id: number) => {
@@ -36,8 +36,8 @@ export default class EvaluacionesController {
             const { id_unidad, type_id, nota_evaluacion} = request.only(['id_unidad', 'type_id', 'nota_evaluacion'])
 
             const unidad = await this.UnidadesController_.consultar_unidad_by_ID(id_unidad);
-
-            const evaluaciones = await this.obtener_evaluaciones_By_Unidad(id_unidad);
+            const statusParam = "false";
+            const evaluaciones = await this.obtener_evaluaciones_By_Unidad(id_unidad, statusParam);
             let totalNotas = 0;
 
             if (evaluaciones && evaluaciones.length > 0) {
@@ -53,7 +53,7 @@ export default class EvaluacionesController {
             
                 if (sumaRedondeada > unidad.nota_unidad) {
                     return response.status(400).send({ 
-                        message: `La nueva nota excede el puntaje. Actualmente tiene ${Math.round(totalNotas * 100) / 100} de ${unidad.nota_unidad} puntos`,
+                        message: `La nueva evaluación excede el puntaje. Actualmente tiene ${Math.round(totalNotas * 100) / 100} de ${unidad.nota_unidad} puntos`,
                         success: false 
                     });
                 }
@@ -126,7 +126,7 @@ export default class EvaluacionesController {
             }
             
             return response.status(200).json({
-                message: 'evaluacion creada',
+                message: 'Evaluacion Registrada correctamente',
                 data: evaluacion
             });
 
@@ -143,7 +143,7 @@ export default class EvaluacionesController {
     public async obtener_evaluacionesByUnidad({ params, response }: HttpContext) {
     
         try {
-            const evaluaciones = await this.obtener_evaluaciones_By_Unidad(params.id);
+            const evaluaciones = await this.obtener_evaluaciones_By_Unidad(params.id, params.status);
     
             if (!evaluaciones) {
                 return response.status(404).json({ message: 'Unidad no encontrada' });
@@ -153,6 +153,52 @@ export default class EvaluacionesController {
         } catch (error) {
             console.error('Error obteniendo las evaluaciones:', error);
             return response.status(500).json({ message: 'Error interno del servidor', error });
+        }
+    }
+
+    public async delete({ params, response }: HttpContext) {
+            
+        try {
+            
+            const { id } = params;
+            if (!await this.EvaluacionesService_.soft_delete(id)) {
+                return response.status(400).send({ 
+                    message: 'Error al eliminar la evaluacion', 
+                    success: false 
+                });
+            }
+            return response.status(200).send({ message: 'Evaluacion eliminada correctamente',});
+
+        } catch (error) {
+            console.error(error);
+            return response.status(500)
+        }
+    }
+
+    public async habilitar_or_deshabilitar_evaluacion({ request, response }: HttpContext) {
+        
+        try {
+            
+            const { id } = request.only(['id']);
+            const evaluacion = await this.EvaluacionesService_.obtenerEvaluacionPorID(id);
+    
+            if (!evaluacion) {
+                return response.status(404).json({
+                    message: 'Evaluación no encontrado',
+                });
+            }
+    
+            evaluacion.status = !evaluacion.status;
+    
+            await evaluacion.save();
+    
+            return response.status(200).json({
+                success: true,
+            });
+
+        } catch (error) {
+            console.error(error);
+            return response.status(500)
         }
     }
 

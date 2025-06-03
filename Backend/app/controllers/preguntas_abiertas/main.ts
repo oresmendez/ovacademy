@@ -41,45 +41,43 @@ export default class PreguntasAbiertasController {
         }
     }
 
-    // public async edit_sopa_de_letras({ request, response }: HttpContext) {
-    //     try {
+    public async edit_preguntas_abiertas({ request, response }: HttpContext) {
+        try {
             
-    //         const { evaluacion_id, palabras} = request.only(['evaluacion_id', 'palabras']);
-            
-    //         const sopadeletras = await SopaDeLetrasService_.obtener_SopaDeLetras(evaluacion_id);
-    
-    //         if (!sopadeletras) {
-    //             return response.status(404).json({ message: 'sopadeletras no encontrada' });
-    //         }
-            
-    //         try {
-    //             const sopa = sopadeletras[0];
+            const { evaluacion_id, palabras} = request.only(['evaluacion_id', 'palabras']);
 
-    //             sopa.merge({ palabras });
-    //             await sopa.save();
+            for (const item of palabras) {
+                const { id, pregunta, eliminada } = item;
 
-    //             return response.status(200).json({
-    //                 message: 'sopa de letras actualizada con éxito',
-    //                 data: sopadeletras,
-    //             });
+                if (id == null) {
+                    await PreguntasAbiertasService_.create_PreguntasAbiertas(evaluacion_id, pregunta)
+                }else{
+                    const resultado = await PreguntasAbiertasService_.editar_pregunta(id, pregunta, eliminada);
     
-    //         } catch (saveError) {
-    //             console.error(`Error al guardar el contenido: ${saveError.message}`);
-    //             return response.status(500).json({
-    //                 message: 'Error al guardar los cambios del Contenido',
-    //                 success: false,
-    //                 error: saveError.message,
-    //             });
-    //         }
-    
-    //     } catch (error) {
-    //         console.error(`Error en edit: ${error.message}`);
-    //         return response.status(500).json({
-    //             message: 'Error interno del servidor',
-    //             success: false,
-    //             error: error.message,
-    //         });
-    //     }
-    // }
+                    if (!resultado) {
+                        return response.status(400).json({
+                            message: `Error al editar la pregunta con ID ${id}`,
+                            success: false,
+                        });
+                    }
+                }
+
+            }
+
+            return response.status(200).json({
+                message: 'Preguntas actualizadas correctamente',
+                success: true,
+            });
+            
+
+        } catch (error) {
+            console.error(`Error en edit: ${error.message}`);
+            return response.status(500).json({
+                message: 'Error interno del servidor',
+                success: false,
+                error: error.message,
+            });
+        }
+    }
 
 }

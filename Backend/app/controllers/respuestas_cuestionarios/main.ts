@@ -66,14 +66,12 @@ export default class RespuestasCuestionarioController {
                 return response.notFound({ message: 'No se encontro un token valido de usuario' });
             }
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
-            if (!(semestreActivo && semestreActivo.length > 0)) {
-                return response.notFound({ message: 'No se encontro ningun semestre activo' });
-            }
+            const semestre = await SemestreController_.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
             const { cuestionario_id, respuesta} = request.only(['cuestionario_id', 'respuesta']) 
 
-            const cuestionario = await RespuestasCuestionariosService_.create_respuesta_cuestionario(userByToken[0].user_id, cuestionario_id, semestreActivo[0].id, respuesta);
+            const cuestionario = await RespuestasCuestionariosService_.create_respuesta_cuestionario(userByToken[0].user_id, cuestionario_id, semestre.id, respuesta);
     
             if (!cuestionario) {
                 return response.status(404).json({ message: 'sopadeletras no encontrada' });

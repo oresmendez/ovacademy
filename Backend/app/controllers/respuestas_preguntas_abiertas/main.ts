@@ -66,10 +66,8 @@ export default class RespuestasPreguntasAbiertasController {
                 return response.notFound({ message: 'No se encontro un token valido de usuario' });
             }
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
-            if (!(semestreActivo && semestreActivo.length > 0)) {
-                return response.notFound({ message: 'No se encontro ningun semestre activo' });
-            }
+            const semestre = await SemestreController_.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
             const { respuestas } = request.only(['respuestas']);
 
@@ -83,7 +81,7 @@ export default class RespuestasPreguntasAbiertasController {
                 await RespuestasPreguntasAbiertasService_.create_respuesta_preguntas_abiertas(
                     userByToken[0].user_id,
                     preguntaId,
-                    semestreActivo[0].id,
+                    semestre.id,
                     respuesta
                 );
             }
@@ -107,8 +105,6 @@ export default class RespuestasPreguntasAbiertasController {
                 const id_escala_apreciacion = item.calificacion;
                 const preguntaId = item.preguntaId;
 
-                
-    
                 // Obtener las respuestas del cuestionario
                 const cuestionarios = await RespuestasPreguntasAbiertasService_.obtener_respuestas_preguntas_id(preguntaId);
                 console.log(cuestionarios)

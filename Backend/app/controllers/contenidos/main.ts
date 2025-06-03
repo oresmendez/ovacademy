@@ -127,4 +127,23 @@ export default class ContenidosController {
         }
     }
 
+    public async delete({ params, response }: HttpContext) {
+        
+        try {
+            
+            const { id } = params;
+            if (!await ContenidoService_.soft_delete(id)) {
+                return response.status(400).send({ 
+                    message: 'Error al eliminar la unidad', 
+                    success: false 
+                });
+            }
+            return response.status(200).send({ message: 'Unidad eliminada correctamente',});
+
+        } catch (error) {
+            console.error(error);
+            return response.status(500)
+        }
+    }
+
 }

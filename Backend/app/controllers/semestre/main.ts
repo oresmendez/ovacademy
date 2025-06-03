@@ -14,13 +14,13 @@ const SemestreService_ = new SemestreService();
 export default class SemestreController {
 
     obtenerSemestreActivo = async () => {
-        return await SemestreService_.obtenerSemestreActivo()
+        return await SemestreService_.get_semestre_active()
     }
 
     public async create_semestre({ request, response }: HttpContext) {
         try {
 
-            const semestreActivo = await SemestreService_.obtenerSemestreActivo()
+            const semestreActivo = await this.obtenerSemestreActivo()
            
             if (semestreActivo) {
                 return response.status(403).send({ 
@@ -48,7 +48,7 @@ export default class SemestreController {
                     success: false,
                 });
             }
-            const semestre = await SemestreService_.crear_semestre(nombre, fecha_inicio)
+            const semestre = await SemestreService_.create_semestre(nombre, fecha_inicio)
 
             if (!semestre) {
                 return response.status(400).send({ 
@@ -122,121 +122,43 @@ export default class SemestreController {
         }
     }
 
-    public async culminar_semestre({ response }: HttpContext) {
-        try {
-          const semestresActivos = await this.obtenerSemestreActivo();
-      
-          if (!semestresActivos || semestresActivos.length === 0) {
-            return response.status(400).send({
-              message: 'No existe semestre activo',
-              success: false,
-            });
-          }
-      
-          const semestreActivo = semestresActivos[0];
-          const aulas = await SemestreProfesorAulaService_.obtener_todas_aulas_con_profesor(semestreActivo.id) || [];
-      
-          // Verificar si todas las aulas están deshabilitadas
-          const todasAulasDeshabilitadas = aulas.every((aula) => aula.habilitado === false);
-      
-          if (!todasAulasDeshabilitadas) {
-                const profesoresConAulasHabilitadas = [
-                ...new Set(
-                    aulas
-                    .filter((aula) => aula.habilitado === true)
-                    .map((aula) => aula.profesor_id)
-                )
-                ];
-            
-                const profesoresInfo = await Promise.all(
-                    profesoresConAulasHabilitadas.map((id) =>
-                    UsersController_.consultar_user_by_ID(id)
-                    )
-                );
-              
-                const emails = profesoresInfo
-                    .filter((prof): prof is any => prof !== null)
-                    .map((prof) => prof.email);
+    
 
-              
-                return response.status(400).send({
-                    message: `Los siguientes profesores aún tienen secciones habilitadas: ${emails.join(', ')}`,
-                    success: false,
-                });
-          }
-          
-      
-          // Si todo está correcto, finalizar el semestre
-          semestreActivo.date_end = DateTime.now();
-          semestreActivo.active = false;
-          await semestreActivo.save();
-      
-          return response.status(200).json({
-            success: true,
-            message: 'Semestre culminado correctamente',
-          });
-      
-        } catch (error) {
-          console.error(error);
-          return response.status(500).send({
-            message: 'Error interno del servidor',
-            success: false,
-          });
-        }
-    }
-
-    public async get_semestrebyID({ params, response }: HttpContext) {
+    public async get_id({ params, response }: HttpContext) {
     
         try {
 
-            const semestre = await SemestreService_.obtenerSemestreByID(params.id);
-    
-            if (!semestre) {
-                return response.status(404).json({ message: 'Seccion no encontrada' });
-            }
-    
+            const semestre = await SemestreService_.get_id(params.id);
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
+
             return response.status(200).json({
-                message: '',
                 data: semestre
             });
+            
         } catch (error) {
-            console.error('Error obteniendo el semestre:', error);
-            return response.status(500).json({ message: 'Error interno del servidor', error });
+            console.error(`Error: ${error.message}`);
+            return response.status(500).json({
+                message: 'Error interno del servidor',
+                success: false,
+                error: error.message,
+            });
         }
     }
 
-    public async edit_semestre({ request, response }: HttpContext) {
+    public async update({ request, response }: HttpContext) {
         try {
+
             const { id, nombre, date_start } = request.only(['id', 'nombre','date_start']);
-            const semestre = await SemestreService_.obtenerSemestreByID(id);
-            if (!semestre) {
-                return response.status(404).json({
-                    message: 'No existe semestre',
-                    success: false,
-                });
-            }
 
-            try {
-                
-                semestre.merge({ nombre, date_start });
-                await semestre.save();
+            const semestre = await SemestreService_.update(id, nombre, date_start);
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
-                return response.status(200).json({
-                    message: 'semestre actualizado con éxito',
-                    data: semestre,
-                });
-
-            } catch (saveError) {
-                console.error(`Error al guardar del aula: ${saveError.message}`);
-                return response.status(500).json({
-                    message: 'Error al guardar los cambios del aula',
-                    success: false,
-                    error: saveError.message,
-                });
-            }
+            return response.status(200).json({
+                message: 'Semestre actualizado',
+            });
 
         } catch (error) {
-            console.error(`Error en edit: ${error.message}`);
+            console.error(`Error: ${error.message}`);
             return response.status(500).json({
                 message: 'Error interno del servidor',
                 success: false,
@@ -245,6 +167,57 @@ export default class SemestreController {
         }
     }
       
+    public async culminar({ response }: HttpContext) {
+
+        try {
+
+            const semestre = await this.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
         
+            const aulas = await SemestreProfesorAulaService_.obtener_todas_aulas_con_profesor(semestre.id) || [];
+        
+            const todasAulasDeshabilitadas = aulas.every((aula) => aula.habilitado === false);
+        
+            if (!todasAulasDeshabilitadas) {
+                    const profesoresConAulasHabilitadas = [
+                    ...new Set(
+                        aulas
+                        .filter((aula) => aula.habilitado === true)
+                        .map((aula) => aula.profesor_id)
+                    )
+                    ];
+                
+                    const profesoresInfo = await Promise.all(
+                        profesoresConAulasHabilitadas.map((id) =>
+                        UsersController_.consultar_user_by_ID(id)
+                        )
+                    );
+                
+                    const emails = profesoresInfo
+                        .filter((prof): prof is any => prof !== null)
+                        .map((prof) => prof.email);
+
+                
+                    return response.status(400).send({
+                        message: `Los siguientes profesores aún tienen secciones habilitadas: ${emails.join(', ')}`,
+                        success: false,
+                    });
+            }
+            
+            await SemestreService_.update_element(semestre.id, { date_end: new Date() });
+            await SemestreService_.update_element(semestre.id, { active: false });
+
+            return response.status(200).json({
+                message: 'Semestre culminado correctamente',
+            });
+        
+        } catch (error) {
+            console.error(error);
+            return response.status(500).send({
+                message: 'Error interno del servidor',
+                success: false,
+            });
+        }
+    }  
 
 }

@@ -11,13 +11,11 @@ export default class EstudianteAulaController {
 
     consultar_aula_by_estudiante = async (estudiante_id: number) => {
         
-        const semestreActivo = await SemestreController_.obtenerSemestreActivo();
+        const semestre = await SemestreController_.obtenerSemestreActivo();
         
-        if (!(semestreActivo && semestreActivo.length > 0)) {
-            return false
-        }
+        if (!semestre) {return false}
 
-        const estudiante = await EstudianteAulaService_.obtener_un_estudiante_inscrito(semestreActivo[0].id, estudiante_id);
+        const estudiante = await EstudianteAulaService_.obtener_un_estudiante_inscrito(semestre.id, estudiante_id);
 
         if (!estudiante) {
             return false
@@ -33,6 +31,10 @@ export default class EstudianteAulaController {
     
             let errores: any[] = [];
             let exitos: any[] = [];
+
+            const semestre = await SemestreController_.obtenerSemestreActivo();
+            
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
     
             for (const estudiante of data) {
                 const { semestre_profesor_aula_id, estudiante_id } = estudiante;
@@ -47,7 +49,7 @@ export default class EstudianteAulaController {
     
                 const resultado = await EstudianteAulaService_.registrar_estudiante_aula(
                     semestre_profesor_aula_id,
-                    1,
+                    semestre.id,
                     estudiante_id
                 );
     
@@ -75,13 +77,11 @@ export default class EstudianteAulaController {
         
         try {
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
+            const semestre = await SemestreController_.obtenerSemestreActivo();
             
-            if (!(semestreActivo && semestreActivo.length > 0)) {
-                return response.notFound({ message: 'No se encontro ningun semestre activo' });
-            }
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
-            const estudiantesInscritos = await EstudianteAulaService_.obtener_estudiantes_inscritos_generales(semestreActivo[0].id);
+            const estudiantesInscritos = await EstudianteAulaService_.obtener_estudiantes_inscritos_generales(semestre.id);
 
 
             return response.status(200).json({
@@ -95,16 +95,14 @@ export default class EstudianteAulaController {
     public async obtener_estudiantes_inscritos_by_aula({ request, response }: HttpContext) {
         try {
 
-			const semestreActivo = await SemestreController_.obtenerSemestreActivo()
+			const semestre = await SemestreController_.obtenerSemestreActivo()
 		
-			if (!(semestreActivo && semestreActivo.length > 0)) {
-				return response.notFound({ message: 'No se encontró ningún semestre activo' })
-			}
+			if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
 			const { aulaId } = request.only(['aulaId'])
 
 			const estudiantesInscritos = await EstudianteAulaService_.obtener_estudiantes_inscritos_by_aula(
-				semestreActivo[0].id,
+				semestre.id,
 				aulaId
 			)
 		
@@ -158,13 +156,11 @@ export default class EstudianteAulaController {
     
         try {
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
+            const semestre = await SemestreController_.obtenerSemestreActivo();
             
-            if (!(semestreActivo && semestreActivo.length > 0)) {
-                return response.notFound({ message: 'No se encontro ningun semestre activo' });
-            }
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
-            const estudiante = await EstudianteAulaService_.obtener_un_estudiante_inscrito(semestreActivo[0].id, params.id);
+            const estudiante = await EstudianteAulaService_.obtener_un_estudiante_inscrito(semestre.id, params.id);
 
             if (!estudiante) {
                 return response.status(404).json({ message: 'Estudiante no encontrado' })

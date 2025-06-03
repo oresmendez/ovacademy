@@ -1,5 +1,6 @@
 
 import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { DateTime } from 'luxon'
 
 export default class PreguntasAbiertas extends BaseModel {
 
@@ -13,5 +14,11 @@ export default class PreguntasAbiertas extends BaseModel {
 
     @column()
     declare pregunta: string
+
+    @column()
+    declare is_deleted: boolean;
+
+    @column.dateTime({ serializeAs: null })
+    declare deleted_at: DateTime | null;
 
 }

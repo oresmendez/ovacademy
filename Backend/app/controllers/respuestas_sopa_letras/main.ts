@@ -70,14 +70,12 @@ export default class RespuestasSopaDeLetrasController {
                 return response.notFound({ message: 'No se encontro un token valido de usuario' });
             }
 
-            const semestreActivo = await SemestreController_.obtenerSemestreActivo();
-            if (!(semestreActivo && semestreActivo.length > 0)) {
-                return response.notFound({ message: 'No se encontro ningun semestre activo' });
-            }
+            const semestre = await SemestreController_.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
             const { sopa_id, matrix} = request.only(['sopa_id', 'matrix']) 
 
-            const sopadeletras = await RespuestasSopaDeLetrasService_.create_respuesta_SopaDeLetras(userByToken[0].user_id, sopa_id, semestreActivo[0].id, matrix);
+            const sopadeletras = await RespuestasSopaDeLetrasService_.create_respuesta_SopaDeLetras(userByToken[0].user_id, sopa_id, semestre.id, matrix);
     
             if (!sopadeletras) {
                 return response.status(404).json({ message: 'sopadeletras no encontrada' });

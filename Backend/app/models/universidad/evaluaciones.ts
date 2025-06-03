@@ -26,4 +26,10 @@ export default class Evaluaciones extends BaseModel {
   @column.dateTime({ autoUpdate: true })
   declare update_at: DateTime;
 
+  @column()
+  declare is_deleted: boolean;
+
+  @column.dateTime({ serializeAs: null })
+  declare deleted_at: DateTime | null;
+
 }

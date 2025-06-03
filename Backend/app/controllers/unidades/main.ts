@@ -52,7 +52,7 @@ export default class UnidadesController {
             
             if(totalNotas + parseFloat(nota_unidad) > 10){
                 return response.status(400).send({ 
-                    message: 'La nueva nota excede la cantidad de 10 puntos', 
+                    message: 'La nueva unidad excede la cantidad de 10 puntos', 
                     success: false 
                 });
             }
@@ -219,12 +219,7 @@ export default class UnidadesController {
         try {
             
             const unidad = await this.UnidadService_.obtenerUnidadesByID(params.id);
-    
-            if (!unidad) {
-                return response.status(404).json({
-                    message: 'Unidad no encontrada',
-                });
-            }
+            if (!unidad) {return response.status(404).json({message: 'Unidad no encontrada',});}
     
             unidad.status = !unidad.status
     
@@ -233,6 +228,25 @@ export default class UnidadesController {
             return response.status(200).json({
                 success: true,
             });
+
+        } catch (error) {
+            console.error(error);
+            return response.status(500)
+        }
+    }
+
+    public async delete({ params, response }: HttpContext) {
+        
+        try {
+            
+            const { id } = params;
+            if (!await this.UnidadService_.soft_delete(id)) {
+                return response.status(400).send({ 
+                    message: 'Error al eliminar la unidad', 
+                    success: false 
+                });
+            }
+            return response.status(200).send({ message: 'Unidad eliminada correctamente',});
 
         } catch (error) {
             console.error(error);
