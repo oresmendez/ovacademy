@@ -1,17 +1,55 @@
 "use client"; 
 
-import { styled, apiRest, useState, useEffect, toast} from '@/app/components/utils/rutas';
+import { styled, apiRest, useState, useEffect, toast, ButtonSave} from '@/app/components/utils/rutas';
 
-export default function ComponenteTest({id_unidad, type_id, nota_evaluacion, TabClick}) {
-	const [preguntas, setPreguntas] = useState(['']);
+export default function ComponenteTest({id_unidad, type_id, nota_evaluacion, TabClick, idEvaluacion = null,}) {
+	
+	const [preguntas, setPreguntas] = useState([{ id: null, pregunta: '' }]);
+	const [preguntasOriginales, setPreguntasOriginales] = useState([]);
+
+
+	useEffect(() => {
+        
+        if (idEvaluacion != null) {
+            obtener_preguntasAbiertas();
+        }
+
+    }, [idEvaluacion]);
+
+	const obtener_preguntasAbiertas = async () => {
+		try {
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/preguntasAbiertas/${idEvaluacion}`;
+			const response = await apiRest.fetchGet(url);
+
+			if (response.status === 200 && Array.isArray(response.data.data)) {
+				const preguntasObtenidas = response.data.data.map(p => ({
+					id: p.id,
+					pregunta: p.pregunta
+				}));
+				setPreguntas(preguntasObtenidas.length > 0 ? preguntasObtenidas : [{ id: null, pregunta: '' }]);
+				setPreguntasOriginales(preguntasObtenidas); // <--- Guardamos originales
+			} else {
+				toast.error(response.data.message || 'Error al obtener preguntas.');
+			}
+		} catch (error) {
+			console.error(error);
+			toast.error('Error del servidor al obtener las preguntas.');
+		}
+	};
+
+
+
 
 	const crear_preguntas_abiertas = async () => {
-
-        try {
-			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones`
-			const response = await apiRest.fetchPost(url,
-				{ id_unidad, type_id, nota_evaluacion, preguntas: preguntas }
-			);
+		console.log('Preguntas:', preguntas.map(p => p.pregunta));
+		try {
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones`;
+			const response = await apiRest.fetchPost(url, {
+				id_unidad,
+				type_id,
+				nota_evaluacion,
+				preguntas: preguntas.map(p => p.pregunta), // solo enviamos texto
+			});
 
 			if (response.status === 200) {
 				toast.success(response.data.message);
@@ -21,64 +59,133 @@ export default function ComponenteTest({id_unidad, type_id, nota_evaluacion, Tab
 			}
 		} catch (error) {
 			console.error(error);
+			toast.error('Error al guardar las preguntas.');
 		}
-        
 	};
 
+
 	const agregarPregunta = () => {
-		setPreguntas([...preguntas, '']);
+		setPreguntas([...preguntas, { id: null, pregunta: '' }]);
 	};
+
 
 	const actualizarPregunta = (index, valor) => {
 		const nuevasPreguntas = [...preguntas];
-		nuevasPreguntas[index] = valor;
+		nuevasPreguntas[index].pregunta = valor;
 		setPreguntas(nuevasPreguntas);
 	};
+
 
 	const eliminarPregunta = (index) => {
 		const nuevasPreguntas = preguntas.filter((_, i) => i !== index);
 		setPreguntas(nuevasPreguntas);
 	};
 
-	return (
-		<Contenedor>
-			<Titulo>Módulo de Preguntas Abiertas</Titulo>
-			{Array.isArray(preguntas) && preguntas.map((pregunta, index) => (
-				<PreguntaWrapper key={index}>
-					<PreguntaInput
-						value={pregunta}
-						onChange={(e) => actualizarPregunta(index, e.target.value)}
-						placeholder={`Pregunta ${index + 1}`}
-					/>
-					<BotonEliminar onClick={() => eliminarPregunta(index)}>✕</BotonEliminar>
-				</PreguntaWrapper>
-			))}
-			<Controles>
-				<BotonAgregar onClick={agregarPregunta}>+ Agregar pregunta</BotonAgregar>
-				<BotonGuardar onClick={crear_preguntas_abiertas}>💾 Guardar</BotonGuardar>
-			</Controles>
-		</Contenedor>
-	);
-}
+	const editar_preguntas = async () => {
+		try {
+			
+			const idsActuales = preguntas.map(p => p.id).filter(id => id !== null);
+			const preguntasEliminadas = preguntasOriginales
+				.filter(p => !idsActuales.includes(p.id))
+				.map(p => ({ ...p, eliminada: true }));
+			const preguntasActivas = preguntas.map(p => ({
+				...p,
+				eliminada: false
+			}));
+
+			const payloadPreguntas = [...preguntasActivas, ...preguntasEliminadas];
+
+			console.log('Payload preguntas:', payloadPreguntas);
+
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/preguntaAbiert`;
+			const payload = {
+				evaluacion_id: idEvaluacion,
+				palabras: payloadPreguntas
+			};
+
+			const response = await apiRest.fetchPut(url, payload);
+			console.log('Response:', response);
+
+			if (response.status === 200) {
+				toast.success(response.data.message || 'Preguntas guardadas correctamente.');
+				
+			} else {
+				toast.error(response.data.message || 'Error al guardar preguntas.');
+			}
+
+		} catch (error) {
+			console.error(error);
+			toast.error('Error del servidor al guardar las preguntas.');
+		}
+	};
+
+
+
+		return (
+			<Contenedor>
+				<h1 className="titulo">Preguntas Abiertas</h1>
+				{Array.isArray(preguntas) && preguntas.map((item, index) => (
+					<PreguntaWrapper key={index}>
+						<PreguntaInput
+							value={item.pregunta}
+							onChange={(e) => actualizarPregunta(index, e.target.value)}
+							placeholder={`Pregunta ${index + 1}`}
+						/>
+						<BotonEliminar onClick={() => eliminarPregunta(index)}>✕</BotonEliminar>
+					</PreguntaWrapper>
+				))}	
+				<div className='center'>
+					<ButtonSave onClick={() => agregarPregunta()} className="mr-20" bgColor="#33b0e4" hoverColor="#33b0e4">
+						+ Añadir pregunta
+					</ButtonSave>
+					{
+						idEvaluacion ?(
+							<ButtonSave onClick={() => editar_preguntas()} className="" >
+								Guardar
+							</ButtonSave>
+						) :(
+							<ButtonSave onClick={() => crear_preguntas_abiertas()} className="" >
+								Guardar
+							</ButtonSave>
+						)
+					}
+				</div>
+			
+			</Contenedor>
+		);
+	}
 
 const Contenedor = styled.div`
 	padding: 2rem;
-	background: #ffffff;
 	border-radius: 1.5rem;
-	max-width: 700px;
-	margin: 2rem auto;
 	display: flex;
 	flex-direction: column;
 	gap: 1.5rem;
-	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
-	font-family: 'Segoe UI', sans-serif;
-`;
 
-const Titulo = styled.h2`
-	font-size: 1.75rem;
-	font-weight: 600;
-	color: #333;
-	margin-bottom: 1rem;
+	.titulo {
+		font-size: 2.5rem;
+		text-transform: uppercase;
+		letter-spacing: 2px;
+		text-align: center;
+		color: #0f172a;
+		margin: 36px 0px;
+		overflow: hidden;
+		white-space: nowrap;
+		border-right: 3px solid #0f172a;
+		width: 0;
+		animation: typing 2s steps(20, end) forwards, hideCursor 0.1s 2s forwards;
+	}
+
+	@keyframes typing {
+		from { width: 0 }
+		to { width: 100% }
+	}
+
+	@keyframes hideCursor {
+		to {
+			border-right: none;
+		}
+	}
 `;
 
 const PreguntaWrapper = styled.div`
@@ -107,8 +214,10 @@ const PreguntaInput = styled.textarea`
 `;
 
 const BotonEliminar = styled.button`
-	background: #ff4d4f;
-	color: white;
+	margin-top: 2rem;
+	background: #d4eb33;
+	font-weight: 600;
+	color: black;
 	border: none;
 	padding: 0.5rem 0.75rem;
 	font-size: 1rem;
@@ -122,11 +231,7 @@ const BotonEliminar = styled.button`
 	}
 `;
 
-const Controles = styled.div`
-	display: flex;
-	justify-content: space-between;
-	gap: 1rem;
-`;
+
 
 const BotonBase = styled.button`
 	padding: 0.75rem 1.5rem;

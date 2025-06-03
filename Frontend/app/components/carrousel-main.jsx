@@ -1,7 +1,7 @@
-'use client'; import { useState, useEffect, styled, useRef } from '@/app/components/utils/rutas';
+'use client';
 
+import { useState, useRef, styled } from '@/app/components/utils/rutas';
 import Carrousel from '@/app/components/carrousel';
-
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 // Botones personalizados
@@ -29,28 +29,27 @@ export default function CarrouselMain({ boxes = [], tittle = "", description = "
     const sliderRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const itemsPerPage = 5;
-    const slidesToScroll = 1;
+    const shouldCarouselMove = boxes.length > 5;
+    const slidesToShow = Math.min(5, boxes.length);
+    const totalPages = shouldCarouselMove
+        ? Math.ceil(boxes.length / 1)
+        : 1;
 
-    // Calcula el total de páginas (asegura al menos 1 página)
-    const totalPages = Math.max(1, Math.ceil((boxes.length || 0) / itemsPerPage));
-
-    // Configuración del carrusel
     const settings = {
         dots: false,
-        infinite: true,
+        infinite: shouldCarouselMove,
         speed: 1000,
-        slidesToShow: boxes.length > 0 ? Math.min(itemsPerPage, boxes.length) : 1, // Asegura valores válidos
-        slidesToScroll: Math.min(slidesToScroll, boxes.length > 0 ? boxes.length : 1), // Evita errores
-        autoplay: true,
+        slidesToShow,
+        slidesToScroll: shouldCarouselMove ? 1 : 0,
+        autoplay: shouldCarouselMove,
         autoplaySpeed: 5000,
         pauseOnHover: true,
-        draggable: true,
+        draggable: shouldCarouselMove,
         cssEase: "ease-in-out",
         arrows: false,
         afterChange: (currentSlideIndex) => {
-            const newPage = Math.ceil((currentSlideIndex + 1) / slidesToScroll);
-            setCurrentPage(Math.min(newPage, totalPages)); // Limitar al máximo totalPages
+            const newPage = Math.ceil((currentSlideIndex + 1) / 1);
+            setCurrentPage(Math.min(newPage, totalPages));
         },
     };
 
@@ -63,24 +62,30 @@ export default function CarrouselMain({ boxes = [], tittle = "", description = "
                         <span className="title-content-subjects">{tittle}</span>
                         <span className="description-content-subjects">{description}</span>
                     </div>
-                    <div className="botones-carrousel-subjects mr-10 center">
-                        <div className="center mr-20">{`${currentPage}/${totalPages}`}</div>
-                        <div className="navigation-controls top-controls center">
-                            <PrevArrow onClick={() => sliderRef.current?.slickPrev()} />
-                            <NextArrow onClick={() => sliderRef.current?.slickNext()} />
+
+                    {shouldCarouselMove && (
+                        <div className="botones-carrousel-subjects mr-10 center">
+                            <div className="center mr-20">{`${currentPage}/${totalPages}`}</div>
+                            <div className="navigation-controls top-controls center">
+                                <PrevArrow onClick={() => sliderRef.current?.slickPrev()} />
+                                <NextArrow onClick={() => sliderRef.current?.slickNext()} />
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
-                {/* Contenedor del carrusel */}
-                <div className="carousel-container">
-                    <Carrousel boxes={boxes} settings={settings} sliderRef={sliderRef} />
-                </div>
+
+<div className={`carousel-container ${boxes.length < 5 ? 'center-slides' : ''}`}>
+  <Carrousel boxes={boxes} settings={settings} sliderRef={sliderRef} />
+</div>
+
+
+
             </div>
         </Componente>
     );
 }
 
-// Estilizado
+// Estilos con styled-components
 const Componente = styled.div`
     .container-subjects {
         max-width: 95rem;
@@ -124,6 +129,38 @@ const Componente = styled.div`
         margin-top: 30px;
     }
 
+    .carousel-container .slick-slide > div {
+
+        display: flex;
+        justify-content: center;
+    }
+
+.card-wrapper {
+    width: 100%;
+    max-width: 350px;
+}
+
+.carousel-card {
+    width: 100%;
+}
+.carousel-container.less-than-five .slick-track {
+    display: flex !important;
+    justify-content: center;
+    gap: 1rem; /* opcional, para separar un poco las tarjetas */
+}
+
+.carousel-container.center-slides .slick-track {
+  display: flex !important;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.carousel-container.center-slides .slick-slide {
+  display: flex !important;
+  justify-content: center;
+  align-items: stretch;
+}
+
     .custom-arrow {
         background: white;
         color: black;
@@ -137,4 +174,3 @@ const Componente = styled.div`
         background: #ebebeb;
     }
 `;
-

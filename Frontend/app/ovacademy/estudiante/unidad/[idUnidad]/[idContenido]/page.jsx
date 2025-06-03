@@ -1,4 +1,4 @@
-'use client'; import { useState, useEffect, useParams, styled, apiRest, Link, textBarHeader, BannerMateria, EditorContent, Crucigrama, Quiz, TrueFalseQuiz } from '@/app/components/utils/rutas';
+'use client'; import { useState, useEffect, useParams, styled, apiRest, Link, textBarHeader, BannerMateria, ButtonAccion, EditorContent, Crucigrama, Quiz, TrueFalseQuiz } from '@/app/components/utils/rutas';
 
 export default function () {
     const params = useParams();
@@ -8,7 +8,6 @@ export default function () {
     const [nameContenido, setNameContenido] = useState('');
     const [descripcion, setDescripcion] = useState('');
  
-
     const [activeTab, setActiveTab] = useState(0);
 
     const { setHeaderText } = textBarHeader();
@@ -22,7 +21,7 @@ export default function () {
         if (nameContenido) {
             setHeaderText(
                 <>
-                    <Link href={`/ovacademy/estudiante/dashboard`}>Dashboard</Link>
+                    <Link href={`/ovacademy/estudiante/dashboard`}>Inicio</Link>
                     <span className="separator">&gt;</span>
                     <Link href={`/ovacademy/estudiante/unidad/${idUnidad}`}>{nameUnidad}</Link>
                     <span className="separator">&gt;</span>
@@ -63,11 +62,17 @@ export default function () {
         setActiveTab(index);
     };
 
+    const borrar = () => {
+        obtenerUnidad();
+        obtenerContenidoDetails();
+    };
+
     return (
         <Componente>
             <div className='layout-body'>
                 <div className='container-body'>
                     <BannerMateria />
+                    <ButtonAccion onClick={() => borrar()}>reload</ButtonAccion>
                     <div className='description-content-subjects-list mt-30'>
                         <div className='course-content'>
                             <div className='tab'>
@@ -79,9 +84,11 @@ export default function () {
                                 </button>
                             </div>
                             <div className='tab-content'>
-                                <div className={`tab-panel ${activeTab === 0 ? 'active' : ''}`}>
-                                    {descripcion}
-                                </div>
+                                {activeTab === 0 && (
+                                    <div className='tab-panel active'>
+                                        <div className='descripcion-contenido' dangerouslySetInnerHTML={{ __html: descripcion }} />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -96,6 +103,14 @@ export default function () {
 }
 
 const Componente = styled.div`
+
+    .descripcion-contenido {
+        font-family: var(--font-lexend);
+        font-size: 1rem; /* puedes ajustar el tamaño si deseas */
+        color: #333; /* opcional, para mejorar contraste */
+        word-wrap: break-word;
+        line-height: 1.6;
+    }
 
     .banner-subjects {
         width: 100%;
@@ -173,11 +188,13 @@ const Componente = styled.div`
 
     .tab-content {
         padding: 20px;
-        background-color: #f4f4f9;
-        border: 1px solid #ddd;
-        border-radius: 5px;
         min-height: 300px;
+
+        max-height: auto; /* ajusta según tus necesidades */
+        overflow-y: auto; /* agrega scroll si el contenido es muy largo */
+        word-wrap: break-word; /* asegura que las palabras largas no rompan el layout */
     }
+
 
     .tab-panel {
         display: none;

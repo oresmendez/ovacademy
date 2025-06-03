@@ -12,7 +12,7 @@ export default function Administrador_Materia() {
     useEffect(() => {
 
         setHeaderText(<>
-            <Link href={`/ovacademy/administrador/dashboard`}>Dashboard</Link>{/*
+            <Link href={`/ovacademy/administrador/dashboard`}>Inicio</Link>{/*
             */}<span className="separator">&gt;</span>{/*
             */}<Link href={`/ovacademy/administrador/profesores/`}>Profesores</Link>{/*
             */}<span className="separator">&gt;</span>{/*

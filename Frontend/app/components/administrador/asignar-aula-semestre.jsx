@@ -1,10 +1,12 @@
 "use client";
 
-import { styled, apiRest, useState, useEffect, Select, toast, ModalField, ButtonAccion, ButtonSave, Spinner} from '@/app/components/utils/rutas';
+import { styled, apiRest, useState, useEffect, useRouter, Select, toast, ModalField, ButtonAccion, ButtonSave, Spinner} from '@/app/components/utils/rutas';
 
 
 
 export default function Asignar_aula_profesor() {
+
+    const router = useRouter();
 
     const [showSpinner, setShowSpinner] = useState(false);
 	const [isLoadingRespuestas, setIsLoadingRespuestas] = useState(true);
@@ -24,6 +26,7 @@ export default function Asignar_aula_profesor() {
 
     const [visible, setVisible] = useState(false);
     const [visibleEliminar, setvisibleEliminar] = useState(false);
+
     const abrirModal = (idAula) => {
         setAulaSeleccionada(idAula);
         setVisible(true);
@@ -129,7 +132,7 @@ export default function Asignar_aula_profesor() {
             const url = `${process.env.NEXT_PUBLIC_API_URL}/semestre/activo`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
-                setSemestreActivo(response.data.data[0]);
+                setSemestreActivo(response.data.data);
             } else {
                 setSemestreActivo([]);
             }
@@ -230,7 +233,7 @@ export default function Asignar_aula_profesor() {
                 await new Promise(resolve => setTimeout(resolve, 800));
                 setseccionSeleccionada(true);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // console.error('La respuesta de la API no contiene datos válidos');
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
@@ -316,11 +319,15 @@ export default function Asignar_aula_profesor() {
         contenido = (
             <>
                 <div className="container">
-                    <h2 className="titulo mb-20">🏫 Secciones Disponible - Semestre {semestreActivo.nombre}</h2>
+                    <h2 className="titulo mb-20">🏫 Secciones Disponible - Semestre {semestreActivo?.nombre ?? 'N/A'}</h2>
 
                     {(semestreActivo.length === 0 || aulas.length === 0 || profesoresDisponibles.length === 0) ? (
                         <div className='DivNoDisponible'>
                             <p>Para habilitar esta sección, debes tener registrado un semestre, un profesor y al menos una sección</p>
+                            <div className='center'>
+                                <ButtonSave bgColor="#33b0e4" hoverColor="#3380e4" className="mt-30" onClick={() => router.push('/ovacademy/administrador/profesores')}>Profesor</ButtonSave>
+                                <ButtonSave bgColor="#33b0e4" hoverColor="#3380e4" className="mt-30 ml-10 mr-10" onClick={() => router.push('/ovacademy/administrador/semestre')}>Semestre</ButtonSave>
+                            </div>
                         </div>
                     ) : (
                         <>

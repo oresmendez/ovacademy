@@ -1,10 +1,14 @@
-'use client'; import { useState, useEffect, styled, PropTypes, utils, InputSearch, apiRest, toast, Select, export_file, DataTableIndex,ButtonAccion, EditarContenido } from '@/app/components/utils/rutas';
+'use client'; import { useState, useEffect, styled, PropTypes, utils, InputSearch, apiRest, toast, Select, export_file, ModalField, DataTableIndex,ButtonAccion,ButtonSave, EditarContenido } from '@/app/components/utils/rutas';
+import { TbEyeEdit } from "react-icons/tb";
+
 
 export default function ListarContenidos() {
 
     const [dataContenidos, setDataContenidos] = useState([]);
     const [dataUnidades, setDataUnidades] = useState([]);
     const [unidades, setUnidades] = useState([]);
+
+    const [visibleEliminar, setvisibleEliminar] = useState(false);
 
     const [filterText, setFilterText] = useState('');
     const [unidadSeleccionada, setUnidadSeleccionada] = useState(null);
@@ -43,7 +47,7 @@ export default function ListarContenidos() {
 
                 setDataUnidades(unidadesFormateadas);
             } else {
-                console.error(`La respuesta de la API no contiene datos válidos. función: ${obtenerUnidades.name}`);
+                console.error(`// console.error('La respuesta de la API no contiene datos válidos.'); función: ${obtenerUnidades.name}`);
                 setDataUnidades([]);
             }
         } catch (err) {
@@ -68,7 +72,7 @@ export default function ListarContenidos() {
             if (response.status === 200) {
                 setDataContenidos(response.data);
             } else {
-                console.error(`La respuesta de la API no contiene datos válidos. función: ${obtenerContenidoByID.name}`);
+                console.error(`// console.error('La respuesta de la API no contiene datos válidos.'); función: ${obtenerContenidoByID.name}`);
                 setDataContenidos([]);
             }
         } catch (err) {
@@ -88,7 +92,7 @@ export default function ListarContenidos() {
                 setDescripcion(response.data.descripcion);
                 setEditarContenido(null);
             } else {
-                console.error(`La respuesta de la API no contiene datos válidos. función: ${obtenerContenidoDetailsByID.name}`);
+                console.error(`// console.error('La respuesta de la API no contiene datos válidos.'); función: ${obtenerContenidoDetailsByID.name}`);
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
@@ -107,6 +111,28 @@ export default function ListarContenidos() {
         setNombre('');
         setDescripcion('');
         setUnidadSeleccionadaEditar(null);
+    };
+
+    const editar_contenido = async () => {
+        try {
+        
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/contenido`;
+            const response = await apiRest.fetchPut(url, {
+                id: idContenido,
+                nombre,
+                descripcion: descripcion
+            });
+            if (response.status === 200) {
+                toast.success(response.data.message);
+                volverAlListado();
+            } else {
+                toast.error(response.data.message);
+            }
+
+        } catch (error) {
+            console.error("Error atrapado en catch:", error);
+            toast.error("Error al editar una unidad.");
+        }
     };
     
     
@@ -130,6 +156,23 @@ export default function ListarContenidos() {
             toast.error('Error al conectar con el servidor.');
         }
     };
+
+    const soft_delete = async () => {
+		try {
+		setvisibleEliminar(false)
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/contenido/delete/${idContenido}`;
+		const response = await apiRest.fetchDelete(url);
+		if (response.status === 200) {
+			toast.success(response.data.message);
+			obtenerUnidades();
+			volverAlListado();
+		} else {
+			console.error(response.data.message);
+		}
+		} catch (err) {
+		console.error('Error al eliminar la unidad.');
+		}
+	};
 
     const exportToPDF = () => {
         const name = 'estudiantes.pdf';
@@ -193,11 +236,11 @@ export default function ListarContenidos() {
             grow: 1.2,
         },
         {
-            name: '',
+            name: 'Acción',
             grow: 1.5,
             cell: (row) => (
                 <>
-                    <button onClick={() => obtenerContenidoDetailsByID(row.id, row.idUnidad)} style={{ color: '#0465ac' }}>Editar</button>
+                    <button onClick={() => obtenerContenidoDetailsByID(row.id, row.idUnidad)} style={{ color: '#0465ac' }}><TbEyeEdit  size={28}/></button>
                 </>
             ),
         }   
@@ -235,18 +278,23 @@ export default function ListarContenidos() {
                     </>
                 ) : (
                     <>
-                    <ButtonAccion onClick={volverAlListado}>Atrás</ButtonAccion>
-                    
-                    
-                    
+
                     <div className="form-wrapper">
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
                             }}
                             className="space-y-4"
-                        >
-                            <div className="campo">
+                        >   
+                            <div className="header-edicion">
+                                <div className='center-left'>
+                                    <ButtonAccion onClick={volverAlListado}>Atrás</ButtonAccion>
+                                    <button className="delete-button ml-10" onClick={() => setvisibleEliminar(true)}>
+                                        Eliminar Contenido
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="campo mt-20">
                                 <label className="label">Unidad</label>
                                 <Select
                                     instanceId="unidad-select"
@@ -257,13 +305,38 @@ export default function ListarContenidos() {
                                     styles={customStyles}
                                     isClearable
                                 />
+                                
                             </div>
                             <InputField label="Nombre" value={nombre} onChange={setNombre} placeholder="Nombre de la unidad" required />
-                            <EditarContenido descripcion={descripcion} setDescripcion={setDescripcion} idContenido={idContenido} nombre={nombre} volverAlListado={volverAlListado}/>
-                            {/* <TextAreaField label="Descripción" value={descripcion} onChange={setDescripcion} placeholder="Descripción" required /> */}
-                            
+                            <EditarContenido descripcion={descripcion} setDescripcion={setDescripcion}/>
+                            <div className="center">
+                                <ButtonSave onClick={() => editar_contenido()} className="mt-10" classFather="center" >
+                                    Guardar
+                                </ButtonSave>
+                                <ButtonSave
+                                    bgColor="#d5dbdb"
+                                    hoverColor="#bfc9ca"
+                                    className="mt-10 ml-10"
+                                    onClick={() => volverAlListado()}
+                                    >
+                                    Regresar
+                                </ButtonSave>
+                            </div>
                         </form>
                     </div>
+                    <ModalField 
+                        visible={visibleEliminar} 
+                        cerrarModal={() => setvisibleEliminar(false)}
+                        onclick={() => soft_delete()}
+                        width={"700"}
+                        height={"100"}
+                        title={"¿Estas seguro?"}
+                        mensaje={
+                            <>
+                                ¿Estás seguro que deseas eliminar este contenido? <br /><br />
+                            </>
+                        }
+                    />
                     </>
                 )}
             </div>
@@ -350,6 +423,21 @@ TextAreaField.propTypes = {
 };
 
 const Componente = styled.div`
+
+    .delete-button {
+		background: linear-gradient(135deg, #0465ac, #039be5);
+		color: #fff;
+		padding: 10px 16px;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: background 0.3s;
+		margin-right: 10px;
+	}
+
+    .delete-button {
+		background: #e53935;
+	}
 
     .label-row{
         border-radius: 5px;

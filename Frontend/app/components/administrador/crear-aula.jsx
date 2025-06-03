@@ -87,7 +87,7 @@ export default function CrearAula_({ setActiveTab }) {
         title={"¿Estás seguro?"}
         mensaje={
           <>
-            ¿Deseas agregar este aula? <br />
+            ¿Deseas agregar este Sección? <br />
             <br />
           </>
         }

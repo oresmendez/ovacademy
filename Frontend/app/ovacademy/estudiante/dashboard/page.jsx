@@ -12,7 +12,7 @@ export default function DashboardPage() {
     const [estudianteMatriculado, setEstudianteMatriculado] = useState(null);
 
     useEffect(() => {
-        setHeaderText((<> Dashboard</>));
+        setHeaderText((<> Inicio</>));
         obtenerUnidades();
     }, []);
 

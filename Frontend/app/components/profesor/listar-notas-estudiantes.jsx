@@ -1,5 +1,5 @@
 'use client'; import { useState, useEffect, ListarEvaluaciones, Select, PreguntasAbiertas, styled, PropTypes, utils, apiRest, toast, export_file, ButtonAccion, InputSearch, DataTableIndex, SopaDeLetras, Cuestionario } from '@/app/components/utils/rutas';
-
+import { TbEyeEdit } from "react-icons/tb";
 
 export default function ListarUnidades() {
 
@@ -300,23 +300,23 @@ export default function ListarUnidades() {
             sortable: true, 
             grow: 1.8 
         },
-        {   name: 'Nota Acumulativa',
-            selector: (row) => {
-                if (row.notaAcumulativa == 0) return '0 puntos';
+        // {   name: 'Nota Acumulativa',
+        //     selector: (row) => {
+        //         if (row.notaAcumulativa == 0) return '0 puntos';
               
-                const nota = parseFloat(row.notaAcumulativa);
-                const texto = nota === 1 ? 'punto' : 'puntos';
-                return `${nota} ${texto}`;
-            },              
-            sortable: true, 
-            grow: 1.8 
-        },    
+        //         const nota = parseFloat(row.notaAcumulativa);
+        //         const texto = nota === 1 ? 'punto' : 'puntos';
+        //         return `${nota} ${texto}`;
+        //     },              
+        //     sortable: true, 
+        //     grow: 1.8 
+        // },    
         {
-            name: '',
-            grow: 1,
+            name: 'Acción',
+            grow: 1.5,
             cell: (row) => (
                 <>
-                    <button onClick={() => obtener_evaluaciones(row.id, row.modulo)} style={{ color: '#0465ac' }}>ver</button>
+                    <button onClick={() => obtener_evaluaciones(row.id, row.modulo)} style={{ color: '#0465ac' }}><TbEyeEdit  size={28}/></button>
                 </>
             ),
         }   
@@ -331,6 +331,7 @@ export default function ListarUnidades() {
         },
         {
             name: 'Evaluación',
+            grow: 2,
             selector: (row) => {
                 const tipo = typesEvaluaciones.find((t) => t.id === row.typeId);
                 return tipo ? tipo.type : 'No disponible';
@@ -349,7 +350,7 @@ export default function ListarUnidades() {
             grow: 1.8
         },
         {
-            name: 'Nota Obtenida',
+            name: 'Nota obtenida',
             selector: (row) => {
                 if ( row.notaEstudiante == null) return (
                     <span style={{ color: 'red' }}>
@@ -377,7 +378,7 @@ export default function ListarUnidades() {
                 }
                 return (
                     <button onClick={() => obtener_details_evaluaciones(row.id, row.typeId, row.notaEvaluacion)} style={{ color: '#0465ac' }}>
-                        ver
+                        <TbEyeEdit  size={28}/>
                     </button>
                 );
             },
@@ -588,7 +589,6 @@ const Componente = styled.div`
         
         padding: 1rem;
         border-radius: 12px;
-        margin-top: 1rem;
     }
 
     @keyframes slideIn {
@@ -634,50 +634,6 @@ const Componente = styled.div`
         background-color: #0465ac;
         color: white;
     }
-
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0%);
-            opacity: 1;
-        }
-    }
-
-    @keyframes slideOut {
-        from {
-            transform: translateX(0%);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-
-    .slideIn {
-        animation-name: slideIn;
-    }
-
-    .slideOut {
-        animation-name: slideOut;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     .form-row {
         display: flex;

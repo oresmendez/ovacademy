@@ -11,7 +11,7 @@ export default function ListarMaterias() {
 
         const breadcrumbHTML = (
             <>
-                <Link href={`/ovacademy/teacher/dashboard`}>Dashboard</Link>{" "}
+                <Link href={`/ovacademy/teacher/dashboard`}>Inicio</Link>{" "}
                 <span className='separator'>&gt;</span>
                 Materia
             </>

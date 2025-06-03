@@ -1,4 +1,4 @@
-"use client"; import { styled, apiRest, useState, toast, PropTypes, ButtonSave, ModalField } from '@/app/components/utils/rutas';
+"use client"; import { styled, apiRest, useState, useRouter, toast, PropTypes, ButtonSave, ModalField } from '@/app/components/utils/rutas';
 
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 
 export default function CrearSemestre_({ setActiveTab }) {
 
+  const router = useRouter();
 	const [visible, setVisible] = useState(false);
 
 	const [nombre, setNombre] = useState("");

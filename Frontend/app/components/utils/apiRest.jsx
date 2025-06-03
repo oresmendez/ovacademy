@@ -35,7 +35,7 @@ export const fetchGet = async (url, bodyData = '') => {
 export const fetchPost = async (url, bodyData) => {
 
     const data = JSON.stringify(bodyData);
-    console.log("data recibida POST:", data);
+    // console.log("data recibida POST:", data);
 
     try {
         const response = await fetch(url, {
@@ -65,7 +65,7 @@ export const fetchPost = async (url, bodyData) => {
 export const fetchPut = async (url, bodyData) => {
     
     const data = JSON.stringify(bodyData);
-    console.log("data recibida PUT:", data);
+    // console.log("data recibida PUT:", data);
 
     try {
         const response = await fetch(url, {
@@ -95,7 +95,7 @@ export const fetchPut = async (url, bodyData) => {
 export const fetchDelete = async (url, bodyData) => {
     
     const data = JSON.stringify(bodyData);
-    console.log("data recibida DELETE:", data);
+    // console.log("data recibida DELETE:", data);
 
     try {
         const response = await fetch(url, {

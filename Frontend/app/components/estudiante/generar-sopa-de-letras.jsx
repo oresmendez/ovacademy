@@ -1,4 +1,4 @@
-"use client"; import {  useEffect, useState, styled, apiRest, toast} from '@/app/components/utils/rutas';
+"use client"; import {  useEffect, useState, styled, apiRest, toast,ButtonSave} from '@/app/components/utils/rutas';
 
 export default function SopaInteractiva({ id_sopa, palabrasMeta, notaEvaluacion, idEvaluacion }) {
 
@@ -188,6 +188,7 @@ export default function SopaInteractiva({ id_sopa, palabrasMeta, notaEvaluacion,
 			);
 	
 			if (response.status === 200) {
+				window.history.go(-1)
 				toast.success(response.data.message);
 				await enviarNotaEvaluacion(notaEvaluacion, idEvaluacion);
 			} else {
@@ -206,8 +207,8 @@ export default function SopaInteractiva({ id_sopa, palabrasMeta, notaEvaluacion,
 				evaluacion_id: idEvaluacion
 			});
 
-			if (response.status === 201) {
-				toast.success("¡Nota enviada correctamente!");
+			if (response.status != 201) {
+				oast.error("Hubo un problema al enviar la nota.");
 			} else {
 				toast.error("Hubo un problema al enviar la nota.");
 			}
@@ -221,7 +222,7 @@ export default function SopaInteractiva({ id_sopa, palabrasMeta, notaEvaluacion,
 	return (
 		<Component>
 			<div className='container mt-30'>
-				<h2>Sopa de Letras</h2>
+				<h1 className="titulo">Sopa de Letras</h1>
 				{grid.length > 0 && (
 					<div className="grid mt-20">
 						{grid.map((fila, i) => (
@@ -253,18 +254,45 @@ export default function SopaInteractiva({ id_sopa, palabrasMeta, notaEvaluacion,
 						</li>
 					))}
 					</ul>
-					<div className='center'>
+					
 						<div className='mt-20 mr-10'>
-							<button onClick={resolver} className="resolver">Resolver</button>
+							<button onClick={resolver} className="resolver">Resolver Sopa</button>
 						</div>
-						<div className='mt-20'>
-							<button onClick={guardar_sopadeletras} className="resolver">Guardar</button>
+						<div className='center'>
+							<ButtonSave className="mt-30" onClick={guardar_sopadeletras}>Guardar</ButtonSave>
 						</div>
-					</div>
+					
 				</div>
 			</div>
 		</Component>
 	);
 }
 
-const Component = styled.div``;
+const Component = styled.div`
+
+    .titulo {
+		font-size: 2.5rem;
+		text-transform: uppercase;
+		letter-spacing: 2px;
+		text-align: center;
+		color: #0f172a;
+		margin: 0px 0px 3rem 0px;
+		overflow: hidden;
+		white-space: nowrap;
+		border-right: 3px solid #0f172a;
+		width: 0;
+		animation: typing 2s steps(20, end) forwards, hideCursor 0.1s 2s forwards;
+	}
+
+	@keyframes typing {
+		from { width: 0 }
+		to { width: 100% }
+	}
+
+	@keyframes hideCursor {
+		to {
+			border-right: none;
+		}
+	}
+
+`;

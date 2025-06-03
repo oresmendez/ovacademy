@@ -1,5 +1,5 @@
 "use client";
-import { styled, apiRest, useState, useEffect, toast } from '@/app/components/utils/rutas';
+import { styled, apiRest, useState, useEffect, toast, ButtonSave } from '@/app/components/utils/rutas';
 
 export default function CrearCuestionario({ id_unidad, type_id, nota_evaluacion, TabClick, idEvaluacion = null, handleVolver}) {
     
@@ -185,7 +185,9 @@ export default function CrearCuestionario({ id_unidad, type_id, nota_evaluacion,
 
     return (
         <Contenedor>
-            <div className='mt-20'></div>
+            <div className='mt-20'>
+                <h1 className="titulo">Cuestionario</h1>
+            </div>
             {preguntas.map((pregunta, i) => (
                 <div key={pregunta.id} className="pregunta-card">
                     <label>
@@ -222,29 +224,62 @@ export default function CrearCuestionario({ id_unidad, type_id, nota_evaluacion,
                             );
                         })}
                     </div>
-
                     <button type="button" className="btn-opcion" onClick={() => agregarOpcion(i)}>
                         + Añadir opción
                     </button>
                 </div>
             ))}
 
-            <div className="acciones">
-                <button type="button" onClick={agregarPregunta}>+ Añadir pregunta</button>
-                {
-                    idEvaluacion ?(
-                        <button type="button" onClick={editar_cuestionario}>Guardar cuestionario</button>
-                    ) :(
-                        <button type="button" onClick={crear_cuestionario}>Guardar cuestionario</button>
-                    )
-                }
-                
-            </div>
+            
+                <div className="center">
+                    <ButtonSave onClick={() => agregarPregunta()} className="mr-20" bgColor="#33b0e4" hoverColor="#33b0e4">
+                        + Añadir pregunta
+                    </ButtonSave>
+                    {
+                        idEvaluacion ?(
+                            <ButtonSave onClick={() => editar_cuestionario()} className="" >
+                                Guardar
+                            </ButtonSave>
+                        ) :(
+                            <ButtonSave onClick={() => crear_cuestionario()} className="" >
+                                Guardar
+                            </ButtonSave>
+                        )
+                    }
+                    
+                </div>
+            
         </Contenedor>
     );
 }
 
 const Contenedor = styled.div`
+
+    .titulo {
+		font-size: 2.5rem;
+		text-transform: uppercase;
+		letter-spacing: 2px;
+		text-align: center;
+		color: #0f172a;
+		margin: 36px 0px;
+		overflow: hidden;
+		white-space: nowrap;
+		border-right: 3px solid #0f172a;
+		width: 0;
+		animation: typing 2s steps(20, end) forwards, hideCursor 0.1s 2s forwards;
+	}
+
+	@keyframes typing {
+		from { width: 0 }
+		to { width: 100% }
+	}
+
+	@keyframes hideCursor {
+		to {
+			border-right: none;
+		}
+	}
+
     .pregunta-card {
         border: 1px solid #ccc;
         border-radius: 10px;
@@ -303,19 +338,5 @@ const Contenedor = styled.div`
         margin-top: 0.5rem;
     }
 
-    .acciones {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 30px;
-    }
 
-    .acciones button {
-        padding: 10px 20px;
-        font-size: 1rem;
-        background: #0070f3;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-    }
 `;

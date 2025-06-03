@@ -16,15 +16,17 @@ export default function ButtonSave({
     const [loading, setLoading] = useState(false);
 
     const handleClick = async (e) => {
-        setLoading(true);
+        if (type === 'submit') {
+            return;
+        }
 
+        setLoading(true);
         const clickPromise = onClick ? onClick(e) : Promise.resolve();
         const delay = new Promise(res => setTimeout(res, 1000));
-
         await Promise.all([clickPromise, delay]);
-
         setLoading(false);
     };
+
 
     return (
         <StyledButton

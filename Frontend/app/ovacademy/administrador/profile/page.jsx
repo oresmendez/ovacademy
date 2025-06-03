@@ -7,7 +7,7 @@ export default function MiProfile() {
     useEffect(() => {
 
         setHeaderText(<>
-            <Link href={`/ovacademy/administrador/dashboard`}>Dashboard</Link>{/*
+            <Link href={`/ovacademy/administrador/dashboard`}>Inicio</Link>{/*
             */}<span className="separator">&gt;</span>{/*
             */}Mi Perfil
         </>);

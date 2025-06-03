@@ -1,23 +1,26 @@
-'use client'; import { useState, useEffect, useRouter, styled, apiRest, toast, export_file, DataTableIndex, ButtonAccion, InputSearch, ButtonLabelEstatus } from '@/app/components/utils/rutas';
+'use client'; import { useState, useEffect, useRouter, styled, apiRest, toast,gestorCookie, export_file, DataTableIndex, ButtonAccion, InputSearch, ButtonLabelEstatus } from '@/app/components/utils/rutas';
+import { TbEyeEdit } from "react-icons/tb";
 
 export default function ListarEstudiantes() {
+
+    const router = useRouter();
+    
+    const [typeUser, setTypeUser] = useState(0);
     const [data, setData] = useState([]);
     const [filterText, setFilterText] = useState('');
-    const router = useRouter();
 
     useEffect(() => {
         obtenerEstudiantes();
     }, []);
 
     const obtenerEstudiantes = async () => {
-        
+        setTypeUser(await gestorCookie.get_one_element_cookie("user-data", "type"));
         try {
             const url = `${process.env.NEXT_PUBLIC_API_URL}/user?type_id=1`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
                 setData(response.data.data);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
                 setData([]);
             }
         } catch (err) {
@@ -27,14 +30,18 @@ export default function ListarEstudiantes() {
     };
 
     const handleVer = async (email) => {
-        router.push(`/ovacademy/profesor/estudiantes/${email}`);
+        if (typeUser === 3) {
+            router.push(`/ovacademy/administrador/estudiantes/${email}`);
+        } else {
+            router.push(`/ovacademy/profesor/estudiantes/${email}`);
+        }
     };
+
     
     const handleDeleteClick = async (email) => {
         try {
             const url = `${process.env.NEXT_PUBLIC_API_URL}/user`
             const response = await apiRest.fetchDelete(url, { email });
-            console.log(response);
             if (response.status === 200) {
                 toast.success(`Usuario ${email} actualizado`);
                 setData((prevData) =>
@@ -66,7 +73,7 @@ export default function ListarEstudiantes() {
     };
 
     const exportToExcel = () => {
-        const name = 'profesores.xlsx';
+        const name = 'estudiantes.xlsx';
         const title = 'Profesores';
         export_file.exportToExcel(title, filteredData, name);
     };
@@ -116,10 +123,10 @@ export default function ListarEstudiantes() {
             grow: 1.2,
         },        
         {
-            name: '',
+            name: 'Acción',
             grow: 1.5,
             cell: (row) => (
-                <button onClick={() => handleVer(row.email)} style={{ color: '#0465ac' }}>Ver</button>
+                <button onClick={() => handleVer(row.email)} style={{ color: '#0465ac' }}><TbEyeEdit  size={28}/></button>
             ),
         }
            

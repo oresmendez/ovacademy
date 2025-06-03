@@ -1,230 +1,272 @@
-"use client";
+'use client'; import { useEffect } from '@/app/components/utils/rutas';
+import React, { useRef, useState } from 'react';
+import {
+  FaBold,
+  FaItalic,
+  FaUnderline,
+  FaAlignLeft,
+  FaAlignCenter,
+  FaAlignRight,
+  FaEraser,
+  FaImage,
+} from 'react-icons/fa';
 
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import TextStyle from "@tiptap/extension-text-style";
-import Color from "@tiptap/extension-color";
-import BulletList from "@tiptap/extension-bullet-list";
-import ListItem from "@tiptap/extension-list-item";
-import { ResizableImage } from "@/app/components/utils/ResizableImage";
-import { styled } from "@/app/components/utils/rutas";
-import { useCallback, useEffect, useRef, useState } from "react";
+export default function HtmlEditor() {
+  const editorRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [htmlContent, setHtmlContent] = useState(null);
 
-export default function ComponenteTest() {
-    const [imagenActivaSrc, setImagenActivaSrc] = useState(null);
-    const [contenidoHTML, setContenidoHTML] = useState("");
-    const editorRef = useRef(null);
+  // Ejecuta comandos execCommand
+  const exec = (command, value = null) => {
+    document.execCommand(command, false, value);
+    updateHtml();
+  };
 
-    const editor = useEditor({
-        extensions: [
-            StarterKit.configure({
-                bulletList: false,
-                listItem: false,
-            }),
-            TextStyle,
-            Color,
-            ResizableImage,
-            BulletList,
-            ListItem,
-        ],
-        content: "<p>Haz clic en una imagen para seleccionarla</p>",
+  // Actualiza estado con contenido HTML actual
+  const updateHtml = () => {
+    if (editorRef.current) setHtmlContent(editorRef.current.innerHTML);
+  };
+
+  // Inicio redimensionamiento
+  const startResize = (e, img, direction) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const startX = e.clientX;
+    const startY = e.clientY;
+
+    const startWidth = img.offsetWidth;
+    const startHeight = img.offsetHeight;
+
+    function doResize(ev) {
+      ev.preventDefault();
+      let newWidth = startWidth;
+      let newHeight = startHeight;
+
+      if (direction.includes('right')) {
+        newWidth = startWidth + (ev.clientX - startX);
+      }
+      if (direction.includes('left')) {
+        newWidth = startWidth - (ev.clientX - startX);
+      }
+      if (direction.includes('bottom')) {
+        newHeight = startHeight + (ev.clientY - startY);
+      }
+      if (direction.includes('top')) {
+        newHeight = startHeight - (ev.clientY - startY);
+      }
+
+      newWidth = Math.max(50, newWidth);
+      newHeight = Math.max(50, newHeight);
+
+      img.style.width = newWidth + 'px';
+      img.style.height = newHeight + 'px';
+    }
+
+    function stopResize(ev) {
+      ev.preventDefault();
+      document.removeEventListener('mousemove', doResize);
+      document.removeEventListener('mouseup', stopResize);
+      updateHtml();
+    }
+
+    document.addEventListener('mousemove', doResize);
+    document.addEventListener('mouseup', stopResize);
+  };
+
+  // Inicio mover imagen
+  const startDrag = (e, wrapper) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const startX = e.clientX;
+    const startY = e.clientY;
+
+    // Posición actual relativa al offsetParent
+    const style = window.getComputedStyle(wrapper);
+    const matrix = new DOMMatrixReadOnly(style.transform);
+    let currentX = matrix.m41;
+    let currentY = matrix.m42;
+
+    function doDrag(ev) {
+      ev.preventDefault();
+
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+
+      wrapper.style.transform = `translate(${currentX + dx}px, ${currentY + dy}px)`;
+    }
+
+    function stopDrag(ev) {
+      ev.preventDefault();
+      document.removeEventListener('mousemove', doDrag);
+      document.removeEventListener('mouseup', stopDrag);
+      updateHtml();
+    }
+
+    document.addEventListener('mousemove', doDrag);
+    document.addEventListener('mouseup', stopDrag);
+  };
+
+  // Crear imagen con handles y movimiento
+  const createResizableImage = (src) => {
+    const wrapper = document.createElement('span');
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'inline-block';
+    wrapper.style.border = '1px dashed #aaa';
+    wrapper.style.padding = '2px';
+    wrapper.style.cursor = 'move'; // cursor para mover imagen
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.width = '300px';
+    img.style.height = 'auto';
+    img.style.display = 'block';
+    img.style.userSelect = 'none';
+    img.style.pointerEvents = 'none'; // evita que el img bloquee eventos al wrapper para mover
+
+    wrapper.appendChild(img);
+
+    // Manejar drag para mover imagen al hacer click en wrapper (no handles)
+    wrapper.addEventListener('mousedown', (e) => {
+      // Sólo drag si no se clickea en handles
+      if (e.target === wrapper) {
+        startDrag(e, wrapper);
+      }
     });
 
-    useEffect(() => {
-        const handleClick = (e) => {
-            if (e.target.tagName === "IMG" && e.target.classList.contains("selectable-image")) {
-                const src = e.target.getAttribute("src");
-                setImagenActivaSrc(src);
-            } else {
-                setImagenActivaSrc(null);
-            }
-        };
+    // Handles en 4 esquinas para redimensionar
+    const handles = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
 
-        const container = editorRef.current;
-        if (container) {
-            container.addEventListener("click", handleClick);
-        }
+    handles.forEach(pos => {
+      const handle = document.createElement('div');
+      handle.style.position = 'absolute';
+      handle.style.width = '12px';
+      handle.style.height = '12px';
+      handle.style.background = '#007bff';
+      handle.style.borderRadius = '50%';
+      handle.style.zIndex = '10';
+      handle.style.userSelect = 'none';
 
-        return () => {
-            if (container) {
-                container.removeEventListener("click", handleClick);
-            }
-        };
-    }, []);
+      // Cursor según handle (más preciso)
+      switch (pos) {
+        case 'top-left': handle.style.cursor = 'nwse-resize'; break;
+        case 'top-right': handle.style.cursor = 'nesw-resize'; break;
+        case 'bottom-left': handle.style.cursor = 'nesw-resize'; break;
+        case 'bottom-right': handle.style.cursor = 'nwse-resize'; break;
+      }
 
-    const insertarImagen = useCallback(() => {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "image/*";
-        input.onchange = () => {
-            const file = input.files?.[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    editor?.chain().focus().setImage({
-                        src: reader.result,
-                        width: "300",
-                    }).run();
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-        input.click();
-    }, [editor]);
+      // Posición handle
+      if (pos.includes('top')) handle.style.top = '-6px';
+      if (pos.includes('bottom')) handle.style.bottom = '-6px';
+      if (pos.includes('left')) handle.style.left = '-6px';
+      if (pos.includes('right')) handle.style.right = '-6px';
 
-    const cambiarTamañoImagen = () => {
-        if (!imagenActivaSrc) return;
-        const nuevoAncho = prompt("Nuevo ancho en px:", "300");
-        if (!nuevoAncho) return;
+      // Impedir que el handle arrastre texto al seleccionarlo
+      handle.style.userSelect = 'none';
 
-        const transaction = editor.state.tr;
-        const { doc } = editor.state;
+      // Inicio redimensionar
+      handle.addEventListener('mousedown', (e) => startResize(e, img, pos));
 
-        doc.descendants((node, pos) => {
-            if (node.type.name === "image" && node.attrs.src === imagenActivaSrc) {
-                transaction.setNodeMarkup(pos, undefined, {
-                    ...node.attrs,
-                    width: nuevoAncho,
-                });
-            }
-        });
+      wrapper.appendChild(handle);
+    });
 
-        editor.view.dispatch(transaction);
-        editor.commands.focus();
+    return wrapper;
+  };
+
+  // Insertar imagen en cursor
+  const insertImageAtCursor = (src) => {
+    const wrapper = createResizableImage(src);
+
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(wrapper);
+
+    // Mueve cursor después de la imagen
+    range.setStartAfter(wrapper);
+    range.setEndAfter(wrapper);
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    updateHtml();
+  };
+
+  // Insertar imagen desde input
+  const insertImage = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      insertImageAtCursor(reader.result);
     };
+    reader.readAsDataURL(file);
+    e.target.value = null;
+  };
 
-    const verContenido = () => {
-        const html = editor?.getHTML();
-        setContenidoHTML(html);
-        console.log("Contenido HTML:", html);
-    };
+  // Limpiar editor
+  const clearEditor = () => {
+    if (editorRef.current) editorRef.current.innerHTML = '';
+    updateHtml();
+  };
 
-    const guardarContenido = async () => {
-        const html = editor?.getHTML();
-        if (!html) return;
+  // Trigger input file
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
 
-        console.log("Contenido a guardar:", html);
+  useEffect(() => {
+    updateHtml();
+  }, []);
 
-        // Descomenta para guardar en base de datos:
-        // try {
-        //     const res = await fetch("/api/guardar", {
-        //         method: "POST",
-        //         headers: { "Content-Type": "application/json" },
-        //         body: JSON.stringify({ contenido: html }),
-        //     });
+  return (
+    <div className="p-4 w-full max-w-7xl mx-auto" style={{ marginTop: '30rem' }}>
+      <h2 className="text-2xl font-bold mb-4">Editor Visual WYSIWYG</h2>
 
-        //     if (res.ok) {
-        //         alert("✅ Contenido guardado correctamente");
-        //     } else {
-        //         alert("❌ Error al guardar");
-        //     }
-        // } catch (error) {
-        //     console.error(error);
-        //     alert("Error al conectar con el servidor");
-        // }
-    };
+      <div className="flex flex-wrap gap-2 mb-3">
+        <button onClick={() => exec('bold')} className="bg-gray-800 text-white p-2 rounded hover:bg-gray-700"><FaBold /></button>
+        <button onClick={() => exec('italic')} className="bg-gray-800 text-white p-2 rounded hover:bg-gray-700"><FaItalic /></button>
+        <button onClick={() => exec('underline')} className="bg-gray-800 text-white p-2 rounded hover:bg-gray-700"><FaUnderline /></button>
+        <button onClick={() => exec('justifyLeft')} className="bg-blue-700 text-white p-2 rounded hover:bg-blue-600"><FaAlignLeft /></button>
+        <button onClick={() => exec('justifyCenter')} className="bg-blue-700 text-white p-2 rounded hover:bg-blue-600"><FaAlignCenter /></button>
+        <button onClick={() => exec('justifyRight')} className="bg-blue-700 text-white p-2 rounded hover:bg-blue-600"><FaAlignRight /></button>
+        <button onClick={clearEditor} className="bg-red-600 text-white p-2 rounded hover:bg-red-500"><FaEraser /></button>
 
-    return (
-        <Container>
-            <Toolbar>
-                <button onClick={() => editor?.chain().focus().toggleBold().run()}>Negrita</button>
-                <button onClick={() => editor?.chain().focus().toggleItalic().run()}>Cursiva</button>
-                <button onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}>Título</button>
-                <button onClick={() => editor?.chain().focus().toggleBulletList().run()}>
-                    Lista
-                </button>
-                <input
-                    type="color"
-                    onChange={(e) =>
-                        editor?.chain().focus().setColor(e.target.value).run()
-                    }
-                />
-                <button onClick={insertarImagen}>Insertar imagen</button>
-                <button onClick={cambiarTamañoImagen} disabled={!imagenActivaSrc}>
-                    Cambiar tamaño imagen
-                </button>
-            </Toolbar>
+        <button onClick={triggerFileInput} className="bg-green-700 text-white p-2 rounded hover:bg-green-600">
+          <FaImage />
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={insertImage}
+          hidden
+        />
+      </div>
 
-            <EditorBox ref={editorRef}>
-                <EditorContent editor={editor} />
-            </EditorBox>
+      <div
+        ref={editorRef}
+        contentEditable
+        onInput={updateHtml}
+        className="w-full min-h-[200px] p-4 border border-gray-400 rounded bg-white mb-6"
+        style={{
+          outline: 'none',
+          whiteSpace: 'pre-wrap',
+          wordWrap: 'break-word',
+          minHeight: '200px',
+          cursor: 'text',
+        }}
+      />
 
-            <BotonesExtras>
-                <button onClick={verContenido}>Ver contenido HTML</button>
-                <button onClick={guardarContenido}>Guardar en base de datos</button>
-            </BotonesExtras>
-
-            {contenidoHTML && (
-                <VistaPrevia>
-                    <h3>Vista previa</h3>
-                    <div dangerouslySetInnerHTML={{ __html: contenidoHTML }} />
-                </VistaPrevia>
-            )}
-        </Container>
-    );
+      <h3 className="text-xl font-semibold mb-2">Código HTHOLAGHOASDASKD;LSAKD;KSALML generado:</h3>
+      <textarea
+        value={htmlContent || ''}
+        readOnly
+        className="w-full h-60 p-3 border border-gray-300 rounded bg-gray-100 font-mono resize-none"
+      />
+    </div>
+  );
 }
-
-// Estilos
-
-const Container = styled.div`
-    padding: 2rem;
-    margin-top: 20rem;
-`;
-
-const Toolbar = styled.div`
-    margin-bottom: 1rem;
-
-    button,
-    input[type="color"] {
-        margin-right: 0.5rem;
-        padding: 0.4rem 0.8rem;
-        border: none;
-        background: #eee;
-        cursor: pointer;
-    }
-
-    button:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-    }
-`;
-
-const EditorBox = styled.div`
-    border: 1px solid #ccc;
-    background: white;
-    padding: 1rem;
-    min-height: 200px;
-
-    img.selectable-image {
-        outline: 2px solid transparent;
-        transition: outline 0.2s;
-    }
-
-    img.selectable-image:hover {
-        outline: 2px dashed #888;
-    }
-`;
-
-const BotonesExtras = styled.div`
-    margin-top: 1rem;
-
-    button {
-        margin-right: 1rem;
-        padding: 0.5rem 1rem;
-        background: #0e76a8;
-        color: white;
-        border: none;
-        cursor: pointer;
-        border-radius: 4px;
-    }
-`;
-
-const VistaPrevia = styled.div`
-    margin-top: 2rem;
-    border-top: 1px solid #ccc;
-    padding-top: 1rem;
-
-    img {
-        max-width: 100%;
-    }
-`;

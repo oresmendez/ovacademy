@@ -66,7 +66,7 @@ export default function SelectAulaEstudiantes() {
 	
 				setEstudiantes(estudiantesNoInscritos);
 			} else {
-				console.error('La respuesta de la API no contiene datos válidos.');
+
 			}
 		} catch (err) {
 			console.error('Error al conectar con el servidor:', err);

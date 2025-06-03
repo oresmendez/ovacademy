@@ -1,289 +1,318 @@
-'use client'; import { useState, useEffect, ListarEvaluaciones, styled, PropTypes, utils, apiRest, toast, ButtonLabelEstatus, export_file, DataTableIndex, ButtonSave, ButtonAccion, InputSearch } from '@/app/components/utils/rutas';
+'use client'; import { useState, useEffect, ListarEvaluaciones, styled, PropTypes, utils, apiRest,ModalField , toast, ButtonLabelEstatus, export_file, DataTableIndex, ButtonSave, ButtonAccion, InputSearch } from '@/app/components/utils/rutas';
+import { TbEyeEdit } from "react-icons/tb";
 
 export default function ListarUnidades() {
-    const [data, setData] = useState([]);
-    const [filterText, setFilterText] = useState('');
-    const [unidadSeleccionada, setUnidadSeleccionada] = useState(1);
+  const [data, setData] = useState([]);
+  const [filterText, setFilterText] = useState('');
+  const [unidadSeleccionada, setUnidadSeleccionada] = useState(true);
+  const [mostrarEvaluaciones, setMostrarEvaluaciones] = useState(false);
 
-    const [mostrarEvaluaciones, setMostrarEvaluaciones] = useState(false);
-    const [cerrandoEvaluaciones, setCerrandoEvaluaciones] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [visibleEliminar, setvisibleEliminar] = useState(false);
+  const [formValues, setFormValues] = useState(null);
 
-    const [idUnidad, setidUnidad] = useState("");
-    const [modulo, setModulo] = useState("");
-    const [nombre, setNombre] = useState("");
-    const [nota_unidad, setNota_unidad] = useState("");
-	const [descripcion, setDescripcion] = useState("");
+  const puntosTotales = data.reduce((total, unidad) => total + parseFloat(unidad.notaUnidad || 0), 0);
 
-    useEffect(() => {
-        obtenerUnidades();
-    }, []);
 
-    const obtenerUnidades = async () => {
-        try {
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/profesor`
-            const response = await apiRest.fetchGet(url);
-            if (response.status === 200) {
-                console.log(response.data.data)
-                setData(response.data.data);
-            } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
-                setData([]);
-            }
-        } catch (err) {
-            console.error('Error al conectar con el servidor:', err);
-            setData([]);
-        }
-    };
+  const [unidad, setUnidad] = useState({
+    id: '',
+    modulo: '',
+    nombre: '',
+    nota_unidad: '',
+    descripcion: ''
+  });
 
-    const obtenerUnidadByID = async (id) => {
-        try {
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/${id}`
-            const response = await apiRest.fetchGet(url);
-            if (response.status === 200) {
-                setidUnidad(response.data.data.id);
-                setModulo(response.data.data.modulo);
-                setNombre(response.data.data.nombre);
-                setNota_unidad(response.data.data.notaUnidad);
-                setDescripcion(response.data.data.descripcion);
-                setUnidadSeleccionada(null);
-            } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
-                setData([]);
-            }
-        } catch (err) {
-            console.error('Error al conectar con el servidor:', err);
-            setData([]);
-        }
-    };
+  useEffect(() => {
+    obtenerUnidades();
+  }, []);
 
-    const filteredData = data.filter(
-        (item) =>
-            (item.nombre?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
-            (item.modulo?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
-            (item.descripcion?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
-            (item.createdAt?.toLowerCase() || '').includes(filterText.toLowerCase()) ||
-            (item.updateAt?.toLowerCase() || '').includes(filterText.toLowerCase()) 
-    );
+	const obtenerUnidades = async () => {
+		try {
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/profesor`;
+			const response = await apiRest.fetchGet(url);
+			if (response.status === 200) {
+				setData(response.data.data);
+			}
+		
+		} catch (err) {
+			console.error('Error al conectar con el servidor.');
+		}
+	};
 
-    const volverAlListado = () => {
-        setUnidadSeleccionada(1);
-        setNombre('');
-        setDescripcion('');
-    };
-    
-    const editar_unidad = async () => {
-        try {
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades`
-            const response = await apiRest.fetchPut(url, {
-                id: idUnidad, 
-                modulo,
-                nombre,
-                nota_unidad, 
-                descripcion
-            });
+	const obtenerUnidadByID = async (id) => {
+		try {
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/${id}`;
+		const response = await apiRest.fetchGet(url);
+		if (response.status === 200) {
+			const u = response.data.data;
+			setUnidad({
+			id: u.id,
+			modulo: u.modulo,
+			nombre: u.nombre,
+			nota_unidad: u.notaUnidad,
+			descripcion: u.descripcion
+			});
+			setUnidadSeleccionada(false);
+		} else {
+			console.error('No se pudo obtener la unidad.');
+		}
+		} catch (err) {
+		console.error('Error de conexión al cargar unidad.');
+		}
+	};
 
-            if (response.status === 200) {
-                obtenerUnidades();
-                toast.success(response.data.message);
-                volverAlListado();
-            } else {
-                toast.error(response.data.message);
-            }
-        } catch (error) {
-            toast.error("Error al editar una unidad.");
-        }
-    };
-    
-    const handleDeleteClick = async (id, modulo) => {
-        try {
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/${id}`
-            const response = await apiRest.fetchDelete(url);
-            console.log(response);
-            if (response.status === 200) {
-                toast.success(`${modulo} actualizada`);
-                setData((prevData) =>
-                    prevData.map((item) =>
-                        item.id === id ? { ...item, status: !item.status } : item
-                    )
-                );
-            } else {
-                toast.error('Ocurrió un error');
-            }
-        } catch (err) {
-            console.log(err);
-            toast.error('Error al conectar con el servidor.');
-        }
-    };
+	const editarUnidad = async () => {
+		try {
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades`;
+		const response = await apiRest.fetchPut(url, {
+			id: unidad.id,
+			modulo: unidad.modulo,
+			nombre: unidad.nombre,
+			nota_unidad: unidad.nota_unidad,
+			descripcion: unidad.descripcion,
+		});
+		setVisible(false);
+		if (response.status === 200) {
+			toast.success(response.data.message);
+			obtenerUnidades();
+			volverAlListado();
+		} else {
+			console.error(response.data.message);
+		}
+		} catch (err) {
+		console.error('Error al actualizar la unidad.');
+		}
+	};
 
-    const exportToPDF = () => {
-        const name = 'estudiantes.pdf';
-        const title = 'Listado de Profesores';
-        const head = [['Correo Electrónico', 'Nombre', 'Apellido' ,'Acceso', 'Estado']];
-        const tableRows = filteredData.map((row) => [
-            row.email,
-            row.name,
-            row.surname,
-            row.habilitado ? 'Activo' : 'Inactivo',
-            row.statusLogico ? 'Activo' : 'Inactivo',
-        ]);
-        export_file.exportToPDF(title, head, tableRows, name);
-    };
+	const soft_delete = async () => {
+		try {
+		setvisibleEliminar(false)
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/delete/${unidad.id}`;
+		const response = await apiRest.fetchDelete(url);
+		if (response.status === 200) {
+			toast.success(response.data.message);
+			obtenerUnidades();
+			volverAlListado();
+		} else {
+			console.error(response.data.message);
+		}
+		} catch (err) {
+		console.error('Error al eliminar la unidad.');
+		}
+	};
 
-    const exportToExcel = () => {
-        const name = 'profesores.xlsx';
-        const title = 'Profesores';
-        export_file.exportToExcel(title, filteredData, name);
-    };  
+	const volverAlListado = () => {
+		setUnidadSeleccionada(true);
+		setUnidad({
+		id: '',
+		modulo: '',
+		nombre: '',
+		nota_unidad: '',
+		descripcion: ''
+		});
+	};
 
-    const columns = [
-        {   name: 'Módulo', 
-            selector: (row) => row.modulo || 'No disponible', 
-            sortable: true, 
-            grow: 1 
-        },
-        {   name: 'Nombre', 
-            selector: (row) => row.nombre || 'No disponible', 
-            sortable: true, 
-            grow: 3.5 
-        },
-        {   name: 'Nota Unidad', 
-            selector: (row) => {
-                if (row.notaUnidad == 0) return 'No disponible';
-              
-                const nota = parseFloat(row.notaUnidad);
-                const texto = nota === 1 ? 'punto' : 'puntos';
-                return `${nota} ${texto}`;
-            },              
-            sortable: true, 
-            grow: 1.8 
-        },
-        {   name: 'Fecha Creación', 
-            selector: (row) => utils.formatearFecha(row.createdAt) || 'No disponible', 
-            sortable: true, 
-            grow: 2 
-        },
-        {   name: 'Fecha Actualización', 
-            selector: (row) => utils.formatearFecha(row.updateAt) || 'No disponible', 
-            sortable: true, 
-            grow: 2 
-        },
-        {
-            name: 'Estado',
-            selector: (row) => (
-                <ButtonLabelEstatus
-                    status_logico={row.status}
-                    onClick={() => handleDeleteClick(row.id, row.modulo)}
-                />
-            ),
-            sortable: true,
-            grow: 1.2,
-        },
-        {
-            name: 'Acción',
-            grow: 1.5,
-            cell: (row) => (
-                <button onClick={() => obtenerUnidadByID(row.id)} style={{ color: '#0465ac' }}>Editar</button>
-            ),
-        }   
-    ];
+	const handleDeleteClick = async (id, modulo) => {
+		try {
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/${id}`;
+		const response = await apiRest.fetchDelete(url);
+		if (response.status === 200) {
+			toast.success(`${modulo} actualizada`);
+			setData((prev) =>
+			prev.map((item) => (item.id === id ? { ...item, status: !item.status } : item))
+			);
+		} else {
+			console.error('No se pudo actualizar el estado.');
+		}
+		} catch (err) {
+		console.error('Error de conexión al cambiar estado.');
+		}
+	};
 
-    let contenido;
-    if (unidadSeleccionada) {
-        contenido = (
-            <>
-                <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+	const exportToPDF = () => {
+		const name = 'unidades.pdf';
+		const title = 'Listado de Unidades';
+		const head = [['Módulo', 'Nombre', 'Valor Evaluativo', 'Descripción']];
+		const rows = data.map((row) => [row.modulo, row.nombre, row.notaUnidad, row.descripcion]);
+		export_file.exportToPDF(title, head, rows, name);
+	};
+
+  const exportToExcel = () => {
+    export_file.exportToExcel('Unidades', data, 'unidades.xlsx');
+  };
+
+  const filteredData = data.filter((item) =>
+    [item.nombre, item.modulo, item.descripcion].some((val) =>
+      (val || '').toLowerCase().includes(filterText.toLowerCase())
+    )
+  );
+
+  const columns = [
+    { name: 'Módulo', grow: 1,selector: (row) => row.modulo, sortable: true },
+    { name: 'Nombre', grow: 2, selector: (row) => row.nombre, sortable: true },
+    {
+      name: 'Nota Unidad',
+      grow: 1,
+      selector: (row) => {
+        const n = parseFloat(row.notaUnidad);
+        return n ? `${n} ${n === 1 ? 'punto' : 'puntos'}` : 'No disponible';
+      },
+      sortable: true,
+    },
+    { name: 'Fecha Creación', selector: (row) => utils.formatearFecha(row.createdAt), sortable: true },
+    { name: 'Actualización', selector: (row) => utils.formatearFecha(row.updateAt), sortable: true },
+    {
+      name: 'Estado',
+      grow: 0.5,
+      selector: (row) => (
+        <ButtonLabelEstatus
+          status_logico={row.status}
+          onClick={() => handleDeleteClick(row.id, row.modulo)}
+        />
+      ),
+    },
+    {
+      name: 'Acción',
+      grow: 0.1,
+      cell: (row) => (
+        <button onClick={() => obtenerUnidadByID(row.id)} style={{ color: '#0465ac' }}>
+          <TbEyeEdit  size={28}/>
+        </button>
+      ),
+    },
+  ];
+
+
+  return (
+    <Componente>
+      <div style={{ padding: '1rem' }}>
+        {unidadSeleccionada ? (
+          <>
+            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div className="botones-exportar">
                         <ButtonAccion onClick={exportToPDF}>Exportar a PDF</ButtonAccion> 
                         <ButtonAccion onClick={exportToExcel}>Exportar a Excel</ButtonAccion> 
                         <ButtonAccion onClick={obtenerUnidades} loading={true}></ButtonAccion> 
                     </div>
-                    <InputSearch filterText={filterText} setFilterText={setFilterText} />
+                    <div className='center'>
+                      <div className="total-puntos">
+                        <strong>Total puntos:</strong> {puntosTotales}
+                      </div>
+
+                      <InputSearch filterText={filterText} setFilterText={setFilterText} />
+                    </div>
                 </div>
-                <DataTableIndex columns={columns} data={filteredData} />
-            </>
-        );
-    } else if (mostrarEvaluaciones) {
-        contenido = (
-            <ListarEvaluaciones
-                idUnidad={idUnidad}
-                modulo={modulo}
-                setCerrandoEvaluaciones={setCerrandoEvaluaciones}
-                setMostrarEvaluaciones={setMostrarEvaluaciones}
-            />
-        );
-    } else {
-        contenido = (
-            <>
-                <div className="header-edicion">
-                    <ButtonAccion onClick={volverAlListado}>Atrás</ButtonAccion> 
-                    <ButtonAccion onClick={() => setMostrarEvaluaciones(true)}>Evaluaciones</ButtonAccion> 
+            <DataTableIndex columns={columns} data={filteredData} />
+          </>
+        ) : mostrarEvaluaciones ? (
+          <ListarEvaluaciones
+            idUnidad={unidad.id}
+            modulo={unidad.modulo}
+            setCerrandoEvaluaciones={() => {}}
+            setMostrarEvaluaciones={setMostrarEvaluaciones}
+          />
+        ) : (
+          <>
+            <div className="header-edicion">
+                <div className='center'>
+                    <ButtonAccion onClick={volverAlListado}>Atrás</ButtonAccion>
+                    <button className="delete-button ml-10" onClick={() => setvisibleEliminar(true)}>
+                        Eliminar Unidad
+                    </button>
                 </div>
-
-                <div className="form-wrapper">
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            editar_unidad();
-                        }}
-                        className="space-y-4"
-                    >
-                        <div className="form-row">
-                            <div className="form-item">
-                                <InputField
-                                    label="Módulo"
-                                    value={modulo}
-                                    onChange={setModulo}
-                                    placeholder="Módulo de la unidad"
-                                    required
-                                />
-                            </div>
-                            <div className="form-item nombre">
-                                <InputField
-                                    label="Nombre"
-                                    value={nombre}
-                                    onChange={setNombre}
-                                    placeholder="Nombre de la unidad"
-                                    required
-                                />
-                            </div>
-                            <div className="form-item evaluativo">
-                                <InputFieldNumber
-                                    label="Valor Evaluativo"
-                                    value={nota_unidad}
-                                    onChange={setNota_unidad}
-                                    placeholder="Valor evaluativo"
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <TextAreaField
-                            label="Descripción"
-                            value={descripcion}
-                            onChange={setDescripcion}
-                            placeholder="Descripción"
-                            required
-                        />
-                        <ButtonSave type="submit" className="mt-20" classFather="center">
-                            Guardar
-                        </ButtonSave>
-
-                    </form>
-                </div>
-            </>
-        );
-    }
-
-    return (
-        <Componente>
-            <div style={{ padding: '1rem', fontFamily: 'Lexend Deca, sans-serif' }}>
-                {contenido}
+              <ButtonAccion onClick={() => setMostrarEvaluaciones(true)}>Evaluaciones</ButtonAccion>
             </div>
-        </Componente>
-    );
-
-    
+            <div className="form-wrapper">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setFormValues(unidad);
+                  setVisible(true);
+                }}
+                className="space-y-4"
+              >
+                <div className="form-row">
+                  <div className="form-item">
+                    <InputField
+                      label="Módulo"
+                      value={unidad.modulo}
+                      onChange={(val) => setUnidad({ ...unidad, modulo: val })}
+                      placeholder="Módulo de la unidad"
+                      required
+                    />
+                  </div>
+                  <div className="form-item nombre">
+                    <InputField
+                      label="Nombre"
+                      value={unidad.nombre}
+                      onChange={(val) => setUnidad({ ...unidad, nombre: val })}
+                      placeholder="Nombre de la unidad"
+                      required
+                    />
+                  </div>
+                  <div className="form-item evaluativo">
+                    <InputFieldNumber
+                      label="Valor Evaluativo"
+                      value={unidad.nota_unidad}
+                      onChange={(val) => setUnidad({ ...unidad, nota_unidad: val })}
+                      placeholder="Valor evaluativo"
+                      required
+                    />
+                  </div>
+                </div>
+                <TextAreaField
+                  label="Descripción"
+                  value={unidad.descripcion}
+                  onChange={(val) => setUnidad({ ...unidad, descripcion: val })}
+                  placeholder="Descripción"
+                  required
+                />
+                <div className="center">
+                  <ButtonSave className="mt-20 mr-10" onClick={() => setVisible(true)}>Guardar</ButtonSave>
+                  <ButtonSave
+                    className="mt-20"
+                    bgColor="#d5dbdb"
+                    hoverColor="#bfc9ca"
+                    onClick={() => volverAlListado()}
+                  >
+                    Cancelar
+                  </ButtonSave>
+                </div>
+              </form>
+              <ModalField
+                visible={visible}
+                cerrarModal={() => setVisible(false)}
+                onclick={() => editarUnidad()}
+                width={"700"}
+                height={"100"}
+                title={"¿Estás seguro?"}
+                mensaje={
+                  <>
+                    ¿Deseas editar esta unidad? <br /><br />
+                  </>
+                }
+              />
+            </div>
+            <ModalField 
+                visible={visibleEliminar} 
+                cerrarModal={() => setvisibleEliminar(false)}
+                onclick={() => soft_delete()}
+                width={"700"}
+                height={"100"}
+                title={"¿Estas seguro?"}
+                mensaje={
+                    <>
+                        ¿Estás seguro que deseas eliminar esta unidad? <br /><br />
+                    </>
+                }
+            />
+          </>
+        )}
+      </div>
+    </Componente>
+  );
 }
+
 
 const InputField = ({ label, type = "text", value, onChange, placeholder, required = false }) => (
 	<div className="form-group">
@@ -347,6 +376,33 @@ TextAreaField.propTypes = {
 
 const Componente = styled.div`
 
+  .total-puntos {
+    background-color: #0465ac;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    margin-right: 20px;
+    white-space: nowrap;
+  }
+
+
+    .delete-button {
+		background: linear-gradient(135deg, #0465ac, #039be5);
+		color: #fff;
+		padding: 10px 16px;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: background 0.3s;
+		margin-right: 10px;
+	}
+
+    .delete-button {
+		background: #e53935;
+	}
+
     .header-edicion {
         display: flex;
         justify-content: space-between;
@@ -363,32 +419,6 @@ const Componente = styled.div`
         border-radius: 8px;
         cursor: pointer;
         font-weight: bold;
-    }
-
-    .slide-panel {
-        animation: slideIn 0.4s ease-out forwards;
-        
-        padding: 1rem;
-        border-radius: 12px;
-        margin-top: 1rem;
-    }
-
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0%);
-            opacity: 1;
-        }
-    }
-
-    .slide-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
     }
 
     .btn-cerrar {
@@ -417,35 +447,7 @@ const Componente = styled.div`
         color: white;
     }
 
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0%);
-            opacity: 1;
-        }
-    }
 
-    @keyframes slideOut {
-        from {
-            transform: translateX(0%);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-
-    .slideIn {
-        animation-name: slideIn;
-    }
-
-    .slideOut {
-        animation-name: slideOut;
-    }
 
 
 

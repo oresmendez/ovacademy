@@ -1,121 +1,443 @@
 "use client";
-import { styled, toast, apiRest, ButtonSave } from '@/app/components/utils/rutas';
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import TextStyle from "@tiptap/extension-text-style";
-import Color from "@tiptap/extension-color";
-import BulletList from "@tiptap/extension-bullet-list";
-import ListItem from "@tiptap/extension-list-item";
-import { ResizableImage } from "@/app/components/utils/ResizableImage";
-import { useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { styled } from "@/app/components/utils/rutas";
+import {
+  FaBold,
+  FaItalic,
+  FaUnderline,
+  FaAlignLeft,
+  FaAlignCenter,
+  FaAlignRight,
+  FaImage,
+} from "react-icons/fa";
 
-export default function EditarContenido({ descripcion, setDescripcion, idContenido, nombre, volverAlListado }) {
-    const editor = useEditor({
-        extensions: [
-            StarterKit.configure({
-                bulletList: false,
-                listItem: false,
-            }),
-            TextStyle,
-            Color,
-            ResizableImage,
-            BulletList,
-            ListItem,
-        ],
-        content: descripcion || "<p>Escribe algo aquí...</p>",
-        onUpdate: ({ editor }) => {
-            const html = editor.getHTML();
-            setDescripcion(html); // actualiza el estado externo
-        },
+export default function EditarContenido({ descripcion, setDescripcion }) {
+  const editorRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const prevDescripcionRef = useRef("");
+
+  useEffect(() => {
+  const handlePaste = (e) => {
+    e.preventDefault(); // Evita el comportamiento por defecto
+
+    const text = e.clipboardData.getData("text/plain"); // Solo texto
+    const selection = window.getSelection();
+
+    if (!selection.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    range.deleteContents();
+
+    const textNode = document.createTextNode(text);
+    range.insertNode(textNode);
+
+    // Mover el cursor al final del texto pegado
+    range.setStartAfter(textNode);
+    range.setEndAfter(textNode);
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    updateHtml(); // Actualiza la descripción sin estilos
+  };
+
+  const editor = editorRef.current;
+  if (editor) {
+    editor.addEventListener("paste", handlePaste);
+  }
+
+  return () => {
+    if (editor) {
+      editor.removeEventListener("paste", handlePaste);
+    }
+  };
+}, []);
+
+
+useEffect(() => {
+  if (
+    editorRef.current &&
+    descripcion &&
+    descripcion !== prevDescripcionRef.current
+  ) {
+    editorRef.current.innerHTML = descripcion.trim();
+    prevDescripcionRef.current = descripcion;
+
+    const wrappers = editorRef.current.querySelectorAll('[data-image-wrapper]');
+
+    wrappers.forEach(wrapper => {
+      const img = wrapper.querySelector("img");
+      if (!img) return;
+
+      // Asegura que siempre se pueda hacer clic para mostrar los handles
+img.addEventListener("dblclick", (e) => {
+  e.stopPropagation();
+  setSelectedImage(wrapper);
+
+  const handles = wrapper.querySelectorAll(".resize-handle");
+  handles.forEach((handle) => {
+    handle.style.display = "block";
+  });
+});
+
+
+      // Elimina handles viejos (si los hay) para evitar duplicados
+      wrapper.querySelectorAll(".resize-handle").forEach(h => h.remove());
+
+      // Vuelve a agregar los handles
+      const corners = ["nw", "ne", "sw", "se"];
+      corners.forEach((corner) => {
+        const handle = document.createElement("div");
+        handle.className = "resize-handle";
+        handle.style.cssText = `
+          display: none;
+          position: absolute;
+          width: 12px;
+          height: 12px;
+          background: #000;
+          border-radius: 50%;
+          cursor: ${corner}-resize;
+          z-index: 10;
+          ${corner.includes("n") ? "top: -6px;" : "bottom: -6px;"}
+          ${corner.includes("w") ? "left: -6px;" : "right: -6px;"}
+        `;
+        handle.addEventListener("mousedown", (e) =>
+          startResizing(e, wrapper, img, corner)
+        );
+        wrapper.appendChild(handle);
+      });
     });
+  }
+}, [descripcion]);
 
-    useEffect(() => {
-        if (editor && descripcion !== editor.getHTML()) {
-            editor.commands.setContent(descripcion || "<p></p>");
-        }
-    }, [descripcion]);
 
-    const editar_contenido = async () => {
-        const html = editor?.getHTML();
-        console.log("Contenido HTML:", html);
-        console.log("Nombre:", nombre);
-        console.log("ID Contenido:", idContenido);
-
-        
-        try {
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/contenido`
-            const response = await apiRest.fetchPut(url, {
-                id: idContenido, 
-                nombre, 
-                descripcion: html
-            });
-            console.log("Respuesta de la API:", response);
-            if (response.status === 200) {
-                toast.success(response.data.message);
-                volverAlListado();
-            } else {
-                toast.error(response.data.message);
-            }
-        } catch (error) {
-            toast.error("Error al editar una unidad.");
-        }
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (selectedImage) {
+        const handles = selectedImage.querySelectorAll(".resize-handle");
+        handles.forEach((handle) => {
+          handle.style.display = "none";
+        });
+      }
+      setSelectedImage(null);
     };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [selectedImage]);
 
-    return (
-        <Component>
-            <Toolbar>
-                <button onClick={() => editor?.chain().focus().toggleBold().run()}>Negrita</button>
-                <button onClick={() => editor?.chain().focus().toggleItalic().run()}>Cursiva</button>
-                <button onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}>Título</button>
-                <button onClick={() => editor?.chain().focus().toggleBulletList().run()}>Lista</button>
-                <input
-                    type="color"
-                    onChange={(e) =>
-                        editor?.chain().focus().setColor(e.target.value).run()
-                    }
-                />
-            </Toolbar>
+  const exec = (command, value = null) => {
+    document.execCommand(command, false, value);
+    updateHtml();
+  };
 
-            <EditorBox>
-                <EditorContent editor={editor} />
-            </EditorBox>
-                    <ButtonSave onClick={() => editar_contenido()} className="mt-10" classFather="center" >
-                                        Guardar
-					</ButtonSave>
+const insertImageAtCursor = (src) => {
+  const wrapper = document.createElement("div");
+  wrapper.contentEditable = true;
+  wrapper.dataset.imageWrapper = "true";
+  wrapper.style.cssText = `
+    display: inline-block;
+    position: relative;
+    width: 50%;
+    max-width: 100%;
+    margin: 8px 12px 8px 0;
+  `;
 
-        </Component>
+  const img = document.createElement("img");
+  img.src = src;
+  img.style.cssText = `
+    width: 100%;
+    height: auto;
+    display: block;
+    cursor: pointer;
+  `;
+
+  // 🔁 Mostrar handles en click o doble click
+  const showHandles = (e) => {
+    e.stopPropagation();
+    setSelectedImage(wrapper);
+
+    const handles = wrapper.querySelectorAll(".resize-handle");
+    handles.forEach((handle) => {
+      handle.style.display = "block";
+    });
+  };
+
+  img.addEventListener("click", showHandles);
+  img.addEventListener("dblclick", showHandles);
+
+  wrapper.appendChild(img);
+
+  // 📌 Agregar handles de redimensionamiento
+  const corners = ["nw", "ne", "sw", "se"];
+  corners.forEach((corner) => {
+    const handle = document.createElement("div");
+    handle.className = "resize-handle";
+    handle.style.cssText = `
+      display: none;
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #000;
+      border-radius: 50%;
+      cursor: ${corner}-resize;
+      z-index: 10;
+      ${corner.includes("n") ? "top: -6px;" : "bottom: -6px;"}
+      ${corner.includes("w") ? "left: -6px;" : "right: -6px;"}
+    `;
+    handle.addEventListener("mousedown", (e) =>
+      startResizing(e, wrapper, img, corner)
     );
+    wrapper.appendChild(handle);
+  });
+
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+
+  const range = sel.getRangeAt(0);
+  range.deleteContents();
+  range.insertNode(wrapper);
+
+  range.setStartAfter(wrapper);
+  range.setEndAfter(wrapper);
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  updateHtml();
+};
+
+
+const startResizing = (e, wrapper, img, corner) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const startX = e.clientX;
+  const startY = e.clientY;
+  const startWidth = wrapper.offsetWidth;
+  const startHeight = wrapper.offsetHeight;
+
+  const editorWidth = editorRef.current.offsetWidth;
+
+  const onMouseMove = (moveEvent) => {
+    const dx = moveEvent.clientX - startX;
+    const dy = moveEvent.clientY - startY;
+
+    let newWidth = startWidth;
+    let newHeight = startHeight;
+
+    if (corner.includes("e")) newWidth += dx;
+    if (corner.includes("w")) newWidth -= dx;
+    if (corner.includes("s")) newHeight += dy;
+    if (corner.includes("n")) newHeight -= dy;
+
+    // Limita el ancho entre 30px y el ancho del editor
+    const limitedWidth = Math.min(Math.max(30, newWidth), editorWidth);
+
+    wrapper.style.width = `${limitedWidth}px`;
+    wrapper.style.height = "auto";
+
+    img.style.width = "100%";
+    img.style.maxWidth = "100%";
+    img.style.height = "auto";
+  };
+
+  const onMouseUp = () => {
+    updateHtml();
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onMouseUp);
+  };
+
+  document.addEventListener("mousemove", onMouseMove);
+  document.addEventListener("mouseup", onMouseUp);
+};
+
+
+
+
+
+  const insertImage = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      insertImageAtCursor(reader.result);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = null;
+  };
+
+  const updateHtml = () => {
+    const clone = editorRef.current.cloneNode(true);
+    clone.querySelectorAll(".resize-handle").forEach(el => el.remove());
+    const newHtml = clone.innerHTML;
+    if (newHtml !== descripcion) {
+      setDescripcion(newHtml);
+      prevDescripcionRef.current = newHtml;
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
+
+  return (
+    <Wrapper>
+      <Toolbar>
+        <IconButton onClick={() => exec("bold")}>
+          <FaBold />
+        </IconButton>
+        <IconButton onClick={() => exec("italic")}>
+          <FaItalic />
+        </IconButton>
+        <IconButton onClick={() => exec("underline")}>
+          <FaUnderline />
+        </IconButton>
+        <IconButton onClick={() => exec("justifyLeft")} bg="blue">
+          <FaAlignLeft />
+        </IconButton>
+        <IconButton onClick={() => exec("justifyCenter")} bg="blue">
+          <FaAlignCenter />
+        </IconButton>
+        <IconButton onClick={() => exec("justifyRight")} bg="blue">
+          <FaAlignRight />
+        </IconButton>
+        <IconButton onClick={triggerFileInput} bg="green">
+          <FaImage />
+        </IconButton>
+        <HiddenInput
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={insertImage}
+        />
+      </Toolbar>
+
+      <EditorArea ref={editorRef} contentEditable dir="ltr" onInput={updateHtml} />
+
+      {selectedImage && (
+        <ImageToolbar
+          style={{
+            top:
+              selectedImage.getBoundingClientRect().top + window.scrollY - 40,
+            left: selectedImage.getBoundingClientRect().left + window.scrollX,
+          }}
+        >
+          <FloatButton
+            onClick={() => {
+              selectedImage.style.cssText =
+                selectedImage.style.cssText.replace(/float:\s*right;/, "") +
+                "float: left; margin: 8px 12px 8px 0;";
+              setSelectedImage(null);
+              updateHtml();
+            }}
+          >
+            Izquierda
+          </FloatButton>
+          <FloatButton
+            onClick={() => {
+              selectedImage.style.cssText = selectedImage.style.cssText
+                .replace(/float:\s*(left|right);/, "")
+                .replace(/margin:[^;]+;/, "") +
+                "display: block; margin: 0 auto 16px auto; float: none;";
+              setSelectedImage(null);
+              updateHtml();
+            }}
+          >
+            Centro
+          </FloatButton>
+          <FloatButton
+            onClick={() => {
+              selectedImage.style.cssText =
+                selectedImage.style.cssText.replace(/float:\s*left;/, "") +
+                "float: right; margin: 8px 0 8px 12px;";
+              setSelectedImage(null);
+              updateHtml();
+            }}
+          >
+            Derecha
+          </FloatButton>
+        </ImageToolbar>
+      )}
+    </Wrapper>
+  );
 }
 
-// Estilos
+// ==============================
+// Estilos con styled-components
+// ==============================
 
-const Component = styled.div`
-    padding: 1rem;
+const Wrapper = styled.div`
+  padding: 1rem;
+  width: 100%;
 `;
 
 const Toolbar = styled.div`
-    margin-bottom: 1rem;
-    button, input[type="color"] {
-        margin-right: 0.5rem;
-        padding: 0.4rem 0.8rem;
-        border: none;
-        background: #eee;
-        cursor: pointer;
-    }
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
 `;
 
-const EditorBox = styled.div`
-    border: 1px solid #ccc;
-    background: white;
-    padding: 1rem;
-    min-height: 200px;
+const IconButton = styled.button`
+  background-color: ${({ bg }) =>
+    bg === "blue"
+      ? "#2563eb"
+      : bg === "red"
+      ? "#dc2626"
+      : bg === "green"
+      ? "#16a34a"
+      : "#1f2937"};
+  color: white;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
 
-    img.selectable-image {
-        outline: 2px solid transparent;
-        transition: outline 0.2s;
-    }
+  &:hover {
+    opacity: 0.9;
+  }
+`;
 
-    img.selectable-image:hover {
-        outline: 2px dashed #888;
-    }
+const HiddenInput = styled.input`
+  display: none;
+`;
+
+const EditorArea = styled.div`
+  width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  border: 1px solid #9ca3af;
+  border-radius: 0.375rem;
+  background-color: white;
+  margin-bottom: 1.5rem;
+  outline: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  display: block;
+  overflow-wrap: break-word;
+  word-break: break-word;
+
+  /* NUEVO: limita y oculta contenido que se desborde */
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+`;
+
+
+const ImageToolbar = styled.div`
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 4px;
+  border-radius: 4px;
+  z-index: 100;
+  display: flex;
+  gap: 4px;
+`;
+
+const FloatButton = styled.button`
+  background: #f3f3f3;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
 `;

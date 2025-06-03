@@ -1,5 +1,6 @@
-'use client'; import { styled, Link } from '@/app/components/utils/rutas';
+'use client';
 
+import { styled, Link } from '@/app/components/utils/rutas';
 import Slider from "react-slick";
 import { MdOutlineLocalLibrary } from "react-icons/md";
 
@@ -10,9 +11,9 @@ export default function Carrousel({ boxes, settings, sliderRef }) {
     return (
         <Componente>
             <Slider ref={sliderRef} {...settings}>
-                {boxes.map((box, index) => {
-                    return (
-                        <div key={index} className="carousel-card card">
+                {boxes.map((box) => (
+                    <div key={box.id}>
+                        <div className="carousel-card card-wrapper">
                             <div className="card-content">
                                 <Link href={`/ovacademy/estudiante/unidad/${box.id}`} passHref>
                                     <div
@@ -36,8 +37,8 @@ export default function Carrousel({ boxes, settings, sliderRef }) {
                                 </Link>
                             </div>
                         </div>
-                    );
-                })}
+                    </div>
+                ))}
             </Slider>
         </Componente>
     );
@@ -45,24 +46,25 @@ export default function Carrousel({ boxes, settings, sliderRef }) {
 
 const Componente = styled.div`
     .carousel-card {
+        width: 100%;
+        max-width: 100%;
         padding: 10px;
-        max-width: 350px;
-        width: 350px; /* Ancho fijo */
         overflow: hidden;
-
         font-family: var(--font-lexend);
         font-weight: 400;
         font-size: 1rem;
-    } 
+    }
 
     .card-content {
         display: flex;
         flex-direction: column;
+        width: 100%;
         background-color: #fff;
         border-radius: 8px;
         border: 1px solid #ddd;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s ease-in-out;
+
     }
 
     .card-content:hover {
@@ -86,10 +88,9 @@ const Componente = styled.div`
         font-size: 0.9rem;
         color: #555;
         display: flex;
-        flex-direction: column; /* Permite que los elementos internos se apilen */
-        align-items: flex-start; /* Asegura alineación con el texto */
-        min-height: 300px; /* Ajusta al contenido */
-        height: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        min-height: 300px;
         max-height: 400px;
     }
 
@@ -104,7 +105,13 @@ const Componente = styled.div`
         color: #777;
         margin: 1rem 0;
         text-align: justify;
-        line-height: 1.5; /* Mejora la legibilidad */
+        line-height: 1.5;
+    }
+
+    /* Forzar ancho completo del slide */
+    .slick-slide > div {
+        width: 100%;
+        display: flex;
+        justify-content: center;
     }
 `;
-

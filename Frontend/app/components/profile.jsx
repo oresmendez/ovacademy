@@ -44,13 +44,13 @@ export default function Profile({ email = '' }) {
             if (response.status === 200) {
                 toast.success(
                     <span>
-                      Profesor {email} eliminado
+                      Usuario {email} eliminado
                     </span>
                   );
 
 				  await new Promise(resolve => setTimeout(resolve, 1000));
 				  setShowSpinner(true)
-				  router.push('/ovacademy/administrador/profesores');
+				  window.history.go(-1);
                   
             } else {
                 toast.error('Ocurrió un error');
@@ -93,14 +93,9 @@ export default function Profile({ email = '' }) {
 						<button type="button" className="cancel-button mr-10 mt-10" onClick={() => setIsEditing(false)}>
 							Cancelar
 						</button>
-						{typeUser === 3 && email!='' && (
+						{email!='' && (
 							<button className="delete-button" onClick={() => abrirModal()}>
-								Eliminar Profesor
-							</button>
-						)}
-						{typeUser === 2 && email!='' && (
-							<button className="delete-button" onClick={() => abrirModal()}>
-								Eliminar Estudiante
+								Eliminar Usuario
 							</button>
 						)}
 						</>
@@ -297,10 +292,10 @@ export default function Profile({ email = '' }) {
                 title={"¿Estas seguro?"}
                 mensaje={
                     <>
-                        ¿Estás seguro que deseas eliminar al profesor {email}? <br /><br />
+                        ¿Estás seguro que deseas eliminar al usuario {email}? <br /><br />
                         Al confirmar, estarías eliminando{' '}
                         <span style={{ color: 'red', fontWeight: 'bold' }}>permanentemente</span> todo su acceso al sistema y{' '}
-                        <strong>todo el avance</strong> de los estudiantes asociados.
+                        <strong>todo el avance</strong> que tenga asociado.
                     </>
                 }
             />

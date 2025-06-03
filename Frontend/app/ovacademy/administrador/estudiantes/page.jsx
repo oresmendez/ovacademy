@@ -1,8 +1,7 @@
-'use client'; import { useState, styled, CrearContenidos, ListarContenidos, textBarHeader, useEffect, WrapperTitleRegister, Link} from '@/app/components/utils/rutas';
+'use client'; import { useState, styled, CrearEstudiante, ListarEstudiantes, Footer, ListarEstudianteSeccion, WrapperTitleRegister, textBarHeader, useEffect, AsociarEstudianteSemestre, Link} from '@/app/components/utils/rutas';
 
 
 export default function Administrador_Materia() {
-	
   const [activeTab, setActiveTab] = useState(1);
 
   const { setHeaderText } = textBarHeader();
@@ -10,9 +9,9 @@ export default function Administrador_Materia() {
   useEffect(() => {
 
       setHeaderText(<>
-          <Link href={`/ovacademy/profesor/dashboard`}>Inicio</Link>{/*
+          <Link href={`/ovacademy/administrador/dashboard`}>Inicio</Link>{/*
           */}<span className="separator">&gt;</span>{/*
-          */}Contenidos
+          */}Estudiantes
       </>);
 
   }, []);
@@ -22,46 +21,36 @@ export default function Administrador_Materia() {
   };
 
   
-	return (
-	<Componente>
-		<div className="layout-body">
-		<div className="container-body">
-			<div className="tabs-container mt-10 p-10">
-			<div className="tab-menu">
-				<button
-				className={activeTab === 0 ? "active" : ""}
-				onClick={() => TabClick(0)}
-				>
-				Registrar
-				</button>
-				<button
-				className={activeTab === 1 ? "active" : ""}
-				onClick={() => TabClick(1)}
-				>
-				Listado
-				</button>
-			</div>
-			<div className="tab-content">
-				{activeTab === 0 && (
-				<div className="tab-panel">
-					<WrapperTitleRegister tittle={"📘 Registrar Contenidos"} 
-					subtittle={"A continuación registra un contenido realacionado a la unidad"} 
-					ContentComponent={() => <CrearContenidos TabClick={TabClick} />} />
-				</div>
-				)}
+  return (
+    <Componente>
+      <div className="layout-body">
+        <div className="container-body">
+          <div className="tabs-container mt-10 p-10">
+            <div className="tab-menu">
+              <button className={activeTab === 0 ? "active" : ""} onClick={() => TabClick(0)}> Registrar </button>
+              <button className={activeTab === 1 ? "active" : ""} onClick={() => TabClick(1)}> Listado </button>
+            </div>
+            <div className="tab-content">
+              {activeTab === 0 && (
+                <div className="tab-panel">
+                  <WrapperTitleRegister tittle={"📘 Registrar Estudiante"} 
+                  subtittle={" A continuación registra un estudiante"} 
+                  ContentComponent={() => <CrearEstudiante TabClick={TabClick} />} />
+                </div>
+              )}
 
-				{activeTab === 1 && (
-				<div className="tab-panel">
-					<ListarContenidos />
-				</div>
-				)}
-
-			</div>
-			</div>
-		</div>
-		</div>
-	</Componente>
-	);
+              {activeTab === 1 && (
+                <div className="tab-panel">
+                  <ListarEstudiantes />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </Componente>
+  );
 }
 
 const Componente = styled.div`

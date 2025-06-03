@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, styled, apiRest, GenerarCuestionario, Spinner, toast } from '@/app/components/utils/rutas';
+import { useEffect, useState, styled, apiRest, GenerarCuestionario, Spinner, toast, gestorCookie  } from '@/app/components/utils/rutas';
 
 export default function Cuestionario({ idEvaluacion, notaEvaluacion, id_estudiante }) {
 	
@@ -11,6 +11,8 @@ export default function Cuestionario({ idEvaluacion, notaEvaluacion, id_estudian
 	const [respuestas, setRespuestas] = useState({});
 	const [enviado, setEnviado] = useState(false);
 	const [aciertos, setAciertos] = useState(0);
+
+	const [typeUser, setTypeUser] = useState(0);
 
 	useEffect(() => {
 		obtenerCuestionario();
@@ -52,6 +54,8 @@ export default function Cuestionario({ idEvaluacion, notaEvaluacion, id_estudian
 					}
 				});
 
+				setTypeUser(await gestorCookie.get_one_element_cookie("user-data", "type"));
+
 				setRespuestas(respuestasGuardadas);
 				setAciertos(correctas);
 				setEnviado(true);
@@ -84,11 +88,13 @@ export default function Cuestionario({ idEvaluacion, notaEvaluacion, id_estudian
 						{preguntas.map((pregunta) => (
 							<li key={pregunta.id}>
 								<strong>{pregunta.pregunta}</strong><br />
-								Tu respuesta:{' '}
+								Repuesta enviada:{' '}
 								<span style={{ color: respuestas[pregunta.id] === pregunta.respuestaCorrecta ? 'green' : 'red' }}>
 									{respuestas[pregunta.id] || 'No respondida'}
 								</span><br />
-								Respuesta correcta: {pregunta.respuestaCorrecta}
+								{typeUser === 2 && (
+									<>Respuesta correcta: {pregunta.respuestaCorrecta}</>
+								)}
 							</li>
 						))}
 					</ul>
@@ -108,10 +114,29 @@ const LayoutBody = styled.div`
   font-family: var(--font-lexend);
 
   .titulo {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-  }
+	font-size: 2.5rem;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	text-align: center;
+	color: #0f172a;
+	margin: 0px 0px 3rem 0px;
+	overflow: hidden;
+	white-space: nowrap;
+	border-right: 3px solid #0f172a;
+	width: 0;
+	animation: typing 2s steps(20, end) forwards, hideCursor 0.1s 2s forwards;
+}
+
+@keyframes typing {
+	from { width: 0 }
+	to { width: 100% }
+}
+
+@keyframes hideCursor {
+	to {
+		border-right: none;
+	}
+}
 
   .formulario {
     display: flex;

@@ -14,7 +14,7 @@ export default function () {
     useEffect(() => {
     
         setHeaderText(<>
-            <Link href={`/ovacademy/dashboard`}>Dashboard</Link>{/*
+            <Link href={`/ovacademy/dashboard`}>Inicio</Link>{/*
             */}<span className="separator">&gt;</span>{/*
             */}<Link href={`/ovacademy/materias/${unidad}`}>unidades</Link>{/*
             */}<span className="separator">&gt;</span>{/*

@@ -226,7 +226,7 @@ const customStyles = {
 
 const Component = styled.div`
   .form-wrapper {
-    margin: 50px 0;
+    margin: 0px;
     background: #fff;
     border-radius: 12px;
   }

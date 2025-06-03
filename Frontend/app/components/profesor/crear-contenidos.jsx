@@ -108,10 +108,19 @@ export default function CrearContenido ({ TabClick }) {
 					onBlur={handleBlur}
 					placeholder="Descripción"
 				/>
-
-				<ButtonSave type="submit" className="mt-10" classFather="center" disabled={isSubmitting}>
-					Guardar
-				</ButtonSave>
+				<div className='center'>
+					<ButtonSave type="submit" className="mt-10" classFather="center">
+						Guardar
+					</ButtonSave>
+					<ButtonSave
+						bgColor="#d5dbdb"
+						hoverColor="#bfc9ca"
+						className="mt-10 ml-10"
+						onClick={() => window.history.go(-1)}
+						>
+						Regresar
+					</ButtonSave>
+				</div>
 				</Form>
 			)}
 			</Formik>

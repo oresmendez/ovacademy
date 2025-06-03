@@ -1,6 +1,7 @@
 "use client"; 
 
-import { styled, apiRest, useState, useEffect, toast} from '@/app/components/utils/rutas';
+import { styled, apiRest, useState, useEffect, toast, ButtonSave} from '@/app/components/utils/rutas';
+import { FaPlus } from "react-icons/fa6";
 
 export default function crear_sopadeletras({id_unidad, type_id, nota_evaluacion, TabClick, idEvaluacion = null, handleVolver}) {
 
@@ -9,7 +10,7 @@ export default function crear_sopadeletras({id_unidad, type_id, nota_evaluacion,
 	const [error, setError] = useState('');
 
     useEffect(() => {
-        if (idEvaluacion) {
+        if (idEvaluacion != null) {
             obtener_sopadeletras()
         }
     }, [idEvaluacion]);
@@ -102,17 +103,35 @@ export default function crear_sopadeletras({id_unidad, type_id, nota_evaluacion,
 
     return (
         <Component>
-        <h1 className="titulo">Lista de Palabras</h1>
-        <div className="form-wrapper">
-            <input
-            type="text"
-            value={nuevaPalabra}
-            onChange={(e) => setNuevaPalabra(e.target.value)}
-            className="input"
-            placeholder="Agregar palabra"
-            />
-            <button onClick={agregarPalabra} className="boton">Agregar</button>
-        </div>
+        <h1 className="titulo">Sopa de Letras</h1>
+		<div className="center">
+
+			<div className="form-wrapper">
+				<input
+				type="text"
+				value={nuevaPalabra}
+				onChange={(e) => setNuevaPalabra(e.target.value)}
+				className="input"
+				placeholder="Palabra nueva"
+				/>
+			</div>
+		</div>
+		<div className='center'>
+		<ButtonSave onClick={() => agregarPalabra()} className="mt-10 mr-10 mb-20" bgColor="#33b0e4" hoverColor="#33b0e4">
+			Agregar
+		</ButtonSave>
+		{
+			idEvaluacion ?(
+				<ButtonSave onClick={() => editar_sopadeletras()} className="mt-10 mb-20">
+					Guardar
+				</ButtonSave>
+			) :(
+				<ButtonSave onClick={() => crear_sopadeletras()} className="mt-10 mb-20" >
+					Guardar
+				</ButtonSave>
+			)
+		}
+		</div>
         <ul className="lista">
             {palabras.map((palabra, index) => (
             <li key={index} className="item">
@@ -123,31 +142,36 @@ export default function crear_sopadeletras({id_unidad, type_id, nota_evaluacion,
         </ul>
         
         {error && <div className="error">{error}</div>}
-        <div className='center'>
-
-            {
-                idEvaluacion ?(
-                    <button onClick={editar_sopadeletras} className="guardar">Guardar</button>
-                ) :(
-                    <button onClick={crear_sopadeletras} className="guardar">Guardar</button>
-                )
-            }
-
-            
-        </div>
         </Component>
     );
 }
 
 const Component = styled.div`
-
+	
 
 	.titulo {
-		font-size: 2rem;
-		font-weight: 600;
-		color: #1f2937;
+		font-size: 2.5rem;
+		text-transform: uppercase;
+		letter-spacing: 2px;
 		text-align: center;
-		margin-bottom: 30px;
+		color: #0f172a;
+		margin: 36px 0px;
+		overflow: hidden;
+		white-space: nowrap;
+		border-right: 3px solid #0f172a;
+		width: 0;
+		animation: typing 2s steps(20, end) forwards, hideCursor 0.1s 2s forwards;
+	}
+
+	@keyframes typing {
+		from { width: 0 }
+		to { width: 100% }
+	}
+
+	@keyframes hideCursor {
+		to {
+			border-right: none;
+		}
 	}
 
 	.lista {
@@ -193,10 +217,12 @@ const Component = styled.div`
 
 	.form-wrapper {
 		display: flex;
-		gap: 12px;
-		margin-bottom: 16px;
+		gap: 0.8rem;
+		margin: 0px !important;
 		flex-wrap: wrap;
-		max-width:700px;
+		max-width: 60rem;
+		width: 100%;
+		font-family: var(--font-lexend);
 	}
 
 	.input {

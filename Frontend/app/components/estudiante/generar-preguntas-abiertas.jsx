@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, styled, apiRest, toast, ButtonSave, ButtonAccion } from '@/app/components/utils/rutas';
-import { shouldForwardProp } from '@emotion/styled'; // solo si estás usando emotion
 
 export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preguntas, respuestasPrevias, notaEvaluacion, isProfesor }) {
 
@@ -95,6 +94,7 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
                 toast.success(response.data.message);
                 enviarNotaEvaluacion();
                 recargar()
+                window.history.go(-1);
             } else {
                 toast.error(response.data.message);
             }
@@ -229,7 +229,7 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
 
     return (
         <Contenedor>
-            <Titulo>Preguntas Abiertas</Titulo>
+            <h1 className="titulo">Preguntas Abiertas</h1>
     
             {preguntas.map((p) => {
                 const yaRespondida = respuestasExistentes.some(r => r.preguntasAbiertasId === p.id);
@@ -310,35 +310,48 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
             )}
     
             {!todasRespondidas && (
-                <ButtonSave className="mt-10" classFather="center" onClick={guardarRespuestas}>Guardar</ButtonSave>
+                <div className='center'>
+                    <ButtonSave className="mt-10" onClick={guardarRespuestas}>Guardar</ButtonSave>
+                </div>
             )}
 
             {isProfesor && (
             <>
                 {!editarCalificaciones ? (
                 !kcalifico ? (
-                    // Mostrar botón Editar si no está editando y no ha calificado
-                    <div style={{ marginBottom: '1rem', marginTop: '3rem', display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-                    <div className="botones-exportar ">
-                        <ButtonAccion padding="0.5rem 4rem" onClick={editarCalificacionFunc}>Editar</ButtonAccion>
-                    </div>
+                    
+                    
+                    <div className="center">
+                        <ButtonSave onClick={() => editarCalificacionFunc()} className="" >
+                                Editar
+                        </ButtonSave>
+                    
                     </div>
                 ) : (
-                    // Mostrar botón Guardar si no está editando pero sí ha calificado
-                    <div style={{ marginBottom: '1rem', marginTop: '3rem', display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-                    <div className="botones-exportar">
-                        <ButtonAccion onClick={guardarTodasLasCalificaciones}>Guardar</ButtonAccion>
-                    </div>
+                    
+                    <div className="center">
+                        <ButtonSave onClick={() => guardarTodasLasCalificaciones()} className="" >
+                                Guardar
+                        </ButtonSave>
                     </div>
                 )
                 ) : (
                 // Mostrar Guardar + Cancelar cuando está en modo edición
-                <div style={{ marginBottom: '1rem', marginTop: '3rem', display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-                    <div className="botones-exportar">
-                    <ButtonAccion color="#dc3545" onClick={editarCalificacionFunc}>Cancelar</ButtonAccion>
-                    <ButtonAccion onClick={guardarTodasLasCalificaciones}>Guardar</ButtonAccion>
+                
+                    <div className="center mt-30">
+                        <ButtonSave onClick={() => guardarTodasLasCalificaciones()} className="" >
+                                    Guardar
+                        </ButtonSave>
+                        <ButtonSave
+                            bgColor="#d5dbdb"
+                            hoverColor="#bfc9ca"
+                            className="ml-10"
+                            onClick={() => editarCalificacionFunc()}
+                        >
+                            Cancelar
+                        </ButtonSave>
                     </div>
-                </div>
+                
                 )}
             </>
             )}
@@ -387,13 +400,34 @@ const Contenedor = styled.div`
     padding: 2rem;
     background: #ffffff;
     border-radius: 1.5rem;
-    max-width: 750px;
-    margin: 2rem auto;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
-    font-family: 'Segoe UI', sans-serif;
+
+    .titulo {
+		font-size: 2.5rem;
+		text-transform: uppercase;
+		letter-spacing: 2px;
+		text-align: center;
+		color: #0f172a;
+		margin: 0px 0px 5rem 0px;
+		overflow: hidden;
+		white-space: nowrap;
+		border-right: 3px solid #0f172a;
+		width: 0;
+		animation: typing 2s steps(20, end) forwards, hideCursor 0.1s 2s forwards;
+	}
+
+	@keyframes typing {
+		from { width: 0 }
+		to { width: 100% }
+	}
+
+	@keyframes hideCursor {
+		to {
+			border-right: none;
+		}
+	}
 `;
 
 const Titulo = styled.h2`
@@ -409,10 +443,11 @@ const PreguntaBox = styled.div`
 `;
 
 const PreguntaTexto = styled.p`
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 500;
     color: #444;
-    margin: 0;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
 `;
 
 const RespuestaInput = styled.textarea`

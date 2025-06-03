@@ -1,4 +1,4 @@
-'use client'; import { styled, apiRest, toast, useState, useEffect, export_file, useRouter, PropTypes, ButtonSave,ButtonAccion,InputSearch, DataTableIndex, ModalField, MessageError, Spinner } from '@/app/components/utils/rutas';
+'use client'; import { styled, apiRest, toast, useState, useEffect, PropTypes, ButtonSave,ButtonAccion,InputSearch, DataTableIndex, ModalField, MessageError, Spinner } from '@/app/components/utils/rutas';
 import { TbEyeEdit } from "react-icons/tb";
 
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -21,23 +21,20 @@ export default function ListarSemestre_() {
     const [showSpinner, setShowSpinner] = useState(false);
 	const [isLoadingRespuestas, setIsLoadingRespuestas] = useState(true);
 
-    const [visible, setVisible] = useState(false);
-    const [visibleEditar, setvisibleEditar] = useState(false);
-    const abrirModal = (idAula) => {
-        setVisible(true);
-    };
+    const [modal_culminar, set_modal_culminar] = useState(false);
+    const [modal_editar, set_modal_editar] = useState(false);
 
     useEffect(() => {
         ObtenerSemestres();
     }, []);
 
     const handleDeleteClick = async () => {
-        setVisible(false)
+        
         let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
 
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/semestre`;
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/semestre/finish`;
             const response = await apiRest.fetchPut(url);
-            console.log(response)
+            console.log(`Funcion: ${handleDeleteClick.name}`, 'Response:', response);
             if (response.status === 200) {
                 ObtenerSemestres();
                 await new Promise(resolve => setTimeout(resolve, 1000));
@@ -57,9 +54,9 @@ export default function ListarSemestre_() {
             const response = await apiRest.fetchGet(url);
             
             if (response.status === 200) {
+                setsemestreSeleccionado(false)
                 setData(response.data.data);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
                 setData([]);
             }
         } catch (err) {
@@ -72,7 +69,6 @@ export default function ListarSemestre_() {
         let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
             const url = `${process.env.NEXT_PUBLIC_API_URL}/semestre/${id}`
             const response = await apiRest.fetchGet(url);
-            console.log(response)
             if (response.status === 200) {
                 setidSemestre(response.data.data.id);
                 setNombre(response.data.data.nombre);
@@ -90,13 +86,11 @@ export default function ListarSemestre_() {
     };
 
     const editar_semestre = async () => {
-        setvisibleEditar(false)
         let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
             const url = `${process.env.NEXT_PUBLIC_API_URL}/semestre/${idSemestre}`
             const response = await apiRest.fetchPut(url,
                 { id: idSemestre, nombre: nombre, date_start:fechaInicio }
             );
-            console.log(response)
             if (response.status === 200) {
                 ObtenerSemestres()
                 setsemestreSeleccionado(false)
@@ -138,7 +132,7 @@ export default function ListarSemestre_() {
                 row.active ? (
                     <button
                         onClick={() => {
-                            abrirModal(row.id);
+                            set_modal_culminar(true);
                         }}
                         className={`label-status-user activo`}
                         style={{
@@ -183,7 +177,7 @@ export default function ListarSemestre_() {
             <Componente>
                 <div className="header-edicion center-left">
                     <ButtonAccion onClick={() => setsemestreSeleccionado(false)}>Atrás</ButtonAccion>
-                    <ButtonSave bgColor="#e74c3c" hoverColor="#c0392b" className="ml-10" onClick={() => console.log('true')} animation={false}> Culminar semestre</ButtonSave>
+                    <ButtonSave bgColor="#e74c3c" hoverColor="#c0392b" className="ml-10" onClick={() => set_modal_culminar(true)} animation={false}> Culminar semestre</ButtonSave>
                 </div>
 
 		
@@ -207,25 +201,11 @@ export default function ListarSemestre_() {
                             </div>
                         </LocalizationProvider>
                         <div className='center'>
-                            <ButtonSave className="mt-10 mr-10" animation={false} onClick={() => setvisibleEditar(true)}>Guardar</ButtonSave>
+                            <ButtonSave className="mt-10 mr-10" animation={false} onClick={() => set_modal_editar(true)}>Guardar</ButtonSave>
                             <ButtonSave bgColor="#d5dbdb" hoverColor="#bfc9ca" className="mt-10" onClick={() => router.push('/ovacademy/administrador/dashboard')}>Regresar</ButtonSave>
                         </div>
                     </form>
                 </div>
-                <ModalField 
-                    visible={visibleEditar} 
-                    cerrarModal={() => setvisibleEditar(false)} 
-                    onclick={() => editar_semestre()}
-                    width={"700"}
-                    height={"100"}
-                    title={"¿Estas seguro?"}
-                    mensaje={
-                        <>
-                            ¿Que deseas editar el semestre? <br /><br />
-                        </>
-                    }
-                />
-		
             </Componente>
         );
     } else {
@@ -233,7 +213,7 @@ export default function ListarSemestre_() {
             <Componente>
                 {
                     data.length === 0 ? (
-                        <MessageError message={"No se encuentran profesores matriculados para esta materia"}/>
+                        <MessageError message={"No se encuentran semestres activos"}/>
                     ) : (
                         <div style={{ padding: '1rem', fontFamily: 'Lexend Deca, sans-serif' }}>
                             <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -246,25 +226,45 @@ export default function ListarSemestre_() {
                         </div>
                     )
                 }
-                <ModalField 
-                    visible={visible} 
-                    cerrarModal={() => setVisible(false)} 
-                    onclick={() => handleDeleteClick()}
-                    width={"700"}
-                    height={"200"}
-                    title={"¿Estas seguro?"}
-                    mensaje={
-                        <>
-                            ¿Que deseas culminar este semestre? <br /><br />
-                            Recuerda que los profesores deben cerrar <span style={{ color: 'red', fontWeight: 'bold' }}>todas las secciones</span> para poder finalizar el semestre en curso
-                        </>
-                    }
-                />
             </Componente>
         );
     }
 
-    return contenido;
+    return (
+    <>
+        {contenido}
+
+        <ModalField 
+        visible={modal_culminar} 
+        cerrarModal={() => set_modal_culminar(false)} 
+        onclick={() => {set_modal_culminar(false); handleDeleteClick();}}
+        width={"700"}
+        height={"200"}
+        title={"¿Estás seguro?"}
+        mensaje={
+            <>
+            ¿Deseas culminar este semestre? <br /><br />
+            Recuerda que los profesores deben cerrar <span style={{ color: 'red', fontWeight: 'bold' }}>todas las secciones</span> para poder finalizar el semestre en curso.
+            </>
+        }
+        />
+
+        <ModalField 
+        visible={modal_editar} 
+        cerrarModal={() => set_modal_editar(false)} 
+        onclick={() => {set_modal_editar(false); editar_semestre();}}
+        width={"700"}
+        height={"100"}
+        title={"¿Estás seguro?"}
+        mensaje={
+            <>
+            ¿Deseas editar el semestre? <br /><br />
+            </>
+        }
+        />
+    </>
+    );
+
 
 }
 

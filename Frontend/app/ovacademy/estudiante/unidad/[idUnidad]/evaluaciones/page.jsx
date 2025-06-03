@@ -21,7 +21,7 @@ export default function Administrador_Materia() {
         if (nameUnidad) {
             setHeaderText(
                 <>
-                    <Link href={`/ovacademy/estudiante/dashboard`}>Dashboard</Link>
+                    <Link href={`/ovacademy/estudiante/dashboard`}>Inicio</Link>
                     <span className="separator">&gt;</span>
                     <Link href={`/ovacademy/estudiante/unidad/${idUnidad}`}>{nameUnidad}</Link>
                     <span className="separator">&gt;</span>

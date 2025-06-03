@@ -16,7 +16,7 @@ export default function MateriasUnidades() {
     useEffect(() => {
 
         setHeaderText(<>
-            <Link href={`/ovacademy/dashboard`}>Dashboard</Link>{/*
+            <Link href={`/ovacademy/dashboard`}>Inicio</Link>{/*
             */}<span className="separator">&gt;</span>{/*
             */}unidades
         </>);

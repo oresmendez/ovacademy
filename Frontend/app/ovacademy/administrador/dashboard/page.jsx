@@ -41,6 +41,7 @@ export default function DashboardPage() {
 const secciones = [
     { nombre: 'Materia', ruta: '/ovacademy/administrador/materia' },
     { nombre: 'Profesores', ruta: '/ovacademy/administrador/profesores' },
+    { nombre: 'Estudiantes', ruta: '/ovacademy/administrador/estudiantes' },
     { nombre: 'Semestre', ruta: '/ovacademy/administrador/semestre' },
     { nombre: 'Secciones', ruta: '/ovacademy/administrador/aula' },
 ];

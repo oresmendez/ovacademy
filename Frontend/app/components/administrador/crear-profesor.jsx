@@ -34,6 +34,7 @@ export default function CrearProfesor_({ TabClick }) {
                 surname,
                 type_id: 2,
             });
+            setVisible(false)
             if (response.status === 200) {
                 toast.success(response.data.message);
                 await new Promise(resolve => setTimeout(resolve, 800));

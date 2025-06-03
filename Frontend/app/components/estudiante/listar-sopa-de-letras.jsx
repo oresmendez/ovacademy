@@ -100,7 +100,7 @@ export default function ListarSopaDeletras({ idEvaluacion, idUnidad, typeId, not
 	} else {
 		contenido = estudiante_ya_respondio ? (
 			<div className="container mt-30">
-				<h2>Sopa de Letras</h2>
+				<h1 className="titulo">Sopa de Letras</h1>
 	
 				{grid.length > 0 && (
 					<div className="grid mt-20">
@@ -151,6 +151,31 @@ export default function ListarSopaDeletras({ idEvaluacion, idUnidad, typeId, not
 }
 
 const Component = styled.div`
+
+.titulo {
+		font-size: 2.5rem;
+		text-transform: uppercase;
+		letter-spacing: 2px;
+		text-align: center;
+		color: #0f172a;
+		margin: 0px 0px 3rem 0px;
+		overflow: hidden;
+		white-space: nowrap;
+		border-right: 3px solid #0f172a;
+		width: 0;
+		animation: typing 2s steps(20, end) forwards, hideCursor 0.1s 2s forwards;
+	}
+
+	@keyframes typing {
+		from { width: 0 }
+		to { width: 100% }
+	}
+
+	@keyframes hideCursor {
+		to {
+			border-right: none;
+		}
+	}
 
 	.container {
 		font-family: sans-serif;
