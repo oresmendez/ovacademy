@@ -37,7 +37,11 @@ export default class RespuestasPreguntasAbiertasController {
             }
             
             const ids = params.id.split(',').map(Number);
-            const preguntas = await RespuestasPreguntasAbiertasService_.obtener_Respuestas_preguntas(ids, id_estudiante);
+
+            const semestre = await SemestreController_.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
+
+            const preguntas = await RespuestasPreguntasAbiertasService_.obtener_Respuestas_preguntas(ids, id_estudiante, semestre.id);
     
             if (!preguntas) {
                 return response.status(404).json({ message: 'preguntas no encontrada' });

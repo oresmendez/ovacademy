@@ -1,0 +1,254 @@
+Project sistema {
+  database_type: 'PostgreSQL'
+}
+
+//// AUTENTICACIÓN
+
+Table type_user {
+  id serial [primary key]
+  type varchar(255) [not null, unique]
+}
+
+Table user {
+  id serial [primary key]
+  email varchar(255) [not null, unique]
+  name varchar(100)
+  surname varchar(100)
+  phone varchar(20)
+  type_id int [not null]
+  status_logico boolean [not null]
+  eliminado boolean [not null, default: false]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  update_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table sesiones {
+  id serial [primary key]
+  user_id int [not null]
+  password varchar(255) [not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table token {
+  id serial [primary key]
+  user_id int [not null]
+  type_id int [not null]
+  token varchar(64) [not null, unique]
+  expires_at timestamp
+  created_at timestamp [default: `NOW()`]
+}
+
+//// UNIVERSIDAD
+
+Table type_aprobacion_estudiante {
+  id serial [primary key]
+  type varchar(20) [not null]
+}
+
+Table estudiante {
+  user_id int [primary key]
+  habilitado boolean [not null, default: false]
+  id_probacion_estudiante int [not null, default: 1]
+}
+
+Table profesor {
+  user_id int [primary key]
+  habilitado boolean [not null, default: false]
+}
+
+Table administrador {
+  user_id int [primary key]
+  habilitado boolean [not null, default: false]
+}
+
+Table semestre {
+  id serial [primary key]
+  nombre varchar(50)
+  date_start date [not null]
+  date_end date
+  active boolean [not null, default: true]
+}
+
+Table aula {
+  id serial [primary key]
+  nombre varchar(50)
+  ubicacion varchar(50)
+  active boolean [not null, default: true]
+}
+
+Table semestre_profesor_aula {
+  id serial [primary key]
+  profesor_id int [not null]
+  aula_id int [not null]
+  semestre_id int [not null]
+  habilitado boolean [not null, default: true]
+}
+
+Table estudiante_aula {
+  semestre_profesor_aula_id int [not null]
+  semestre_id int [not null]
+  estudiante_id int [not null]
+  nota_final decimal
+  fecha_inscripcion timestamp [default: `CURRENT_TIMESTAMP`]
+  primary key (semestre_id, estudiante_id)
+}
+
+Table materia {
+  id serial [primary key]
+  nombre varchar(255) [not null]
+  objetivo text
+  descripcion text
+}
+
+Table unidades {
+  id serial [primary key]
+  profesor_id int [not null]
+  modulo varchar(50) [not null]
+  nombre varchar(255) [not null]
+  descripcion text
+  nota_unidad decimal [default: 0]
+  status boolean [not null, default: true]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  update_at timestamp [default: `CURRENT_TIMESTAMP`]
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamp
+}
+
+Table contenidos {
+  id serial [primary key]
+  id_unidad int [not null]
+  nombre varchar(255) [not null]
+  descripcion text
+  status boolean [not null, default: true]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  update_at timestamp [default: `CURRENT_TIMESTAMP`]
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamp
+}
+
+Table type_evaluaciones {
+  id serial [primary key]
+  type varchar(255) [not null, unique]
+}
+
+Table evaluaciones {
+  id serial [primary key]
+  id_unidad int [not null]
+  type_id int [not null]
+  nota_evaluacion decimal [default: 0]
+  status boolean [not null, default: true]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  update_at timestamp [default: `CURRENT_TIMESTAMP`]
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamp
+}
+
+Table notas_estudiante {
+  nota_evaluacion decimal [default: 0]
+  estudiante_id int [not null]
+  evaluacion_id int [not null]
+  semestre_id int [not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  update_at timestamp [default: `CURRENT_TIMESTAMP`]
+  primary key (estudiante_id, evaluacion_id, semestre_id)
+}
+
+Table sopa_de_letras {
+  id serial [primary key]
+  evaluacion_id int [not null]
+  palabras text
+}
+
+Table respuestas_sopa_letras {
+  estudiante_id int [not null]
+  sopa_id int [not null]
+  semestre_id int [not null]
+  matrix text[]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  primary key (estudiante_id, sopa_id, semestre_id)
+}
+
+Table cuestionarios {
+  id serial [primary key]
+  evaluacion_id int [not null]
+  pregunta text [not null]
+  opciones text[]
+  respuesta_correcta text [not null]
+}
+
+Table respuestas_cuestionarios {
+  estudiante_id int [not null]
+  cuestionario_id int [not null]
+  semestre_id int [not null]
+  respuesta text [not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  primary key (estudiante_id, cuestionario_id, semestre_id)
+}
+
+Table preguntas_abiertas {
+  id serial [primary key]
+  evaluacion_id int [not null]
+  pregunta text [not null]
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamp
+}
+
+Table type_escala_apreciacion {
+  id serial [primary key]
+  type varchar(255) [not null, unique]
+}
+
+Table respuestas_preguntas_abiertas {
+  semestre_id int [not null]
+  estudiante_id int [not null]
+  preguntas_abiertas_id int [not null]
+  respuesta text [not null]
+  id_escala_apreciacion int
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  primary key (estudiante_id, preguntas_abiertas_id, semestre_id)
+}
+
+//// RELACIONES
+
+Ref: user.type_id > type_user.id
+Ref: sesiones.user_id > user.id
+Ref: token.user_id > user.id
+
+Ref: estudiante.id_probacion_estudiante > type_aprobacion_estudiante.id
+Ref: estudiante.user_id > user.id
+Ref: profesor.user_id > user.id
+Ref: administrador.user_id > user.id
+
+Ref: semestre_profesor_aula.semestre_id > semestre.id
+Ref: semestre_profesor_aula.profesor_id > profesor.user_id
+Ref: semestre_profesor_aula.aula_id > aula.id
+
+Ref: estudiante_aula.semestre_profesor_aula_id > semestre_profesor_aula.id
+Ref: estudiante_aula.semestre_id > semestre.id
+Ref: estudiante_aula.estudiante_id > estudiante.user_id
+
+Ref: unidades.profesor_id > profesor.user_id
+Ref: contenidos.id_unidad > unidades.id
+
+Ref: evaluaciones.id_unidad > unidades.id
+Ref: evaluaciones.type_id > type_evaluaciones.id
+
+Ref: notas_estudiante.estudiante_id > estudiante.user_id
+Ref: notas_estudiante.evaluacion_id > evaluaciones.id
+Ref: notas_estudiante.semestre_id > semestre.id
+
+Ref: sopa_de_letras.evaluacion_id > evaluaciones.id
+Ref: respuestas_sopa_letras.semestre_id > semestre.id
+Ref: respuestas_sopa_letras.estudiante_id > estudiante.user_id
+Ref: respuestas_sopa_letras.sopa_id > sopa_de_letras.id
+
+Ref: cuestionarios.evaluacion_id > evaluaciones.id
+Ref: respuestas_cuestionarios.semestre_id > semestre.id
+Ref: respuestas_cuestionarios.estudiante_id > estudiante.user_id
+Ref: respuestas_cuestionarios.cuestionario_id > cuestionarios.id
+
+Ref: preguntas_abiertas.evaluacion_id > evaluaciones.id
+Ref: respuestas_preguntas_abiertas.semestre_id > semestre.id
+Ref: respuestas_preguntas_abiertas.estudiante_id > estudiante.user_id
+Ref: respuestas_preguntas_abiertas.preguntas_abiertas_id > preguntas_abiertas.id
+Ref: respuestas_preguntas_abiertas.id_escala_apreciacion > type_escala_apreciacion.id

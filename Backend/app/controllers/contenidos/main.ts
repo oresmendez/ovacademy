@@ -1,12 +1,13 @@
-
-
-
 import type { HttpContext } from '@adonisjs/core/http'
 import ContenidoService from '../../controllers/contenidos/service.js'
+
+import TokenController from '../token/main.js';
+const TokenController_ = new TokenController();
 
 const ContenidoService_ = new ContenidoService();
 
 export default class ContenidosController {
+
       
     public async create_contenido({ request, response }: HttpContext) {
         try {
@@ -33,10 +34,25 @@ export default class ContenidosController {
         }
     }
 
-    public async get_ContenidoByUnidad({ params, response }: HttpContext) {
+    public async get_ContenidoByUnidad({ params, response, request }: HttpContext) {
 
         try {
-            const unidad = await ContenidoService_.obtenerContenidoDeUnaUnidad(params.unidad);
+
+            const token = request.header('token');
+            if (!token) {return response.unauthorized({ message: 'Token requerido' });}
+
+            const userByToken = await TokenController_.obtenerUserByToken(token);
+            if (!(userByToken && userByToken.length > 0)) {return response.notFound({ message: 'No se encontro un token valido de usuario' });}
+
+            console.log(userByToken)
+
+            let unidad; // Declaración aquí
+
+            if (userByToken[0].type_id == 1) {
+                unidad = await ContenidoService_.obtenerContenidoDeUnaUnidad(params.unidad, "true");   
+            } else {
+                unidad = await ContenidoService_.obtenerContenidoDeUnaUnidad(params.unidad, "false");
+            }
     
             if (!unidad) {
                 return response.status(404).json({ message: 'Unidad no encontrada' });

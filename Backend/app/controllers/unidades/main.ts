@@ -21,8 +21,8 @@ export default class UnidadesController {
         this.EstudianteAulaController_ = new EstudianteAulaController();
     }
 
-    private readonly consultar_unidades_by_user = async (user_id: number) => {
-        return await this.UnidadService_.obtenerUnidades(user_id);
+    private readonly consultar_unidades_by_user = async (user_id: number, status: string = "true") => {
+        return await this.UnidadService_.obtenerUnidades(user_id, status);
     }
 
     readonly consultar_unidad_by_ID = async (unidad_id: number) => {
@@ -38,7 +38,7 @@ export default class UnidadesController {
             this.user_id = await this.TokenController_.get_user_id_by_token(ctx);
             if (!this.user_id) return; 
             
-            const unidades = await this.consultar_unidades_by_user(this.user_id);
+            const unidades = await this.consultar_unidades_by_user(this.user_id, "false");
             let totalNotas = 0;
 
             if (unidades && unidades.length > 0) {
@@ -86,7 +86,7 @@ export default class UnidadesController {
             this.user_id = await this.TokenController_.get_user_id_by_token(ctx);
             if (!this.user_id) return; 
 
-            const unidades = await this.consultar_unidades_by_user(this.user_id);
+            const unidades = await this.consultar_unidades_by_user(this.user_id, "false");
     
             if (!unidades) {
                 return response.status(400).send({ 
@@ -127,7 +127,7 @@ export default class UnidadesController {
                 );
             }
 
-            const unidades = await this.UnidadService_.obtenerUnidades(Aula_profesor.profesor_id);
+            const unidades = await this.UnidadService_.obtenerUnidades(Aula_profesor.profesor_id, "true");
     
             if (!unidades) {
                 return response.status(400).send({ 

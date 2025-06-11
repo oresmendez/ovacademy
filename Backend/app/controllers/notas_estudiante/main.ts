@@ -14,13 +14,16 @@ const EstudianteAulaController_ = new EstudianteAulaController();
 
 export default class NotaEstudianteController {
 
-    obtener_notas_estudiante = async (estudiante_id: number) => {
-      	return await NotaEstudianteService_.obtener_nota_estudiantes(estudiante_id)
+    obtener_notas_estudiante = async (estudiante_id: number, semestre_id: number) => {
+      	return await NotaEstudianteService_.obtener_nota_estudiantes(estudiante_id, semestre_id)
   	}
 
     sumar_notas_estudiante = async (estudiante_id: number, semestre_id: number) => {
 
-		const notas_estudiante = await this.obtener_notas_estudiante(estudiante_id)
+		const semestre = await SemestreController_.obtenerSemestreActivo();
+        if (!semestre) {return false}
+
+		const notas_estudiante = await this.obtener_notas_estudiante(estudiante_id, semestre.id)
 		
 		if (!notas_estudiante || !Array.isArray(notas_estudiante)) {
 			console.log('No se encontraron notas para el estudiante')
@@ -73,7 +76,10 @@ export default class NotaEstudianteController {
     public async get_notas_estudiante({ params, response }: HttpContext) {
         try {
 
-			const notas_estudiante = await this.obtener_notas_estudiante(params.estudiante_id)
+			const semestre = await SemestreController_.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
+
+			const notas_estudiante = await this.obtener_notas_estudiante(params.estudiante_id, semestre.id)
       
 			if (!notas_estudiante) {
 				return response.badRequest({ message: 'Error al obtener las notas del estudiante' })
@@ -99,7 +105,10 @@ export default class NotaEstudianteController {
     public async get_notas_estudiante_by_unidad({ params, response }: HttpContext) {
         try {
 
-          const notas_estudiante = await NotaEstudianteService_.obtener_nota_estudiantes_by_unidad(params.estudiante_id, params.id_unidad)
+			const semestre = await SemestreController_.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
+
+          const notas_estudiante = await NotaEstudianteService_.obtener_nota_estudiantes_by_unidad(params.estudiante_id, params.id_unidad, semestre.id)
       
           if (!notas_estudiante) {
             return response.badRequest({ message: 'Error al obtener las notas del estudiante' })
@@ -124,8 +133,10 @@ export default class NotaEstudianteController {
 
     public async get_notas_estudiante_by_evaluacion({ params, response }: HttpContext) {
         try {
+			const semestre = await SemestreController_.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
-          const notas_estudiante = await NotaEstudianteService_.obtener_nota_estudiantes_by_evaluacion(params.estudiante_id, params.evaluacion_id)
+          const notas_estudiante = await NotaEstudianteService_.obtener_nota_estudiantes_by_evaluacion(params.estudiante_id, params.evaluacion_id, semestre.id)
       
           if (!notas_estudiante) {
             return response.badRequest({ message: 'Error al obtener las notas del estudiante' })

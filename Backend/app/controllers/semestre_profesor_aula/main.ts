@@ -9,6 +9,9 @@ const SemestreController_ = new SemestreController();
 import TokenController from '../token/main.js';
 const TokenController_ = new TokenController();
 
+import EstudianteAulaController from '../estudiante_aula/main.js';
+const EstudianteAulaController_ = new EstudianteAulaController();
+
 
 export default class SemestreProfesorAulaController {
 
@@ -40,7 +43,7 @@ export default class SemestreProfesorAulaController {
             await SemestreProfesorAulaService_.crear_asociacion_profesorAulaSemestre(semestre.id, profesor, aula);
 
             return response.status(200).json({
-                message: 'Proceso de asociación finalizado',
+                message: 'Profesor asignado a la sección correctamente',
                 success: true,
             });
 
@@ -152,7 +155,23 @@ export default class SemestreProfesorAulaController {
                     message: 'Unidad no encontrada',
                 });
             }
-    
+            
+            const estudiante_aula = await EstudianteAulaController_.obtener_detalles_del_aula(aulaProfesor.id);
+
+            if (!estudiante_aula || !Array.isArray(estudiante_aula)) {
+                return response.status(404).json({
+                    message: 'No se encontraron estudiantes en el aula',
+                });
+            }
+            
+            const estudiantesConNotaPendiente = estudiante_aula.some(est => est.$attributes.nota_final === null);
+
+            if (estudiantesConNotaPendiente) {
+                return response.status(400).json({
+                    message: 'Hay estudiantes con nota final pendiente. No se puede cerrar la sección.',
+                });
+            }
+
             aulaProfesor.habilitado = !aulaProfesor.habilitado
     
             await aulaProfesor.save();

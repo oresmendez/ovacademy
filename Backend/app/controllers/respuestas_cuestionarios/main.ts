@@ -35,9 +35,12 @@ export default class RespuestasCuestionarioController {
 
                 id_estudiante = userByToken[0].user_id
             }
+
+            const semestre = await SemestreController_.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
             
             const ids = params.id.split(',').map(Number);
-            const cuestionario = await RespuestasCuestionariosService_.obtener_RespuestasCuestionario(ids, id_estudiante);
+            const cuestionario = await RespuestasCuestionariosService_.obtener_RespuestasCuestionario(ids, id_estudiante, semestre.id);
     
             if (!cuestionario) {
                 return response.status(404).json({ message: 'cuestionario no encontrada' });

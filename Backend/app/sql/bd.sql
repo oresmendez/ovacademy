@@ -4,42 +4,42 @@ CREATE SCHEMA IF NOT EXISTS authentication;
 
 DROP TABLE IF EXISTS authentication.type_user CASCADE;
 CREATE TABLE authentication.type_user (
-    id SERIAL PRIMARY KEY, -- Clave primaria
-    type VARCHAR(255) NOT NULL UNIQUE -- Tipo de usuario único
+    id SERIAL PRIMARY KEY, 
+    type VARCHAR(255) NOT NULL UNIQUE 
 );INSERT INTO authentication.type_user (type) VALUES ('estudiante'), ('profesor'), ('administrador');
 
 DROP TABLE IF EXISTS authentication.user CASCADE;
 CREATE TABLE authentication.user (
-    id SERIAL PRIMARY KEY, -- Clave primaria basada en el ID
-    email VARCHAR(255) NOT NULL UNIQUE, -- Email único
-    name VARCHAR(100), -- Nombre
-    surname VARCHAR(100), -- Apellido
-    phone VARCHAR(20), -- Teléfono único
-    type_id INT NOT NULL, -- Clave foránea al tipo de usuario
-    status_logico BOOLEAN NOT NULL, -- Estado lógico por defecto
-    eliminado BOOLEAN DEFAULT FALSE NOT NULL, -- Estado lógico por defecto
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha de creación del usuario
-    update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha de actualización
-    FOREIGN KEY (type_id) REFERENCES authentication.type_user (id) ON DELETE CASCADE -- Relación con type_user
+    id SERIAL PRIMARY KEY, 
+    email VARCHAR(255) NOT NULL UNIQUE, 
+    name VARCHAR(100), 
+    surname VARCHAR(100), 
+    phone VARCHAR(20), 
+    type_id INT NOT NULL, 
+    status_logico BOOLEAN NOT NULL, 
+    eliminado BOOLEAN DEFAULT FALSE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (type_id) REFERENCES authentication.type_user (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS authentication.sesiones CASCADE;
 CREATE TABLE authentication.sesiones (
-    id SERIAL PRIMARY KEY, -- Clave primaria
-    user_id INT NOT NULL, -- Clave foránea al ID del usuario
-    password VARCHAR(255) NOT NULL, -- Contraseña para la sesión
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha de creación de la sesión
-    FOREIGN KEY (user_id) REFERENCES authentication.user (id) ON DELETE CASCADE -- Relación con user
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES authentication.user (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS authentication.token CASCADE;
 CREATE TABLE authentication.token (
-    id SERIAL PRIMARY KEY,                     -- Identificador único
-    user_id INT NOT NULL,                      -- Clave foránea al ID del usuario
-    type_id INT NOT NULL,                      -- tipo de usuario
-    token VARCHAR(64) NOT NULL UNIQUE,         -- Token único
-    expires_at TIMESTAMP WITH TIME ZONE,       -- Fecha de expiración
-    created_at TIMESTAMP DEFAULT NOW(),        -- Fecha de creación
+    id SERIAL PRIMARY KEY,                     
+    user_id INT NOT NULL,                      
+    type_id INT NOT NULL,                      
+    token VARCHAR(64) NOT NULL UNIQUE,        
+    expires_at TIMESTAMP WITH TIME ZONE,       
+    created_at TIMESTAMP DEFAULT NOW(),        
 
     FOREIGN KEY (user_id) REFERENCES authentication.user (id) ON DELETE CASCADE
 );
@@ -135,8 +135,8 @@ CREATE TABLE universidad.materia (
     objetivo TEXT,
     descripcion TEXT
 ); INSERT INTO universidad.materia (nombre, objetivo, descripcion) VALUES (
-    'Formulación y evaluación de proyectos de inversión (230-4604)',
-    'Crear profesionales que tengan habilidades para el desarrollo de micro-empresas', 
+    'Formulación y Evaluación de Proyectos de Inversión (230-4604)',
+    'Crear profesionales que tengan habilidades para el desarrollo de empresas', 
     'La formulación y evaluación de proyectos es el proceso sistemático de diseñar, analizar y valorar la viabilidad técnica, económica y financiera de una idea antes de su ejecución. Su objetivo es determinar si un proyecto es rentable y factible, minimizando riesgos y optimizando recursos');
 
 DROP TABLE IF EXISTS universidad.unidades CASCADE;

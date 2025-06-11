@@ -24,6 +24,20 @@ export default class EstudianteAulaController {
         return estudiante
     }
 
+    obtener_detalles_del_aula = async (semestre_profesor_aula_id: number) => {
+        
+        const semestre = await SemestreController_.obtenerSemestreActivo();
+        if (!semestre) {return false}
+
+        const estudiante = await EstudianteAulaService_.obtener_detalles_del_aula(semestre.id, semestre_profesor_aula_id);
+
+        if (!estudiante) {
+            return false
+        }
+
+        return estudiante
+    }
+
     public async registrar_estudiante_a_aula({ request, response }: HttpContext) {
         try {
             const dataObject = request.all();

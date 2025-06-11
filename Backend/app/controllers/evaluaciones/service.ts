@@ -47,9 +47,7 @@ export default class EvaluacionesService {
     async obtenerEvaluacionesByID_Unidad(id: number, status: string): Promise<Evaluaciones[] | false> {
         try {
             let resultado;
-            console.log('Obteniendo evaluaciones por unidad:', id, 'con status:', status);
             if (status === 'true') {
-                console.log('Filtrando por status true');
                 resultado = await this.evaluacionesModel
                     .query()
                     .where('id_unidad', id)

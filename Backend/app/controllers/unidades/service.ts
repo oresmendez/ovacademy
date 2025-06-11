@@ -20,12 +20,20 @@ export default class UnidadService {
         }
     }
 
-    async obtenerUnidades(profesor_id: number): Promise<Array<Unidad> | null> {
+    async obtenerUnidades(profesor_id: number, status: string): Promise<Array<Unidad> | null> {
         try {
-            
-            const unidades = await this.unidadModel.query().orderBy('id', 'asc')
-            .where('profesor_id', profesor_id)
-            .where('is_deleted', false);
+
+            let unidades;
+            if (status === 'true') {
+                unidades = await this.unidadModel.query().orderBy('id', 'asc')
+                    .where('profesor_id', profesor_id)
+                    .where('is_deleted', false)
+                    .where('status', true);
+            } else {
+                unidades = await this.unidadModel.query().orderBy('id', 'asc')
+                    .where('profesor_id', profesor_id)
+                    .where('is_deleted', false);
+            }
             
             return unidades.length > 0 ? unidades : null;
         } catch (error) {

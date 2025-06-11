@@ -23,7 +23,9 @@ export default class EstudianteAulaService {
 
     async obtener_estudiantes_inscritos_generales(semestre_id: number): Promise<Array<EstudianteAula> | false> {
         try {
-            return await EstudianteAula.query().where('semestre_id', semestre_id);
+            return await EstudianteAula.query()
+            .where('semestre_id', semestre_id)
+            .andWhere('nota_final', '<', 5);
         } catch (error) {
             console.error('Error obteniendo todos las Aulas:', error);
             return false;
@@ -63,6 +65,22 @@ export default class EstudianteAulaService {
 			  .where('semestre_id', semestre_id)
 			  .where('estudiante_id', estudiante_id)
 			  .first()
+		
+			return registro ?? false
+
+        } catch (error) {
+            console.error('Error obteniendo todos las Aulas:', error);
+            return false;
+        }
+    }
+
+	async obtener_detalles_del_aula(semestre_id: number, semestre_profesor_aula_id: number): Promise<EstudianteAula[] | false> {
+        
+		try {
+			const registro = await EstudianteAula
+			  .query()
+			  .where('semestre_id', semestre_id)
+			  .where('semestre_profesor_aula_id', semestre_profesor_aula_id)
 		
 			return registro ?? false
 

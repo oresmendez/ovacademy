@@ -16,9 +16,22 @@ export default class ContenidoService {
         }
     }
 
-    async obtenerContenidoDeUnaUnidad(id: number): Promise<Contenido[] | false> {
+    async obtenerContenidoDeUnaUnidad(id: number, status: string): Promise<Contenido[] | false> {
         try {
-            const resultado = await Contenido.query().where('id_unidad', id).orderBy('id', 'asc').where('is_deleted', false);
+
+            let resultado;
+            if (status === 'true') {
+                resultado = await Contenido.query()
+                    .where('id_unidad', id)
+                    .where('is_deleted', false)
+                    .where('status', true)
+                    .orderBy('id', 'asc');
+            } else {
+                resultado = await Contenido.query()
+                    .where('id_unidad', id)
+                    .where('is_deleted', false)
+                    .orderBy('id', 'asc');
+            }
             
             if (!Array.isArray(resultado)) {
                 return false;

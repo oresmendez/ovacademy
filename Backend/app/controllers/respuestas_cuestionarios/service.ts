@@ -18,11 +18,12 @@ export default class RespuestasCuestionariosService {
         }
     }
 
-    async obtener_RespuestasCuestionario(ids: number[], estudiante_id: number): Promise<Array<RespuestasCuestionarios> | null> {
+    async obtener_RespuestasCuestionario(ids: number[], estudiante_id: number, semestre_id:number): Promise<Array<RespuestasCuestionarios> | null> {
         try {
             const respuestas_cuestionario = await RespuestasCuestionarios.query()
                 .whereIn('cuestionario_id', ids)
-                .where('estudiante_id', estudiante_id);
+                .where('estudiante_id', estudiante_id)
+                .where('semestre_id', semestre_id);
     
             return respuestas_cuestionario.length > 0 ? respuestas_cuestionario : null;
         } catch (error) {

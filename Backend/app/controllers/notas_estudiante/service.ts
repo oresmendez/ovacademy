@@ -16,7 +16,7 @@ export default class NotaEstudianteService {
         }
     }
 
-    async obtener_nota_estudiantes(estudiante_id: number): Promise<Array<any> | false> {
+    async obtener_nota_estudiantes(estudiante_id: number, semestre_id: number): Promise<Array<any> | false> {
         try {
 
           return await NotaEstudiante
@@ -31,7 +31,8 @@ export default class NotaEstudianteService {
               'ne.created_at',
               'ne.update_at',
               'e.id_unidad'
-            ).where('estudiante_id', estudiante_id);
+            ).where('estudiante_id', estudiante_id)
+            .andWhere('semestre_id', semestre_id);
 
 
         } catch (error) {
@@ -40,7 +41,7 @@ export default class NotaEstudianteService {
         }
     }
 
-    async obtener_nota_estudiantes_by_unidad(estudiante_id: number, id_unidad: number): Promise<Array<any> | false> {
+    async obtener_nota_estudiantes_by_unidad(estudiante_id: number, id_unidad: number, semestre_id: number): Promise<Array<any> | false> {
         try {
 
           return await NotaEstudiante
@@ -56,7 +57,8 @@ export default class NotaEstudianteService {
               'ne.update_at',
               'e.id_unidad')
             .where('estudiante_id', estudiante_id)
-            .where('id_unidad', id_unidad);
+            .where('id_unidad', id_unidad)
+            .andWhere('semestre_id', semestre_id);
 
 
         } catch (error) {
@@ -65,7 +67,7 @@ export default class NotaEstudianteService {
         }
     }
 
-    async obtener_nota_estudiantes_by_evaluacion(estudiante_id: number, evaluacion_id: number): Promise<Array<any> | false> {
+    async obtener_nota_estudiantes_by_evaluacion(estudiante_id: number, evaluacion_id: number, semestre_id: number): Promise<Array<any> | false> {
         try {
 
           return await NotaEstudiante
@@ -81,7 +83,8 @@ export default class NotaEstudianteService {
               'ne.update_at',
               'e.id_unidad')
             .where('estudiante_id', estudiante_id)
-            .where('evaluacion_id', evaluacion_id);
+            .where('evaluacion_id', evaluacion_id)
+            .andWhere('semestre_id', semestre_id);
 
 
         } catch (error) {
