@@ -1,4 +1,4 @@
-'use client'; import { useState, styled, useParams, apiRest, SopaDeLetras, Cuestionario, PreguntasAbiertas, textBarHeader, useEffect, Link} from '@/app/components/utils/rutas';
+'use client'; import { useState, styled, useParams, apiRest, SopaDeLetras, Cuestionario, PreguntasAbiertas, textBarHeader, useEffect, Link, Footer} from '@/app/components/utils/rutas';
 
 
 export default function Administrador_Materia() {
@@ -112,6 +112,7 @@ export default function Administrador_Materia() {
 			</div>
 		</div>
 		</div>
+    <Footer />
 	</Componente>
 	);
 }

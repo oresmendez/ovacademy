@@ -42,6 +42,10 @@ export default function ComponenteTest({id_unidad, type_id, nota_evaluacion, Tab
 
 	const crear_preguntas_abiertas = async () => {
 		console.log('Preguntas:', preguntas.map(p => p.pregunta));
+		if (nota_evaluacion === null || nota_evaluacion === undefined || nota_evaluacion === '') {
+            toast.error("Por favor, ingresa una nota para la evaluación.");
+            return;
+        }
 		try {
 			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones`;
 			const response = await apiRest.fetchPost(url, {

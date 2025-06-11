@@ -83,7 +83,7 @@ export default function MateriasUnidades() {
                             </div>
                         </div>
                         <div className='description-content-subjects-other-subjets'>
-                            <div className='related-units-tittle mb-10'>Otras unidades que pueden interesarte</div>
+                            <div className='related-units-tittle'>Otras unidades que pueden interesarte</div>
                             <div className='related-units-list center-column'>
                                 {allUnidades
                                     .filter((item) => item.id !== parseInt(unidad)) // Excluye la unidad actual

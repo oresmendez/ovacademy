@@ -1,4 +1,4 @@
-'use client'; import { useState, useEffect, useParams, styled, apiRest, Link, textBarHeader, BannerMateria, ButtonAccion, EditorContent, Crucigrama, Quiz, TrueFalseQuiz } from '@/app/components/utils/rutas';
+'use client'; import { useState, useEffect, useParams, styled, apiRest, Link, textBarHeader, BannerMateria, ButtonAccion, EditorContent, Crucigrama, Footer, TrueFalseQuiz } from '@/app/components/utils/rutas';
 
 export default function () {
     const params = useParams();
@@ -72,7 +72,7 @@ export default function () {
             <div className='layout-body'>
                 <div className='container-body'>
                     <BannerMateria />
-                    <ButtonAccion onClick={() => borrar()}>reload</ButtonAccion>
+                    <ButtonAccion onClick={() => borrar()}>Borrar reload</ButtonAccion>
                     <div className='description-content-subjects-list mt-30'>
                         <div className='course-content'>
                             <div className='tab'>
@@ -98,6 +98,7 @@ export default function () {
                     
                 </div>
             </div>
+            <Footer />
         </Componente>
     );
 }

@@ -35,7 +35,7 @@ export default function Administrador_Materia() {
 						{activeTab === 0 && (
 							<div className="tab-panel">
 								<WrapperTitleRegister tittle={"📘 Detalles de la Materia"} 
-								subtittle={"A continuación, se describen las características de la materia:"} 
+								// subtittle={"Por favor, complete la información para editar la materia"} 
 								ContentComponent={() => <EditarMateria />} />
 							</div>
 						)}

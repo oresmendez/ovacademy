@@ -38,6 +38,11 @@ export default function crear_sopadeletras({id_unidad, type_id, nota_evaluacion,
 			toast.error("Por favor, agrega al menos dos palabras para crear la sopa de letras.");
 			return;
 		}
+
+		if (nota_evaluacion === null || nota_evaluacion === undefined || nota_evaluacion === '') {
+            toast.error("Por favor, ingresa una nota para la evaluación.");
+            return;
+        }
 		
         try {
 			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones`
@@ -83,12 +88,12 @@ export default function crear_sopadeletras({id_unidad, type_id, nota_evaluacion,
         const palabraLimpia = nuevaPalabra.trim();
     
         if (palabraLimpia.length <= 1) {
-            setError('La palabra debe tener más de 2 letras.');
+            toast.error('La palabra debe tener más de 2 letras.');
             return;
         }
     
         if (palabraLimpia.includes(' ')) {
-            setError('La palabra no debe contener espacios.');
+            toast.error('La palabra no debe contener espacios.');
             return;
         }
     

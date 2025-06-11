@@ -1,5 +1,5 @@
 'use client';
-import { useState, useParams, useEffect, Link, textBarHeader, styled, Profile} from '@/app/components/utils/rutas';
+import { useState, useParams, useEffect, Link, textBarHeader, styled, Profile, Footer} from '@/app/components/utils/rutas';
 
 
 export default function Administrador_Materia() {
@@ -28,6 +28,7 @@ export default function Administrador_Materia() {
 				        <Profile email = {decodeURIComponent(email)}/>
             </div>
         </div>
+        <Footer />
     </Componente>
   );
 }

@@ -1,4 +1,4 @@
-'use client'; import { useState, styled, CrearUnidades, ListarUnidades, textBarHeader, useEffect, AsociarEstudianteSemestre, Link, WrapperTitleRegister} from '@/app/components/utils/rutas';
+'use client'; import { useState, styled, CrearUnidades, ListarUnidades, textBarHeader, useEffect, AsociarEstudianteSemestre, Link, WrapperTitleRegister, Footer} from '@/app/components/utils/rutas';
 
 
 export default function Administrador_Materia() {
@@ -64,6 +64,7 @@ export default function Administrador_Materia() {
           </div>
         </div>
       </div>
+      <Footer />
     </Componente>
   );
 }

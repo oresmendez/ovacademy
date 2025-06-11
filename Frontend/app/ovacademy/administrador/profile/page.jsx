@@ -1,4 +1,4 @@
-'use client'; import { styled, Profile, textBarHeader, useEffect, Link} from '@/app/components/utils/rutas';
+'use client'; import { styled, Profile, textBarHeader, useEffect, Link, Footer} from '@/app/components/utils/rutas';
 
 export default function MiProfile() {
 
@@ -21,6 +21,7 @@ export default function MiProfile() {
                     <Profile />
                 </div>
             </div>
+            <Footer />
         </Componente>
     );
 }

@@ -45,7 +45,7 @@ export default function Administrador_Materia() {
                     {activeTab === 0 && (
                         <div className="tab-panel">
                         <WrapperTitleRegister tittle={"📘 Registrar Semestre"} 
-                            subtittle={" Completa el siguiente formulario para registrar un nuevo semestre en el sistema"} 
+                            subtittle={" Por favor, complete el siguiente formulario para proceder con el registro de un nuevo semestre en el sistema."} 
                             ContentComponent={() => <CrearSemestre setActiveTab={TabClick} />} />
                         </div>
                     )}

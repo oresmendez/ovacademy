@@ -142,7 +142,7 @@ export default function ListarContenidos() {
             const response = await apiRest.fetchDelete(url);
             console.log(response);
             if (response.status === 200) {
-                toast.success(`Elemento actualizado`);
+                toast.success(`Contenido actualizado`);
                 setDataContenidos((prevData) =>
                     prevData.map((item) =>
                         item.id === id ? { ...item, status: !item.status } : item
@@ -175,22 +175,19 @@ export default function ListarContenidos() {
 	};
 
     const exportToPDF = () => {
-        const name = 'estudiantes.pdf';
-        const title = 'Listado de Profesores';
-        const head = [['Correo Electrónico', 'Nombre', 'Apellido' ,'Acceso', 'Estado']];
+        const name = 'contenidos.pdf';
+        const title = 'Listado de Contenidos';
+        const head = [['Nombre', 'Estado']];
         const tableRows = filteredData.map((row) => [
-            row.email,
-            row.name,
-            row.surname,
-            row.habilitado ? 'Activo' : 'Inactivo',
-            row.statusLogico ? 'Activo' : 'Inactivo',
+            row.nombre,
+            row.status ? 'Activo' : 'Inactivo'
         ]);
         export_file.exportToPDF(title, head, tableRows, name);
     };
 
     const exportToExcel = () => {
-        const name = 'profesores.xlsx';
-        const title = 'Profesores';
+        const name = 'contenidos.xlsx';
+        const title = 'Contenidos';
         export_file.exportToExcel(title, filteredData, name);
     };
 

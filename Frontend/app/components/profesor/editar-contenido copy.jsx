@@ -18,22 +18,6 @@ export default function EditarContenido({ descripcion, setDescripcion }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const prevDescripcionRef = useRef("");
 
-    useEffect(() => {
-  const handleKeyDown = (e) => {
-    if (!selectedImage) return;
-
-    if (e.key === "Backspace" || e.key === "Delete") {
-      e.preventDefault();
-      selectedImage.remove();
-      setSelectedImage(null);
-      updateHtml();
-    }
-  };
-
-  document.addEventListener("keydown", handleKeyDown);
-  return () => document.removeEventListener("keydown", handleKeyDown);
-}, [selectedImage]);
-
   useEffect(() => {
   const handlePaste = (e) => {
     e.preventDefault(); // Evita el comportamiento por defecto
@@ -56,9 +40,6 @@ export default function EditarContenido({ descripcion, setDescripcion }) {
 
     updateHtml(); // Actualiza la descripción sin estilos
   };
-
-
-
 
   const editor = editorRef.current;
   if (editor) {
@@ -231,11 +212,9 @@ const startResizing = (e, wrapper, img, corner) => {
 
   const startX = e.clientX;
   const startY = e.clientY;
-  const rect = wrapper.getBoundingClientRect();
-  const startWidth = rect.width;
-  const startHeight = rect.height;
+  const startWidth = wrapper.offsetWidth;
+  const startHeight = wrapper.offsetHeight;
 
-  const aspectRatio = startWidth / startHeight;
   const editorWidth = editorRef.current.offsetWidth;
 
   const onMouseMove = (moveEvent) => {
@@ -250,24 +229,15 @@ const startResizing = (e, wrapper, img, corner) => {
     if (corner.includes("s")) newHeight += dy;
     if (corner.includes("n")) newHeight -= dy;
 
-    // Mantiene proporción si se ajusta desde esquina
-    if (corner.length === 2) {
-      newHeight = newWidth / aspectRatio;
-    }
+    // Limita el ancho entre 30px y el ancho del editor
+    const limitedWidth = Math.min(Math.max(30, newWidth), editorWidth);
 
-    // Limita el tamaño
-    const minSize = 50;
-    const maxSize = editorWidth * 0.9;
-
-    newWidth = Math.max(minSize, Math.min(maxSize, newWidth));
-    newHeight = newWidth / aspectRatio;
-
-    wrapper.style.width = `${newWidth}px`;
-    wrapper.style.height = `${newHeight}px`;
+    wrapper.style.width = `${limitedWidth}px`;
+    wrapper.style.height = "auto";
 
     img.style.width = "100%";
-    img.style.height = "100%";
-    img.style.objectFit = "contain";
+    img.style.maxWidth = "100%";
+    img.style.height = "auto";
   };
 
   const onMouseUp = () => {
@@ -279,7 +249,6 @@ const startResizing = (e, wrapper, img, corner) => {
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("mouseup", onMouseUp);
 };
-
 
 
 

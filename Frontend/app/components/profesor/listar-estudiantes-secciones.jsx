@@ -128,7 +128,7 @@ export default function ListarEstudiantes() {
                 cerrarModal();
                 obtenerAula();
             } else {
-                toast.error('Ocurrió un error');
+                toast.error(response.data.message);
             }
         } catch (err) {
             console.log(err);
@@ -146,7 +146,7 @@ export default function ListarEstudiantes() {
 
     const exportToPDF = () => {
         const name = 'estudiantes.pdf';
-        const title = 'Listado de Profesores';
+        const title = 'Listado de estudiantes';
         const head = [['Correo Electrónico', 'Nombre', 'Apellido', 'Acceso', 'Estado']];
         const tableRows = filteredData.map((row) => [
             row.email,
@@ -274,7 +274,7 @@ export default function ListarEstudiantes() {
                     title={"¿Estas seguro?"}
                     mensaje={
                         <>
-                            ¿Estás seguro que deseas cerrar la {aulaSeleccionada?.label || 'seleccione un aula'} <br /><br />
+                            ¿Estás seguro que deseas cerrar la {aulaSeleccionada?.label || 'aula desconocida'}? <br /><br />
                         </>
                     }
                 />

@@ -206,10 +206,8 @@ export default function SopaInteractiva({ id_sopa, palabrasMeta, notaEvaluacion,
 				nota_evaluacion: parseFloat(notaEvaluacionCalculada).toFixed(2),
 				evaluacion_id: idEvaluacion
 			});
-
+			
 			if (response.status != 201) {
-				oast.error("Hubo un problema al enviar la nota.");
-			} else {
 				toast.error("Hubo un problema al enviar la nota.");
 			}
 		} catch (error) {

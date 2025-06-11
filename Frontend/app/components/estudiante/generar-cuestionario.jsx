@@ -1,133 +1,155 @@
-"use client";
-import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import styled from "styled-components";
-import { toast } from "@/app/components/utils/rutas";
-import { ButtonSave } from "@/app/components/utils/rutas";
+"use client"; import {  useEffect, useState, styled, apiRest, toast, ButtonSave } from '@/app/components/utils/rutas';
 
-export default function CrearCuestionario() {
-  const [preguntas, setPreguntas] = useState([
-    {
-      uid: uuidv4(),
-      pregunta: "",
-      opciones: [
-        { id: uuidv4(), texto: "" },
-        { id: uuidv4(), texto: "" },
-      ],
-    },
-  ]);
+export default function Cuestionario({ preguntas, notaEvaluacion, idEvaluacion }) {
+	
+	const [estudiante_ya_respondio, setestudiante_ya_respondio] = useState(false)
+	
+	const [respuestas, setRespuestas] = useState({});
+	const [enviado, setEnviado] = useState(false);
+	const [aciertos, setAciertos] = useState(0);
 
-  const agregarPregunta = () => {
-    // Validar TODAS las preguntas existentes
-    for (let i = 0; i < preguntas.length; i++) {
-      const p = preguntas[i];
-      if (!p.pregunta.trim()) {
-        toast.error(`La pregunta ${i + 1} está vacía`);
-        return;
-      }
-      const opcionesValidas = p.opciones.filter((op) => op.texto.trim() !== "");
-      if (opcionesValidas.length < 2) {
-        toast.error(`La pregunta ${i + 1} debe tener al menos 2 opciones no vacías`);
-        return;
-      }
-    }
 
-    // Si todo está OK, añadir nueva pregunta
-    const nuevaPregunta = {
-      uid: uuidv4(),
-      pregunta: "",
-      opciones: [
-        { id: uuidv4(), texto: "" },
-        { id: uuidv4(), texto: "" },
-      ],
-    };
+	const guardar_cuestionario = async (id, respuestaUsuario) => {
+		
+		try {
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/SaveCuestionario`
+			const response = await apiRest.fetchPost(url, {
+				cuestionario_id: id,
+				respuesta: respuestaUsuario,
+			});
+	
+			return response.status === 200;
+		} catch (error) {
+			console.error(error);
+			return false;
+		}
+	};
 
-    setPreguntas([...preguntas, nuevaPregunta]);
-  };
+	const enviarNotaEvaluacion = async (notaEvaluacionCalculada, idEvaluacion) => {
+		try {
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/SaveNotaEstudiante`
+			const response = await apiRest.fetchPost(url, {
+				nota_evaluacion: notaEvaluacionCalculada.toFixed(2),
+				evaluacion_id: idEvaluacion
+			});
 
-  const actualizarTextoPregunta = (uid, texto) => {
-    setPreguntas((prev) =>
-      prev.map((p) =>
-        p.uid === uid ? { ...p, pregunta: texto } : p
-      )
-    );
-  };
-
-  const actualizarOpcion = (preguntaUID, opcionID, nuevoTexto) => {
-    setPreguntas((prev) =>
-      prev.map((pregunta) =>
-        pregunta.uid === preguntaUID
-          ? {
-              ...pregunta,
-              opciones: pregunta.opciones.map((op) =>
-                op.id === opcionID ? { ...op, texto: nuevoTexto } : op
-              ),
+			if (response.status != 201) {
+                toast.error("Hubo un problema al enviar la nota.");
             }
-          : pregunta
-      )
-    );
-  };
+			
+		} catch (error) {
+			console.error(error);
+			toast.error("Error al enviar la nota.");
+		}
+	};
 
-  const agregarOpcion = (preguntaUID) => {
-    setPreguntas((prev) =>
-      prev.map((pregunta) =>
-        pregunta.uid === preguntaUID
-          ? {
-              ...pregunta,
-              opciones: [...pregunta.opciones, { id: uuidv4(), texto: "" }],
-            }
-          : pregunta
-      )
-    );
-  };
+	
+	const handleChange = (preguntaId, opcion) => {
+		setRespuestas({
+		...respuestas,
+		[preguntaId]: opcion,
+		});
+	};
 
-  return (
-    <LayoutBody>
-      <h2 className="titulo">Crear Cuestionario</h2>
-      <form className="formulario">
-        {preguntas.map((pregunta, index) => (
-          <div key={pregunta.uid} className="card">
-            <p className="pregunta">Pregunta {index + 1}</p>
-            <input
-              type="text"
-              value={pregunta.pregunta}
-              onChange={(e) =>
-                actualizarTextoPregunta(pregunta.uid, e.target.value)
-              }
-              placeholder="Escribe la pregunta"
-              className="input"
-            />
-            <p>Opciones:</p>
-            {pregunta.opciones.map((opcion) => (
-              <input
-                key={opcion.id}
-                type="text"
-                value={opcion.texto}
-                onChange={(e) =>
-                  actualizarOpcion(pregunta.uid, opcion.id, e.target.value)
-                }
-                placeholder="Escribe una opción"
-                className="input"
-              />
-            ))}
-            <button
-              type="button"
-              className="boton"
-              onClick={() => agregarOpcion(pregunta.uid)}
-            >
-              + Añadir opción
-            </button>
-          </div>
-        ))}
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+	  
+		const preguntasSinResponder = preguntas.filter(
+		  	(pregunta) => !respuestas.hasOwnProperty(pregunta.id)
+		);
+	  
+		if (preguntasSinResponder.length > 0) {
+			toast.error("Por favor, responde todas las preguntas antes de enviar el cuestionario.");
+		  return;
+		}
+	  
+		let correctas = 0;
+	  
+		const resultados = preguntas.map((pregunta) => {
+			const respuestaUsuario = respuestas[pregunta.id];
+			const esCorrecta = respuestaUsuario === pregunta.respuestaCorrecta;
+		
+			if (esCorrecta) correctas++;
+		
+			return {
+				id: pregunta.id,
+				pregunta: pregunta.pregunta,
+				respuestaUsuario,
+				respuestaCorrecta: pregunta.respuestaCorrecta,
+				esCorrecta,
+			};
+		});
+		
+		let errores = 0;
+		for (const resultado of resultados) {
+			const exito = await guardar_cuestionario(resultado.id, resultado.respuestaUsuario);
+			if (!exito) errores++;
+		}
 
-        <div className="center">
-          <button type="button" className="boton" onClick={agregarPregunta}>
-            + Añadir pregunta
-          </button>
-        </div>
-      </form>
-    </LayoutBody>
-  );
+		if (errores === 0) {
+			toast.success("¡Cuestionario guardado correctamente!");
+		} else {
+			toast.error("Algunas respuestas no se pudieron guardar.");
+		}
+	  
+		setAciertos(correctas);
+		setEnviado(true);
+		setestudiante_ya_respondio(true);
+
+		const notaCalculada = Math.ceil(((correctas / preguntas.length) * notaEvaluacion) * 100) / 100;
+		await enviarNotaEvaluacion(notaCalculada, idEvaluacion);
+
+	  };
+	  
+	  
+
+	  return (
+		<LayoutBody>
+	  
+		  {!estudiante_ya_respondio ? (
+			<form onSubmit={handleSubmit} className="formulario">
+				{preguntas.map((pregunta) => (
+					<div key={pregunta.id} className="card">
+					<p className="pregunta">{pregunta.pregunta}</p>
+					{pregunta.opciones.map((opcion, index) => (
+						<label key={index} className="opcion">
+						<input
+							type="radio"
+							name={`pregunta-${pregunta.id}`}
+							value={opcion}
+							onChange={() => handleChange(pregunta.id, opcion)}
+							checked={respuestas[pregunta.id] === opcion}
+						/>
+						{' '}{opcion}
+						</label>
+					))}
+					</div>
+			  ))}
+			  <div className='center'>
+				<ButtonSave type="submit" className="mt-30">Guardar</ButtonSave>
+			  </div>
+			</form>
+		  ) : enviado && (
+			<div className="resultado">
+				<h2>Resultado</h2>
+				<p>Respuestas correctas: {aciertos} de {preguntas.length}</p>
+				<ul>
+					{preguntas.map((pregunta) => (
+					<li key={pregunta.id}>
+						<strong>{pregunta.pregunta}</strong><br />
+						Tu respuesta:{' '}
+						<span style={{ color: respuestas[pregunta.id] === pregunta.respuestaCorrecta ? 'green' : 'red' }}>
+						{respuestas[pregunta.id] || 'No respondida'}
+						</span><br />
+						Respuesta correcta: {pregunta.respuestaCorrecta}
+					</li>
+					))}
+				</ul>
+			</div>
+		  )}
+		</LayoutBody>
+	  );
+	  
 }
 
 const LayoutBody = styled.div`
@@ -156,32 +178,41 @@ const LayoutBody = styled.div`
   }
 
   .pregunta {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
   }
 
-  .input {
+  .opcion {
     display: block;
-    width: 100%;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    margin: 0.5rem 0;
+    cursor: pointer;
   }
 
   .boton {
+    margin-top: 2rem;
+    align-self: flex-start;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
     background-color: #0070f3;
     color: white;
     border: none;
-    padding: 0.6rem 1.2rem;
     border-radius: 8px;
     cursor: pointer;
-    margin-top: 1rem;
   }
 
-  .center {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
+  .resultado {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    background-color: #eef1f5;
+    border-radius: 12px;
+
+    ul {
+      margin-top: 1rem;
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 1rem;
+    }
   }
 `;

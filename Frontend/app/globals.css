@@ -291,6 +291,11 @@ text-decoration: none; /* Sin subrayado al hacer hover */
     justify-content: flex-end;
     align-items: center;
 }
+.center-space-between{
+    display: Flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 .center-column{
     display: Flex;

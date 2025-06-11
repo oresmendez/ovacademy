@@ -1,4 +1,4 @@
-'use client'; import { styled, useState, useEffect, apiRest, toast, Select, MessageError } from '@/app/components/utils/rutas';
+'use client'; import { styled, useState, useEffect, apiRest, toast, Select, MessageError, Spinner } from '@/app/components/utils/rutas';
 
 export default function SelectAulaEstudiantes() {
 
@@ -7,13 +7,16 @@ export default function SelectAulaEstudiantes() {
 	const [aulas, setAulas] = useState([]);
 	const [estudiantes, setEstudiantes] = useState([]);
 
+	const [showSpinner, setShowSpinner] = useState(false);
+	const [isLoadingRespuestas, setIsLoadingRespuestas] = useState(true);
+
 
 	useEffect(() => {   
 		obtenerAula();
 	}, []);
 
   	const obtenerAula = async () => {
-		try {
+		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
 			const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/profesor`
 			const response = await apiRest.fetchGet(url);
 			if (response.status === 200) {
@@ -28,12 +31,12 @@ export default function SelectAulaEstudiantes() {
 			}
 		} catch (err) {
 			console.error('Error al conectar con el servidor:', err);
-		}
+		}finally { clearTimeout(timeout); setShowSpinner(false);}
 	};
 
 	const obtenerEstudiantesInscritos = async () => {
-		try {
-
+		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+			
 			const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/estudiantesInscritos`
 			const response = await apiRest.fetchGet(url);
 			if (response.status === 200) {
@@ -43,11 +46,11 @@ export default function SelectAulaEstudiantes() {
 			}
 		} catch (err) {
 			console.error('Error al conectar con el servidor:', err);
-		}
+		}finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
 	};
 
 	const obtenerEstudiantesNoInscritos = async (estudiantesInscritos) => {
-		try {
+		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
 
 			const url = `${process.env.NEXT_PUBLIC_API_URL}/user?type_id=1`
 			const response = await apiRest.fetchGet(url);
@@ -65,12 +68,10 @@ export default function SelectAulaEstudiantes() {
 					}));
 	
 				setEstudiantes(estudiantesNoInscritos);
-			} else {
-
 			}
 		} catch (err) {
 			console.error('Error al conectar con el servidor:', err);
-		}
+		}finally { clearTimeout(timeout); setShowSpinner(false);}
 	};
 	
 
@@ -114,50 +115,53 @@ export default function SelectAulaEstudiantes() {
   	};
 
 
-	  let contenido;
+	let contenido;
 
-	  if (!aulas.length) {
-		  contenido = (
-				<MessageError message={"No tienes una sección asignada por el momento."}/>
-		  );
-	  } else {
-		  contenido = (
-			  <Component>
-				  <div className="container">
-					  <div className="campo">
-						  <label className="label">Selecciona un Sección</label>
-						  <Select
-							  options={aulas}
-							  placeholder="Selecciona un sección..."
-							  value={aulaSeleccionada}
-							  onChange={setAulaSeleccionada}
-							  styles={customStyles}
-							  isClearable
-						  />
-					  </div>
-  
-					  <div className="campo">
-						  <label className="label">
-							  {estudiantesSeleccionados.length <= 1 ? 'Selecciona Estudiante' : 'Selecciona Estudiantes'}
-						  </label>
-						  <Select
-							  options={estudiantes}
-							  isMulti
-							  placeholder="Selecciona estudiantes..."
-							  value={estudiantesSeleccionados}
-							  onChange={setEstudiantesSeleccionados}
-							  styles={customStyles}
-						  />
-					  </div>
-					  <div className='center pt-10'>
-						  <button className="boton" onClick={guardarData}>Guardar</button>
-					  </div>
-				  </div>
-			  </Component>
-		  );
-	  }
-  
-	  return contenido;
+	if (showSpinner || isLoadingRespuestas) {
+        contenido = <Spinner show={showSpinner} />;
+
+    }else if (!aulas.length) {
+		contenido = (
+			<MessageError message={"No tienes una sección asignada por el momento."}/>
+		);
+	} else {
+		contenido = (
+			<Component>
+				<div className="container">
+					<div className="campo">
+						<label className="label">Selecciona un Sección</label>
+						<Select
+							options={aulas}
+							placeholder="Selecciona un sección..."
+							value={aulaSeleccionada}
+							onChange={setAulaSeleccionada}
+							styles={customStyles}
+							isClearable
+						/>
+					</div>
+
+					<div className="campo">
+						<label className="label">
+							{estudiantesSeleccionados.length <= 1 ? 'Selecciona Estudiante' : 'Selecciona Estudiantes'}
+						</label>
+						<Select
+							options={estudiantes}
+							isMulti
+							placeholder="Selecciona estudiantes..."
+							value={estudiantesSeleccionados}
+							onChange={setEstudiantesSeleccionados}
+							styles={customStyles}
+						/>
+					</div>
+					<div className='center pt-10'>
+						<button className="boton" onClick={guardarData}>Guardar</button>
+					</div>
+				</div>
+			</Component>
+		);
+	}
+
+	return contenido;
   
 }
 

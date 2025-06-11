@@ -60,7 +60,7 @@ export default function ListarEstudiantes() {
 
     const exportToPDF = () => {
         const name = 'estudiantes.pdf';
-        const title = 'Listado de Profesores';
+        const title = 'Listado de Estudiantes';
         const head = [['Correo Electrónico', 'Nombre', 'Apellido' ,'Acceso', 'Estado']];
         const tableRows = filteredData.map((row) => [
             row.email,
@@ -74,7 +74,7 @@ export default function ListarEstudiantes() {
 
     const exportToExcel = () => {
         const name = 'estudiantes.xlsx';
-        const title = 'Profesores';
+        const title = 'Estudiantes';
         export_file.exportToExcel(title, filteredData, name);
     };
 

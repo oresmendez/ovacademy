@@ -14,7 +14,7 @@ export default function NavFooter() {
 const Componente = styled.div`
 
     .user-menu-footer-wrapper {
-        border-top: 1px solid black;
+        /* border-top: 1px solid black; */
         height: 3.75rem;
         color:var(--color-azul-vibrante);
         font-weight: 500;

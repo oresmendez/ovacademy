@@ -1,4 +1,4 @@
-'use client'; import { useEffect, useState, apiRest, gestorCookie, Image, Link, styled, LogoName, PropTypes, HeaderSearchBar, textBarHeader, Spinner } from '@/app/components/utils/rutas';
+'use client'; import { useEffect, useState, apiRest, gestorCookie, Image, Link, styled, LogoName, PropTypes, HeaderSearchBar, Footer,textBarHeader, Spinner } from '@/app/components/utils/rutas';
 import { FaBookOpen, FaBookReader, FaBook } from 'react-icons/fa';
 
 export default function Home() {
@@ -32,7 +32,7 @@ export default function Home() {
                     <ContenidoPrincipal descripcion={descripcion} />
                     <RecursosLibros />
                 </div>
-                <Footer />
+                {/* <Footer /> */}
             </Componente>
         );
     }
@@ -357,103 +357,138 @@ export default function Home() {
 // #endregion
 // #region componentes < RecursosLibros/>👽
 
-    function RecursosLibros() {
-        return (
-            <RecursosLibrosStyled>
-                <h2 className="subtitulo">📚 Recursos y Libros Recomendados</h2>
-                <div className="contenedor-imagenes-libros">
-                    <div className="tarjeta-libro">
-                        <FaBook size={50} />
-                        <p>Libro 1</p>
-                        <a href="/pdfs/libro1.pdf" target="_blank" rel="noopener noreferrer">Ver PDF</a>
-                    </div>
-                    <div className="tarjeta-libro">
-                        <FaBookOpen size={50} />
-                        <p>Libro 2</p>
-                        <a href="/pdfs/libro2.pdf" target="_blank" rel="noopener noreferrer">Ver PDF</a>
-                    </div>
-                    <div className="tarjeta-libro">
-                        <FaBookReader size={50} />
-                        <p>Libro 3</p>
-                        <a href="/pdfs/libro3.pdf" target="_blank" rel="noopener noreferrer">Ver PDF</a>
-                    </div>
-                </div>
-            </RecursosLibrosStyled>
-        );
-    };
+function RecursosLibros() {
+    return (
+        <RecursosLibrosStyled>
+            <h2 className="subtitulo">📚 Recursos y Libros Recomendados</h2>
+            <div className="contenedor-imagenes-libros">
+                <div className="tarjeta-libro">
+                    <FaBookReader size={50} />
+                    <a
+                        href="/libros/Arturo Morales Castro - Proyectos de Inversión.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >
+                        <p>Arturo Morales Castro - Proyectos de Inversión</p>
+                    </a>
 
-    const RecursosLibrosStyled = styled.div`
-        width: 48%;
+                </div>
+                <div className="tarjeta-libro">
+                    <FaBookReader size={50} />
+                        <a
+                            href="/libros/Gabriel Baca Urbina - Evaluación de Proyectos.pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >
+                        <p>Gabriel Baca Urbina - Evaluación de Proyectos</p>
+                    </a>
+                </div>
+                <div className="tarjeta-libro">
+                    <FaBookReader size={50} />
+                        <a
+                            href="/libros/Marcial Córdoba Padilla - Formulación y Evaluación de Proyectos.pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >
+                        <p>Marcial Córdoba Padilla - Formulación y Evaluación de Proyectos</p>
+                    </a>
+                </div>
+            </div>
+        </RecursosLibrosStyled>
+    );
+}
+
+const RecursosLibrosStyled = styled.div`
+    width: 48%;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem 0;
+
+    .subtitulo {
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+        color: #0f172a;
+        font-family: var(--font-lexend);
+    }
+
+    .contenedor-imagenes-libros {
         display: flex;
         flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .tarjeta-libro {
+        background: linear-gradient(135deg, #ffffff, #f8fafc);
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: flex;
         align-items: center;
+        gap: 1.2rem;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        .subtitulo {
-            font-size: 1.8rem;
-            margin-bottom: 2rem;
-            color: #2c3e50;
-            font-weight: 700;
-            text-align: center;
-        }
+    .tarjeta-libro:hover {
+        transform: perspective(1000px) rotateX(2deg) rotateY(1deg);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
 
-        .contenedor-imagenes-libros {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1.5rem;
-            width: 100%;
-        }
+    .icono-libro {
+        flex-shrink: 0;
+        background-color: #38bdf8;
+        padding: 0.8rem;
+        border-radius: 12px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+    }
 
-        .tarjeta-libro {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 1rem;
-            width: 140px;
-            text-align: center;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.07);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+    .contenido-libro {
+        flex-grow: 1;
+    }
 
-        .tarjeta-libro:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
-        }
+    .contenido-libro p {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0 0 0.5rem;
+    }
 
-        .tarjeta-libro p {
-            margin: 0.7rem 0 0.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-        }
+    .contenido-libro a {
+        display: inline-block;
+        background-color: #0ea5e9;
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background 0.3s;
+    }
 
-        .tarjeta-libro a {
-            display: inline-block;
-            margin-top: 0.3rem;
-            background-color: #3498db;
-            color: white;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
+    .contenido-libro a:hover {
+        background-color: #0284c7;
+    }
 
-        .tarjeta-libro a:hover {
-            background-color: #2c80b4;
-        }
+    @media (max-width: 768px) {
+        width: 100%;
+    }
+`;
 
-        @media (max-width: 768px) {
-            width: 100%;
-        }
-    `;
 
 // #endregion
 // #region componentes < Footer/>👽
-    function Footer() {
-        return <FooterStyled className='layout-footer'></FooterStyled>;
-    }
-    const FooterStyled = styled.div`
+    // function Footer() {
+    //     return <FooterStyled className='layout-footer'></FooterStyled>;
+    // }
+    // const FooterStyled = styled.div`
     
-    `;
+    // `;
 // #endregion
 // #region componentes < Componente/>👽
     const Componente = styled.div`

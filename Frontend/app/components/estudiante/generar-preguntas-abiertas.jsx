@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, styled, apiRest, toast, ButtonSave, ButtonAccion } from '@/app/components/utils/rutas';
+import { useEffect, useState, styled, apiRest, toast, ButtonSave, gestorCookie } from '@/app/components/utils/rutas';
 
 export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preguntas, respuestasPrevias, notaEvaluacion, isProfesor }) {
 
@@ -13,6 +13,8 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
     const [kcalifico, setkcalifico] = useState(true);
     const [mensajesCalificacion, setMensajesCalificacion] = useState({});
     const [tiposApreciacion, setTiposApreciacion] = useState([]);
+
+    const [typeUser, setTypeUser] = useState(0);
 
 
     const todasRespondidas = preguntas.every((p) =>
@@ -35,6 +37,7 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
     
 
     const recargar = async () => {
+        setTypeUser(await gestorCookie.get_one_element_cookie("user-data", "type"));
         obtener_type_escala_apreciacion();
     
         const respuestasIniciales = {};
@@ -176,7 +179,7 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
                 evaluacion_id: idEvaluacion,
                 nota_evaluacion: calcularNotaGlobal(datosParaEnviar, notaEvaluacion)
             });
-    
+            console.log(response)
             if (response.status != 200) {
                 toast.error("❌ Hubo un problema al guardar las calificaciones.");
             }
@@ -203,7 +206,7 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
         try {
             const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/preguntasAbiertas`
             const response = await apiRest.fetchPut(url, { calificacion: datosParaEnviar });
-    
+            console.log(response)
             if (response.status === 200) {
                 toast.success("✅ Calificaciones guardadas correctamente.");
                 editarCalificacion(datosParaEnviar)
@@ -244,6 +247,30 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
                             placeholder="Escribe tu respuesta aquí..."
                             disabled={yaRespondida}
                         />
+
+                        {typeUser === 1 && yaRespondida && (() => {
+                            const r = respuestasExistentes.find(r => r.preguntasAbiertasId === p.id);
+                            const tipo = r?.idEscalaApreciacion;
+                            const texto =
+                                tipo === 1 ? 'Buena' :
+                                tipo === 2 ? 'Regular' :
+                                tipo === 3 ? 'Mala' :
+                                'Aún no evaluada';
+
+                            return (
+                                <ContenedorValoracion>
+                                    Calificación del profesor:
+                                    <EtiquetaValoracion tipo={tipo}>{texto}</EtiquetaValoracion>
+                                </ContenedorValoracion>
+                            );
+                        })()}
+
+
+                        
+
+
+
+
     
                             {isProfesor && (
                             <OpcionesCalificacion>
@@ -366,6 +393,37 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
 }
 
 // Estilos
+const EtiquetaValoracion = styled.span.withConfig({
+  shouldForwardProp: (prop) => !['tipo'].includes(prop)
+})`
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+    background-color: ${({ tipo }) =>
+        tipo === 1 ? '#2ecc71' :
+        tipo === 2 ? '#f1c40f' :
+        tipo === 3 ? '#e74c3c' :
+        '#95a5a6'};
+    line-height: 1;
+    white-space: nowrap;
+`;
+
+
+const ContenedorValoracion = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    margin-top: 0.5rem;
+    margin-left: 1.5rem;
+`;
+
+
+
 
 const BotonGuardarCalificacion = styled.button`
     margin-top: 0.5rem;

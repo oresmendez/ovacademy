@@ -51,7 +51,6 @@ export default function DashboardPage() {
                                 <p style={messageStyle}>Usted no se encuentra aún matriculado. Por favor, contacte a su profesor para que actualice su estado.</p>
                             </div>
                             
-                            <Footer />
                         </>
                     )}
                 </div>
@@ -59,7 +58,7 @@ export default function DashboardPage() {
         );
     }
 
-    return <Component>{contenido}</Component>;
+    return <Component>{contenido}<Footer /></Component>;
 
 }
 

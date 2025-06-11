@@ -1,18 +1,15 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { styled, useRouter, apiRest, toast, gestorCookie, PropTypes, Spinner,ModalField } from '@/app/components/utils/rutas';
+import { useState, useEffect, useRef } from 'react';
+import { styled, useRouter, apiRest, toast, gestorCookie, PropTypes, Spinner, ModalField, ButtonSave } from '@/app/components/utils/rutas';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { type } from 'os';
 
 export default function Profile({ email = '' }) {
-
 	const [showSpinner, setShowSpinner] = useState(false);
 	const [isLoadingRespuestas, setIsLoadingRespuestas] = useState(true);
-
 	const router = useRouter();
-	const cerrarModal = () => setVisible(false);
 	const [visible, setVisible] = useState(false);
+	const [visibleEliminar, setvisibleEliminar] = useState(false);
 
 	const [userEmail, setUserEmail] = useState("");
 	const [typeUser, setTypeUser] = useState(0);
@@ -21,303 +18,247 @@ export default function Profile({ email = '' }) {
 
 	const [initialValues, setInitialValues] = useState({ name: '', surname: '', phone: '' });
 
+	const formikRef = useRef(null); // <<<<<< NUEVO
+	
+
 	useEffect(() => {
 		fetchEmail(email, setUserEmail, setTypeUser, setShowSpinner, setIsLoadingRespuestas);
 	}, [email]);
 
 	useEffect(() => {
 		if (userEmail) {
-			get_user(userEmail, setInitialValues,setShowSpinner,setIsLoadingRespuestas);
+			get_user(userEmail, setInitialValues, setShowSpinner, setIsLoadingRespuestas);
 		}
 	}, [userEmail]);
 
 	const abrirModal = () => {
-        setVisible(true);
-    };
+		setVisible(true);
+	};
 
 	const handleDeleteClick = async (email) => {
 		setVisible(false)
-        try {
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/user/${userEmail}`;
-            const response = await apiRest.fetchDelete(url);
-    
-            if (response.status === 200) {
-                toast.success(
-                    <span>
-                      Usuario {email} eliminado
-                    </span>
-                  );
+		try {
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/user/${userEmail}`;
+			const response = await apiRest.fetchDelete(url);
 
-				  await new Promise(resolve => setTimeout(resolve, 1000));
-				  setShowSpinner(true)
-				  window.history.go(-1);
-                  
-            } else {
-                toast.error('Ocurrió un error');
-            }
-        } catch (err) {
-            console.log(err);
-            toast.error('Error al conectar con el servidor.');
-        }
-    };
+			if (response.status === 200) {
+				toast.success(<span>Usuario {email} eliminado</span>);
+				await new Promise(resolve => setTimeout(resolve, 1000));
+				setShowSpinner(true);
+				window.history.go(-1);
+			} else {
+				toast.error('Ocurrió un error');
+			}
+		} catch (err) {
+			console.log(err);
+			toast.error('Error al conectar con el servidor.');
+		}
+	};
 
 	let contenido;
 
-    if (showSpinner || isLoadingRespuestas) {
-        contenido = <Spinner show={showSpinner} />;
-    } else {
-        contenido = (
-            <Component>
-			<style jsx>{`
-				.error {
-					color: red;
-					font-size: 0.875rem;
-					margin-top: 5px;
-				}
-			`}</style>
+	if (showSpinner || isLoadingRespuestas) {
+		contenido = <Spinner show={showSpinner} />;
+	} else {
+		contenido = (
+			<Component>
+				<style jsx>{`
+					.error {
+						color: red;
+						font-size: 0.875rem;
+						margin-top: 5px;
+					}
+				`}</style>
 
-			<div className="profile-header">
-				<div className="profile-image">
-					<img src="/profile-img.jpg" alt="Usuario" />
+				<div className="profile-header">
+					<div className="profile-image">
+						<img src="/profile-img.jpg" alt="Usuario" />
+					</div>
+					<div className="profile-info">
+						<h1>{(initialValues.name || initialValues.surname) ? `${initialValues.name} ${initialValues.surname}` : 'Nombre y Apellido'}</h1>
+						<p>{userEmail || 'Correo electrónico no disponible'}</p>
+						{activeTab === "personal" && !isEditing && (
+							<button className="edit-button mr-10 mt-10" onClick={() => setIsEditing(true)}>Editar</button>
+						)}
+						{isEditing && (
+							<>
+								<button type="button" className="cancel-button mr-10 mt-10" onClick={() => setIsEditing(false)}>Cancelar</button>
+								{email !== '' && (
+									<button className="delete-button" onClick={() => setvisibleEliminar(true)}>Eliminar Usuario</button>
+								)}
+							</>
+						)}
+					</div>
 				</div>
-				<div className="profile-info">
-					<h1>{(initialValues.name || initialValues.surname) ? `${initialValues.name} ${initialValues.surname}` : 'Nombre y Apellido'}</h1>
-					<p>{userEmail || 'Correo electrónico no disponible'}</p>
-					{activeTab === "personal" && !isEditing && (
-						<button className="edit-button mr-10 mt-10" onClick={() => setIsEditing(true)}>
-							Editar
+
+				<div className='center'>
+					<div className="profile-tabs">
+						<button className={`tab-button ${activeTab === "personal" ? "active" : ""}`} onClick={() => setActiveTab("personal")}>
+							Información Personal
 						</button>
-					)}
-					{isEditing && (
-						<>
-						<button type="button" className="cancel-button mr-10 mt-10" onClick={() => setIsEditing(false)}>
-							Cancelar
-						</button>
-						{email!='' && (
-							<button className="delete-button" onClick={() => abrirModal()}>
-								Eliminar Usuario
+						{isEditing && (
+							<button className={`tab-button ${activeTab === "changePassword" ? "active" : ""}`} onClick={() => setActiveTab("changePassword")}>
+								Cambiar Contraseña
 							</button>
 						)}
-						</>
-					)}
-				</div>
-			</div>
-			
-			<div className='center'>
-				<div className="profile-tabs">
-					<button
-						className={`tab-button ${activeTab === "personal" ? "active" : ""}`}
-						onClick={() => setActiveTab("personal")}
-					>
-						Información Personal
-					</button>
-					{isEditing && (
-						<button
-							className={`tab-button ${activeTab === "changePassword" ? "active" : ""}`}
-							onClick={() => setActiveTab("changePassword")}
-						>
-							Cambiar Contraseña
-						</button>
-					)}
-				</div>
-			</div>
-
-			<div className="profile-content">
-				{activeTab === "personal" && (
-					<div className="tab-content personal-info">
-						<div className="header-section">
-						</div>
-						<Formik
-							enableReinitialize
-							initialValues={initialValues}
-							validationSchema={personalSchema}
-							onSubmit={async (values, { setSubmitting }) => {
-								try {
-									const url = `${process.env.NEXT_PUBLIC_API_URL}/user`
-									const response = await apiRest.fetchPut(url, {
-										email: userEmail,
-										...values
-									});
-									if (response.status === 200) {
-										toast.success(response.data.message);
-										get_user(userEmail, setInitialValues,setShowSpinner,setIsLoadingRespuestas);
-										setIsEditing(false);
-									} else {
-										toast.error(response.data.message);
-									}
-								} catch (error) {
-									toast.error("Error al guardar los datos personales");
-								} finally {
-									setSubmitting(false);
-								}
-							}}
-						>
-							{({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
-								<Form>
-									<div className="info-row">
-										<label htmlFor="name">Nombre:</label>
-										<input
-											type="text"
-											name="name"
-											id="name"
-											disabled={!isEditing}
-											value={values.name}
-											onChange={handleChange}
-											onBlur={handleBlur}
-										/>
-										{errors.name && touched.name && <div className="error">{errors.name}</div>}
-									</div>
-									<div className="info-row">
-										<label htmlFor="surname">Apellido:</label>
-										<input
-											type="text"
-											name="surname"
-											id="surname"
-											disabled={!isEditing}
-											value={values.surname}
-											onChange={handleChange}
-											onBlur={handleBlur}
-										/>
-										{errors.surname && touched.surname && <div className="error">{errors.surname}</div>}
-									</div>
-									<div className="info-row">
-										<label htmlFor="phone">Teléfono:</label>
-										<input
-											type="text"
-											name="phone"
-											id="phone"
-											disabled={!isEditing}
-											value={values.phone}
-											onChange={handleChange}
-											onBlur={handleBlur}
-										/>
-									</div>
-									{isEditing && (
-										<div className="button-row">
-											<button type="submit" className="save-button" disabled={isSubmitting}>
-												Guardar
-											</button>
-											<button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>
-												Cancelar
-											</button>
-										</div>
-									)}
-								</Form>
-							)}
-						</Formik>
 					</div>
-				)}
+				</div>
 
-				{activeTab === "changePassword" && isEditing && (
-					<div className="tab-content change-password">
-						<div className="header-section">
+<div className="profile-content">
+	{activeTab === "personal" && (
+		<div className="tab-content personal-info">
+			<Formik
+				innerRef={formikRef}
+				enableReinitialize
+				initialValues={initialValues}
+				validationSchema={personalSchema}
+				onSubmit={async (values, { setSubmitting }) => {
+					try {
+						const url = `${process.env.NEXT_PUBLIC_API_URL}/user`;
+						const response = await apiRest.fetchPut(url, {
+							email: userEmail,
+							...values
+						});
+						if (response.status === 200) {
+							toast.success(response.data.message);
+							get_user(userEmail, setInitialValues, setShowSpinner, setIsLoadingRespuestas);
+							setIsEditing(false);
+						} else {
+							toast.error(response.data.message);
+						}
+					} catch (error) {
+						toast.error("Error al guardar los datos personales");
+					} finally {
+						setSubmitting(false);
+					}
+				}}
+			>
+				{({ values, handleChange, handleBlur, errors, touched }) => (
+					<Form>
+						<div className="info-row">
+							<label htmlFor="name">Nombre:</label>
+							<input type="text" name="name" disabled={!isEditing} value={values.name} onChange={handleChange} onBlur={handleBlur} />
+							{errors.name && touched.name && <div className="error">{errors.name}</div>}
 						</div>
-						<Formik
-							initialValues={{ password: "", verifyPassword: "" }}
-							validationSchema={passwordSchema}
-							onSubmit={async (values, { setSubmitting, resetForm }) => {
-								try {
-									const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/changePassword`
-									const response = await apiRest.fetchPut(
-										url,
-										{ email: userEmail, password: values.password }
-									);
-									if (response.status === 200) {
-										toast.success(response.data.message);
-										resetForm();
-									} else {
-										toast.error(response.data.message);
-									}
-								} catch (error) {
-									toast.error("Ocurrió un error al cambiar la contraseña");
-								} finally {
-									setSubmitting(false);
-								}
-							}}
-						>
-							{({ isSubmitting, errors, touched, handleChange, handleBlur, values }) => (
-								<Form>
-									<div className="info-row">
-										<label htmlFor="password">Nueva Contraseña:</label>
-										<input
-											type="password"
-											name="password"
-											id="password"
-											value={values.password}
-											onChange={handleChange}
-											onBlur={handleBlur}
-										/>
-										{errors.password && touched.password && (
-											<div className="error">{errors.password}</div>
-										)}
-									</div>
-									<div className="info-row">
-										<label htmlFor="verifyPassword">Verificar Contraseña:</label>
-										<input
-											type="password"
-											name="verifyPassword"
-											id="verifyPassword"
-											value={values.verifyPassword}
-											onChange={handleChange}
-											onBlur={handleBlur}
-										/>
-										{errors.verifyPassword && touched.verifyPassword && (
-											<div className="error">{errors.verifyPassword}</div>
-										)}
-									</div>
-									<div className="button-row">
-										<button type="submit" className="save-button" disabled={isSubmitting}>
-											Guardar
-										</button>
-										<button
-											type="button"
-											className="cancel-button"
-											onClick={() => resetForm()}
-										>
-											Cancelar
-										</button>
-									</div>
-								</Form>
-							)}
-						</Formik>
-					</div>
+						<div className="info-row">
+							<label htmlFor="surname">Apellido:</label>
+							<input type="text" name="surname" disabled={!isEditing} value={values.surname} onChange={handleChange} onBlur={handleBlur} />
+							{errors.surname && touched.surname && <div className="error">{errors.surname}</div>}
+						</div>
+						<div className="info-row">
+							<label htmlFor="phone">Teléfono:</label>
+							<input type="text" name="phone" disabled={!isEditing} value={values.phone} onChange={handleChange} onBlur={handleBlur} />
+						</div>
+						{isEditing && (
+							<div className="button-row">
+								<ButtonSave className="mt-10 mr-10" animation={false} onClick={() => setVisible(true)}>Guardar</ButtonSave>
+								<ButtonSave bgColor="#d5dbdb" hoverColor="#bfc9ca" className="mt-10" onClick={() => setIsEditing(false)}>Regresar</ButtonSave>
+							</div>
+						)}
+					</Form>
 				)}
-			</div>
-			<ModalField 
-                visible={visible} 
-                cerrarModal={cerrarModal} 
-                onclick={() => handleDeleteClick(email)}
-                width={"700"}
-                height={"300"}
-                title={"¿Estas seguro?"}
-                mensaje={
-                    <>
-                        ¿Estás seguro que deseas eliminar al usuario {email}? <br /><br />
-                        Al confirmar, estarías eliminando{' '}
-                        <span style={{ color: 'red', fontWeight: 'bold' }}>permanentemente</span> todo su acceso al sistema y{' '}
-                        <strong>todo el avance</strong> que tenga asociado.
-                    </>
-                }
-            />
+			</Formik>
+		</div>
+	)}
+
+	{activeTab === "changePassword" && isEditing && (
+		<div className="tab-content change-password">
+			<Formik
+				initialValues={{ password: "", verifyPassword: "" }}
+				validationSchema={passwordSchema}
+				onSubmit={async (values, { setSubmitting, resetForm }) => {
+					try {
+						const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/changePassword`;
+						const response = await apiRest.fetchPut(url, {
+							email: userEmail,
+							password: values.password
+						});
+						if (response.status === 200) {
+							toast.success(response.data.message);
+							resetForm();
+						} else {
+							toast.error(response.data.message);
+						}
+					} catch (error) {
+						toast.error("Ocurrió un error al cambiar la contraseña");
+					} finally {
+						setSubmitting(false);
+					}
+				}}
+			>
+				{({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
+					<Form>
+						<div className="info-row">
+							<label htmlFor="password">Nueva Contraseña:</label>
+							<input type="password" name="password" id="password" value={values.password} onChange={handleChange} onBlur={handleBlur} />
+							{errors.password && touched.password && <div className="error">{errors.password}</div>}
+						</div>
+						<div className="info-row">
+							<label htmlFor="verifyPassword">Verificar Contraseña:</label>
+							<input type="password" name="verifyPassword" id="verifyPassword" value={values.verifyPassword} onChange={handleChange} onBlur={handleBlur} />
+							{errors.verifyPassword && touched.verifyPassword && <div className="error">{errors.verifyPassword}</div>}
+						</div>
+						<div className="button-row">
+							<button type="submit" className="save-button" disabled={isSubmitting}>Guardar</button>
+							<button type="button" className="cancel-button" onClick={() => resetForm()}>Cancelar</button>
+						</div>
+					</Form>
+				)}
+			</Formik>
+		</div>
+	)}
+</div>
+
+<ModalField 
+	visible={visible} 
+	cerrarModal={() => setVisible(false)} 
+	onclick={() => {
+		setVisible(false);
+		if (formikRef.current) {
+			formikRef.current.handleSubmit(); // ENVÍA FORMULARIO
+		}
+	}}
+	width={"700"}
+	height={"100"}
+	title={"¿Estás seguro?"}
+	mensaje={
+		<>
+			¿Deseas modificar el detalle de este usuario? <br /><br />
+		</>
+	}
+/>
+
+<ModalField 
+	visible={visibleEliminar} 
+	cerrarModal={() => setvisibleEliminar(false)} 
+	onclick={() => handleDeleteClick(email)}
+	width={"700"}
+	height={"300"}
+	title={"¿Estás seguro?"}
+	mensaje={
+		<>
+			¿Estás seguro que deseas eliminar al usuario {email}? <br /><br />
+			Al confirmar, estarías eliminando <span style={{ color: 'red', fontWeight: 'bold' }}>permanentemente</span> todo su acceso al sistema y <strong>todo el avance</strong> que tenga asociado.
+		</>
+	}
+/>
 			</Component>
-        );
-    }
-
-
+		);
+	}
 
 	return contenido;
-
 }
 
 Profile.propTypes = {
 	email: PropTypes.string,
 };
 
-// #region Funciones
-
-const get_user = async (userEmail, setInitialValues, setShowSpinner,setIsLoadingRespuestas) => {
-	let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-		const url = `${process.env.NEXT_PUBLIC_API_URL}/user/${userEmail}`
+// #region Funciones auxiliares
+const get_user = async (userEmail, setInitialValues, setShowSpinner, setIsLoadingRespuestas) => {
+	let timeout;
+	try {
+		timeout = setTimeout(() => setShowSpinner(true), 300);
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/user/${userEmail}`;
 		const response = await apiRest.fetchGet(url);
 		if (response.status !== 200) return toast.error(response.data.message);
 
@@ -328,12 +269,18 @@ const get_user = async (userEmail, setInitialValues, setShowSpinner,setIsLoading
 		});
 	} catch (error) {
 		toast.error("Ocurrió un error al obtener el usuario");
-	}finally { await new Promise(resolve => setTimeout(resolve, 1000)); clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
+	} finally {
+		await new Promise(resolve => setTimeout(resolve, 1000));
+		clearTimeout(timeout);
+		setShowSpinner(false);
+		setIsLoadingRespuestas(false);
+	}
 };
 
 const fetchEmail = async (email, setUserEmail, setTypeUser, setShowSpinner, setIsLoadingRespuestas) => {
-	
-	let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
+	let timeout;
+	try {
+		timeout = setTimeout(() => setShowSpinner(true), 300);
 		if (email) {
 			setUserEmail(email);
 		} else {
@@ -342,7 +289,12 @@ const fetchEmail = async (email, setUserEmail, setTypeUser, setShowSpinner, setI
 		setTypeUser(await gestorCookie.get_one_element_cookie("user-data", "type"));
 	} catch (error) {
 		toast.error("Ocurrió un error al obtener el usuario");
-	}finally { await new Promise(resolve => setTimeout(resolve, 1000)); clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
+	} finally {
+		await new Promise(resolve => setTimeout(resolve, 1000));
+		clearTimeout(timeout);
+		setShowSpinner(false);
+		setIsLoadingRespuestas(false);
+	}
 };
 
 const personalSchema = Yup.object({

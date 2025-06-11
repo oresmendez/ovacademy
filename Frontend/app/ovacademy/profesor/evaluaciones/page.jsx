@@ -1,4 +1,4 @@
-'use client'; import { useState, styled, CrearEvaluaciones, ListarNotasEstudiantes, textBarHeader, useEffect, WrapperTitleRegister, Link} from '@/app/components/utils/rutas';
+'use client'; import { useState, styled, CrearEvaluaciones, ListarNotasEstudiantes, textBarHeader, useEffect, WrapperTitleRegister, Link, Footer} from '@/app/components/utils/rutas';
 
 
 export default function Administrador_Materia() {
@@ -58,6 +58,7 @@ export default function Administrador_Materia() {
 			</div>
 			</div>
 		</div>
+    <Footer />
 		</Componente>
 	);
 }

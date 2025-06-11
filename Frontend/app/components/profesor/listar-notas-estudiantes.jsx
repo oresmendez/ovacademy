@@ -1,4 +1,4 @@
-'use client'; import { useState, useEffect, ListarEvaluaciones, Select, PreguntasAbiertas, styled, PropTypes, utils, apiRest, toast, export_file, ButtonAccion, InputSearch, DataTableIndex, SopaDeLetras, Cuestionario } from '@/app/components/utils/rutas';
+'use client'; import { useState, useEffect, ListarEvaluaciones, Spinner, Select, PreguntasAbiertas, styled, PropTypes, utils, apiRest, toast, export_file, ButtonAccion, InputSearch, DataTableIndex, SopaDeLetras, Cuestionario } from '@/app/components/utils/rutas';
 import { TbEyeEdit } from "react-icons/tb";
 
 export default function ListarUnidades() {
@@ -20,6 +20,9 @@ export default function ListarUnidades() {
     const [estudiantes, setestudiantes] = useState([]);
     const [estudianteSeleccionado, setestudianteSeleccionado] = useState(null);
 
+    const [showSpinner, setShowSpinner] = useState(false);
+	const [isLoadingRespuestas, setIsLoadingRespuestas] = useState(true);
+
     const [modulo, setModulo] = useState('');
     const [idUnidad, setidUnidad] = useState('');
 
@@ -29,15 +32,24 @@ export default function ListarUnidades() {
     }, []);
 
     useEffect(() => {
-        if (estudianteSeleccionado?.value) {
-            setestudianteId(estudianteSeleccionado.value);
-        }
+        const fetchData = async () => {
+            setShowSpinner(true);
+            if (estudianteSeleccionado?.value) {
+                setestudianteId(estudianteSeleccionado.value);
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+            setShowSpinner(false);
+        };
+
+        fetchData();
     }, [estudianteSeleccionado]);
 
     
     useEffect(() => {
         if (aulaSeleccionada) {
+            setShowSpinner(true)
             obtenerEstudiantes();
+            setestudianteSeleccionado(null);
         }
     }, [aulaSeleccionada]);
 
@@ -54,18 +66,16 @@ export default function ListarUnidades() {
     };
 
     const recargar2 = async () => {
-        setCargando(true);
+        
         try {
             obtener_evaluaciones(idUnidad, modulo)
         } catch (error) {
             console.error('Error al recargar:', error);
-        } finally {
-            setCargando(false);
         }
     };
 
     const obtenerUnidades = async () => {
-        try {
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
             const url = `${process.env.NEXT_PUBLIC_API_URL}/unidades/profesor`
             const response = await apiRest.fetchGet(url);
             if (response.status === 200) {
@@ -88,12 +98,12 @@ export default function ListarUnidades() {
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
             setData([]);
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);}
     };
 
     const obtenerEstudiantes = async () => {
        
-        try {
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
             const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/estudiantesByAula`
             const response = await apiRest.fetchPost(url, {
                 aulaId :aulaSeleccionada.value
@@ -128,11 +138,11 @@ export default function ListarUnidades() {
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
             
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
     };
 
     const obtenerAula = async () => {
-        try {
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
             const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/profesor`
             const response = await apiRest.fetchGet(url);
             console.log(response);
@@ -155,13 +165,13 @@ export default function ListarUnidades() {
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);}
     };
     
     
     const obtener_evaluaciones = async (idUnidad, modulo) => {
         
-        try {
+        let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
             const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/${idUnidad}`
             const response = await apiRest.fetchGet(url);
             
@@ -177,7 +187,7 @@ export default function ListarUnidades() {
                         };
                     })
                 );
-    
+                await new Promise(resolve => setTimeout(resolve, 800));
                 setModulo(modulo);
                 setidUnidad(idUnidad);
                 setDataEvaluaciones(evaluacionesConNotas);
@@ -190,7 +200,7 @@ export default function ListarUnidades() {
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
             setDataEvaluaciones([]);
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);}
     };
 
     const obtener_nota_by_unidad = async (unidadId) => {
@@ -389,7 +399,9 @@ export default function ListarUnidades() {
 
     let contenido;
 
-    if (unidadSeleccionada) {
+    if (showSpinner || isLoadingRespuestas) {
+        contenido = <Spinner show={showSpinner} />;
+    } else if (unidadSeleccionada) {
     contenido = (
         <>
         <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

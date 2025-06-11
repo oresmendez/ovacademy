@@ -25,6 +25,7 @@ export default function Asignar_aula_profesor() {
     const [aulaSeleccionada, setAulaSeleccionada] = useState(null);
 
     const [visible, setVisible] = useState(false);
+    const [visibleEditar, setVisibleEditar] = useState(false);
     const [visibleEliminar, setvisibleEliminar] = useState(false);
 
     const abrirModal = (idAula) => {
@@ -212,7 +213,7 @@ export default function Asignar_aula_profesor() {
             );
             if (response.status === 200) {
                 recargar()
-                setVisible(false)
+                setVisibleEditar(false)
             } else {
                 console.error('Error al editar el aula');
             }
@@ -282,13 +283,13 @@ export default function Asignar_aula_profesor() {
                         </div>
                         
                         <div className='center'>
-							<ButtonSave type="submit" className="mt-10 mr-10" onClick={() => setVisible(true)}>Guardar</ButtonSave>
+							<ButtonSave type="button" className="mt-10 mr-10" onClick={() => setVisibleEditar(true)}>Guardar</ButtonSave>
 							<ButtonSave bgColor="#d5dbdb" hoverColor="#bfc9ca" className="mt-10" onClick={() => setseccionSeleccionada(false)}>Regresar</ButtonSave>
 						</div>
                     </form>
                     <ModalField 
-                        visible={visible} 
-                        cerrarModal={() => setVisible(false)} 
+                        visible={visibleEditar} 
+                        cerrarModal={() => setVisibleEditar(false)} 
                         onclick={() => editar_seccion()}
                         width={"700"}
                         height={"100"}

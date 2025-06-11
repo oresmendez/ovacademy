@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useParams, BannerMateria, styled, apiRest, Link, textBarHeader, Spinner } from '@/app/components/utils/rutas';
+import { useState, useEffect, useParams, BannerMateria, styled, apiRest, Link, textBarHeader, Spinner, Footer } from '@/app/components/utils/rutas';
 import { FaExclamationCircle } from 'react-icons/fa'; // Asegúrate de instalar react-icons
 
 export default function MateriasUnidades() {
@@ -90,14 +90,12 @@ export default function MateriasUnidades() {
                                 <ul className="content-list">
                                     {contenidoDisponible ? (
                                         contenidos.map((item) => (
-                                            <li className="content-item" key={item.id}>
-                                                <Link href={`/ovacademy/estudiante/unidad/${idUnidad}/${item.id}`} passHref legacyBehavior>
-                                                    <a>
-                                                        <span className="content-title">{item.nombre}</span>
-                                                        <p>{item.descripcion ? item.descripcion : "Sin descripción disponible."}</p>
-                                                    </a>
-                                                </Link>
-                                            </li>
+                                            <Link href={`/ovacademy/estudiante/unidad/${idUnidad}/${item.id}`} key={item.id}>
+                                                <li className="content-item cursor-pointer hover:bg-gray-100 transition">
+                                                    <span className="content-title">{item.nombre}</span>
+                                                    {/* <p>{item.descripcion ? item.descripcion : "Sin descripción disponible."}</p> */}
+                                                </li>
+                                            </Link>
                                         ))
                                     ) : (
                                         <div style={containerStyle}>
@@ -120,7 +118,7 @@ export default function MateriasUnidades() {
 
                                 </div>
                                 
-                                <div className='related-units-tittle mt-10'>Otras unidades que pueden interesarte</div>
+                                <div className='related-units-tittle'>Otras unidades que pueden interesarte</div>
                                 <div className='description-content-subjects-other-subjets mt-20'>
                                     <div className='related-units-list center-column'>
                                         {allUnidades
@@ -140,7 +138,7 @@ export default function MateriasUnidades() {
                             // Si el contenido no está disponible, se muestra en una sola columna
                             <div className="single-column">
                                 {/* Puedes mostrar aquí un mensaje alternativo o solo las unidades relacionadas */}
-                                <div className='related-units-tittle mt-10'>Otras unidades que pueden interesarte</div>
+                                <div className='related-units-tittle'>Otras unidades que pueden interesarte</div>
                                 <div className='description-content-subjects-other-subjets mt-20'>
                                     <div className='related-units-list center-column'>
                                         {allUnidades
@@ -165,7 +163,7 @@ export default function MateriasUnidades() {
     
 
 
-    return <Component>{contenido}</Component>;
+    return <Component>{contenido}<Footer /></Component>;
 
 }
 
@@ -212,8 +210,8 @@ const Component = styled.div`
     .description-content-subjects-list {
         flex-grow: 2;
         max-width: 1100px;
-        max-height: 35rem; /* Limita la altura máxima */
-        height: 35rem;
+        max-height: 43rem; /* Limita la altura máxima */
+        height: 50rem;
         overflow-y: auto; /* Agrega un scroll vertical si el contenido excede */
     }
 
@@ -275,8 +273,8 @@ const Component = styled.div`
     .description-content-subjects-other-subjets {
         background-color: inherit;
         max-width: 31rem;
-        max-height: 28rem; /* Limita la altura máxima */
-        height: 28rem;
+        max-height: 43rem; /* Limita la altura máxima */
+        height: 50rem;
         overflow-y: auto; /* Corregir desbordamiento */
         padding: 20px; /* Agregar espacio interno */
         font-family: var(--font-lexend);
@@ -292,10 +290,12 @@ const Component = styled.div`
     }
 
     .related-units-tittle {
+        margin-top: 2rem;
         font-size: 1.2rem;
         font-weight: bold;
         color: #333;
         text-align: center;
+        padding: 0px 2rem;
     }
 
     .related-units-list {

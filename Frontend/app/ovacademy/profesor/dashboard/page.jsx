@@ -1,9 +1,11 @@
-'use client'; import { useState, useEffect, styled, Link, BannerMateria, textBarHeader, Footer, Spinner } from '@/app/components/utils/rutas';
+'use client'; import { useState, useEffect, styled, useRouter, BannerMateria, textBarHeader, Footer, Spinner } from '@/app/components/utils/rutas';
 
 export default function DashboardPage() {
 
     const [isClient, setIsClient] = useState(false);
     const { setHeaderText } = textBarHeader();
+
+    const router = useRouter();
 
     useEffect(() => {
         setHeaderText((<> Inicio</>));
@@ -12,6 +14,11 @@ export default function DashboardPage() {
         }, 500);
         return () => clearTimeout(timeout);
     }, []);
+
+    const handleClick = (ruta) => {
+        setIsClient(false); 
+        router.push(ruta);
+    };
 
     if (!isClient) {
         return <Spinner show={true} />;
@@ -27,20 +34,19 @@ export default function DashboardPage() {
                             {secciones.map(({ nombre, ruta }) => (
                                 <div key={nombre} className='container-element m-10 center-column'>
                                     <span className='container-element-tittle mt-10'>{nombre}</span>
-                                    <Link href={ruta} passHref className="button">
+                                    <button
+                                        onClick={() => handleClick(ruta)}
+                                        className="button"
+                                    >
                                         Entrar
-                                    </Link>
+                                    </button>
                                 </div>
                             ))}
                         </div>                   
                     </div>
                 </div>
-                
-
             </div>
             <Footer />
-
-
         </Componente>
     );
 }
