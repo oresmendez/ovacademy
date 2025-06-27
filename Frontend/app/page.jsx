@@ -66,7 +66,7 @@ export default function Home() {
     function Header() {
         return (
             <HeaderStyled className='layout-header'>
-                <div className='container-header pl-20 pr-20'>
+                <div className='container-header'>
                     <div className='header-logo center-right pl-20'>
                         <LogoName size_logo={40} size_name={1.5} />
                     </div>
@@ -89,10 +89,17 @@ export default function Home() {
     }
 
     const HeaderStyled = styled.div`
+
         .container-header {
             height: var(--size--header);
             display: flex;
             justify-content: space-between;
+        }
+
+        @media (min-width: 481px) {
+            .container-header {
+                padding: 0rem 2rem; 
+            }
         }
 
         .header-logo {

@@ -1,4 +1,5 @@
-"use client"; import { styled, Link, Image} from '@/app/components/utils/rutas';
+"use client";
+import { styled, Link, Image } from '@/app/components/utils/rutas';
 
 export default function LogoName({ size_logo, size_name }) {
     return (
@@ -29,9 +30,13 @@ export default function LogoName({ size_logo, size_name }) {
 }
 
 const Componente = styled.div`
+
     .container-logo {
-        align-items: flex-end;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
         cursor: pointer;
+        display: flex;
     }
 
     .logo {
@@ -50,8 +55,38 @@ const Componente = styled.div`
         }
     }
 
+    @media (max-width: 320px) {
+
+        .logo{
+            width: 20px !important;
+        }
+
+    }
+
+    @media (max-width: 480px) {
+        .logo-name {
+            width: 243px;
+            font-size: 1rem !important;
+            margin-left: 0.5rem;
+        }
+
+        .container-logo {
+            justify-content: center;
+        }
+
+        .logo{
+            width: 35px !important;
+        }
+    }
+
+    @media (min-width: 481px) {
+        .logo-name {
+             width: 400px;
+        }
+    }
+
     .logo-name {
-        margin-left: 1rem;
+       
         color: #374f71;
         font-family: var(--font-lexend);
         font-weight: 400;
@@ -66,4 +101,9 @@ const Componente = styled.div`
         font-weight: 200;
         text-shadow: 1px 0.5px 1px rgba(2, 107, 149, 0.4);
     }
+
+    
+
+    
 `;
+

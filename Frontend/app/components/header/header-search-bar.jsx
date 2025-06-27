@@ -90,7 +90,7 @@ const Componente = styled.div`
         /* 📱 Móviles grandes y pequeñas tablets (481px - 768px) */
     @media (min-width: 481px) and (max-width: 768px) {
         .container-search-bar {
-            background-color: red;
+            background-color: darkred;
             height: 2.15rem;
         }
         .search-bar-text-details {
@@ -105,7 +105,9 @@ const Componente = styled.div`
         }
         .search-bar-text-details {
             font-size: 1rem;
+            
         }
+        
     }
 
         /* 📱 Móviles pequeños (hasta 320px) */

@@ -78,7 +78,7 @@ export default function Profile({ email = '' }) {
 						<h1>{(initialValues.name || initialValues.surname) ? `${initialValues.name} ${initialValues.surname}` : 'Nombre y Apellido'}</h1>
 						<p>{userEmail || 'Correo electrónico no disponible'}</p>
 						{activeTab === "personal" && !isEditing && (
-							<button className="edit-button mr-10 mt-10" onClick={() => setIsEditing(true)}>Editar</button>
+							<button className="edit-button mt-10" onClick={() => setIsEditing(true)}>Editar</button>
 						)}
 						{isEditing && (
 							<>
@@ -151,7 +151,7 @@ export default function Profile({ email = '' }) {
 						</div>
 						{isEditing && (
 							<div className="button-row">
-								<ButtonSave className="mt-10 mr-10" animation={false} onClick={() => setVisible(true)}>Guardar</ButtonSave>
+								<ButtonSave className="mt-10" animation={false} onClick={() => setVisible(true)}>Guardar</ButtonSave>
 								<ButtonSave bgColor="#d5dbdb" hoverColor="#bfc9ca" className="mt-10" onClick={() => setIsEditing(false)}>Regresar</ButtonSave>
 							</div>
 						)}
@@ -335,6 +335,7 @@ const Component = styled.div`
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 		margin-bottom: 32px;
 	}
+	
 
 	.profile-image {
 		width: 120px;
@@ -342,6 +343,13 @@ const Component = styled.div`
 		border-radius: 50%;
 		overflow: hidden;
 		border: 3px solid var(--primary-color);
+		display:none;
+	}
+
+	@media (min-width: 481px) {
+		.profile-image {
+			display:block;
+		}
 	}
 
 	.profile-image img {
@@ -387,6 +395,7 @@ const Component = styled.div`
 		display: flex;
 		gap: 16px;
 		margin-bottom: 24px;
+		font-size: 1rem;
 	}
 
 	.tab-button {

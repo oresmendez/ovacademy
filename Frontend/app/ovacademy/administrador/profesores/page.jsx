@@ -66,18 +66,9 @@ export default function Administrador_Materia() {
 }
 
 const Componente = styled.div`
-  
+
 	.layout-body {
 		max-width: 115rem !important;
-	}
-
-	.tabs-container {
-		display: flex;
-		flex-direction: row;
-		gap: 2rem;
-		font-family: var(--font-lexend);
-		font-weight: 400;
-		font-size: 1rem;
 	}
 
 	.tab-menu {

@@ -82,14 +82,7 @@ const Componente = styled.div`
     .layout-body {
       max-width: 115rem !important;
     }
-
-    .tabs-container {
-      display: flex;
-      flex-direction: row;
-      gap: 2rem;
-      font-family: var(--font-lexend);
-    }
-
+    
     .tab-menu {
       display: flex;
       flex-direction: column;

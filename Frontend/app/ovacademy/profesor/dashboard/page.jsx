@@ -120,13 +120,6 @@ const Componente = styled.div`
         transform: scale(1.1);
     }
 
-    .banner-dashboard-description {
-        font-size: 1.2rem;
-        font-weight: 300;
-        margin-top: 0.5rem;
-        line-height: 1.5;
-    }
-
     .container-element{
         background-color:#c7ddec;
         border-radius: 0.3rem;
@@ -148,6 +141,49 @@ const Componente = styled.div`
         border-radius: 0.3rem;
         padding: 0.2rem 1rem;
         margin: 2rem 0;
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+
+        .container-element{
+            margin: 0.5rem;
+        }
+
+        .container-element-tittle{
+            font-size: 1rem; 
+        }
+
+        .button{
+            font-size: 1rem;
+            padding: 0.2rem 0.5rem;
+        }
+
+    }
+
+    @media (min-width: 321px) and (max-width: 480px) {
+
+        .center {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container-element {
+            width: 90%; /* o 100% si querés que ocupen todo el ancho disponible */
+            margin: 0.5rem 0;
+        }
+    }
+
+    @media (min-width: 0px) and (max-width: 320px) {
+
+        .center {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container-element {
+            width: 90%; /* o 100% si querés que ocupen todo el ancho disponible */
+            margin: 0.5rem 0;
+        }
     }
 
     

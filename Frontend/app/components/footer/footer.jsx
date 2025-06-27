@@ -34,4 +34,21 @@ const Footer = styled.div`
         font-size: 0.85rem;
         color: #777;
     }
+
+    @media (max-width: 480px) {
+        font-size: 0.8rem;
+         .footer-link  {
+            font-size: 0.7rem;
+        }
+        
+    }
+
+    @media (max-width: 320px) {
+
+        font-size: 0.6rem;
+         .footer-link  {
+            font-size: 0.5rem;
+        }
+        
+    }
 `;

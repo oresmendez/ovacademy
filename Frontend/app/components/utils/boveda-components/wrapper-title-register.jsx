@@ -51,6 +51,7 @@ const Component = styled.div`
         margin-top: 0.5rem;
         color: #444;
         font-size: 1rem;
+        text-align: justify;
     }
 
 `;

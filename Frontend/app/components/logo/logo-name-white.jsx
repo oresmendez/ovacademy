@@ -31,7 +31,7 @@ const Componente = styled.div`
     }
 
     .logo-name {
-        margin-left: 1rem;
+        margin-left: 0.5rem;
         color: white;
         font-family: var(--font-lexend);
         font-weight: 600;

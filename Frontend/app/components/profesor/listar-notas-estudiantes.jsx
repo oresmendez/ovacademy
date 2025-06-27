@@ -407,10 +407,10 @@ export default function ListarUnidades() {
         <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div className="botones-exportar">
                 <ButtonAccion onClick={recargar} loading={true}></ButtonAccion>
-                <div>
+                <div className='select-evaluaciones'>
                     <Select
                         options={aulas}
-                        placeholder="Selecciona un sección..."
+                        placeholder="Selecciona una sección..."
                         value={aulaSeleccionada}
                         onChange={setAulaSeleccionada}
                         styles={customStyles}
@@ -752,6 +752,10 @@ const Componente = styled.div`
         .form-wrapper {
         padding: 20px;
         }
+    }
+
+    .select-evaluaciones {
+        width: 300px;
     }
 
 

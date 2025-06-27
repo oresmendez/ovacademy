@@ -140,7 +140,7 @@ TextAreaField.propTypes = {
 
 const Component = styled.div`
   .form-wrapper {
-    margin: 50px 0;
+    margin: 10px 0;
     background: #fff;
     border-radius: 12px;
   }

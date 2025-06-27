@@ -43,23 +43,46 @@ export default function Banner_Materia() {
 
 const Component = styled.div`
 
-    .banner-dashboard {
-        width: 100%;
-        height: 10rem;
-        background: linear-gradient(to right, #33b0e4, #0d213a);
-        border-radius: 0.5rem;
-        flex-direction: column;
-        color: white;
-        font-family: var(--font-lexend);
-    }
+  .banner-dashboard {
+    width: 100%;
+    padding: 2rem 0.5rem; 
+    height: auto;
+    background: linear-gradient(to right, #33b0e4, #0d213a);
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-family: var(--font-lexend);
+    text-align: center;
+  }
 
+  .banner-dashboard-text {
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+
+  .banner-dashboard-description {
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 481px) {
     .banner-dashboard-text {
-        font-weight: 600;
-        font-size: 2rem; 
+      font-size: 1.2rem;
     }
-
-    .banner-dashboard-text-tittle{
-        justify-content: center
+    .banner-dashboard-description {
+      padding: 0.5rem 0;
+      font-size: 1rem;
     }
-
+  }
+  @media (min-width: 769px) {
+    .banner-dashboard-text {
+      font-size: 1.8rem;
+    }
+    .banner-dashboard-description {
+      font-size: 1.4rem;
+    }
+  }
+  
+  
 `;

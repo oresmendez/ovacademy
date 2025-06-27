@@ -8,7 +8,7 @@ export default function IconGroup() {
         // { id: 1, icon: <IoSearch size={20} />, label: "Buscar", href: "/" },
         // { id: 2, icon: <IoTrophy size={20} />, label: "Trofeo", href: "/" },
         // { id: 3, icon: <IoNotifications size={20} />, label: "Notificaciones", href: "/" },
-        { id: 4, icon: <PiSignOutBold size={20} />, label: "Salir", href: "/" },
+        { id: 4, icon: <PiSignOutBold />, label: "Salir", href: "/" },
     ];
 
     return (
@@ -16,9 +16,10 @@ export default function IconGroup() {
             <div className="contenedor">
                 {icons.map((item) => (
                     <Link key={item.id} href={item.href} title={item.label} className="icono">
-                        {item.icon}
+                        <span className="icon-wrapper">{item.icon}</span>
                     </Link>
                 ))}
+
             </div>
         </Componente>
     );
@@ -32,19 +33,37 @@ const Componente = styled.div`
         margin: 0 1rem;
         gap: 1.5rem;
     }
-        
+
     .icono {
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        font-size: var(--ui-size-icon-sm);
-        color: var(--ui-color-icon-neutral);
-        transition: color 0.3s ease;
-        text-decoration: none; /* Elimina subrayado del link */
+        text-decoration: none;
 
-        &:hover {
-            color: var(--ui-color-icon-hover); 
+        .icon-wrapper {
+            font-size: 20px;
+            color: var(--ui-color-icon-neutral);
+            transition: color 0.3s ease;
+        }
+
+        &:hover .icon-wrapper {
+            color: var(--ui-color-icon-hover);
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .icono .icon-wrapper {
+            font-size: 18px;
+        }
+
+    }
+
+    @media (max-width: 320px) {
+        .icono .icon-wrapper {
+            font-size: 14px;
         }
     }
 `;
+

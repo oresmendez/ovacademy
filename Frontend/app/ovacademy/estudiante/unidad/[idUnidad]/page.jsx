@@ -84,7 +84,7 @@ export default function MateriasUnidades() {
             <div className='layout-body'>
                 <div className='container-body'>
                     <BannerMateria />
-                    <div className='description-content-subjects mt-30'>
+                    <div className='description-content-subjects'>
                         <div className="description-content-subjects-list">
                             <div className="course-content">
                                 <ul className="content-list">
@@ -205,6 +205,12 @@ const Component = styled.div`
         display: flex;
         flex-direction: row;
         height: 350px;
+    }
+
+    @media (min-width: 481px) {
+        .description-content-subjects {
+             margin-top: 3.5rem;
+        }
     }
 
     .description-content-subjects-list {
@@ -370,6 +376,52 @@ const Component = styled.div`
     .btn-evaluaciones:hover {
         background-color: #0056b3;
     }
+
+    @media (max-width: 480px) {
+    .description-content-subjects {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .description-content-subjects-list,
+    .description-content-subjects-other-subjets {
+        max-width: 100%;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        padding: 1rem 0;
+    }
+
+    .related-units-list {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .related-unit-card {
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .btn-evaluaciones {
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    .related-units-tittle {
+        font-size: 1rem;
+        padding: 1rem 0.5rem;
+    }
+
+    .content-title {
+        font-size: 1.1rem;
+    }
+
+    .content-list li {
+        padding: 12px;
+    }
+}
+
 
 `;
 

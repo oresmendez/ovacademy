@@ -44,7 +44,29 @@ export default function ButtonSave({
 }
 
 const StyledButton = styled.button`
-  width: 15%;
+
+  @media (min-width: 0px) and (max-width: 320px) {
+        width: 64%;
+        padding: 8px;
+  }
+
+  @media (min-width: 321px) and (max-width: 480px) {
+        width: 52%;
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+
+        width: 30%;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+        width: 25%;
+  }
+
+
+
+
+  width: 17%;
   padding: 12px;
   background: ${({ $bgColor }) => $bgColor || '#0465ac'};
   color: white;

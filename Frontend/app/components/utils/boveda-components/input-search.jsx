@@ -10,7 +10,7 @@ export default function InputSearch({ filterText, setFilterText }) {
                     placeholder="Buscar..."
                     value={filterText}
                     onChange={(e) => setFilterText(e.target.value)}
-                    className='label-search p-05'
+                    className='label-search p-05 ml-20'
                 />
             </div>
         </Component>

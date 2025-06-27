@@ -47,17 +47,18 @@ export default function ButtonAccion({
 const Component = styled.div`
 
     .btn-accion {
-        padding: ${({ $padding }) => $padding};
+        padding: 0.5rem 1rem; /* Espacio interno, suficiente sin exagerar */
         color: white;
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        font-size: 1.1rem;
-        background-color: ${({ $color }) => $color};
-        display: flex;
+        font-size: 1rem;
+        background-color: #0465ac;
+        display: inline-flex;               /* clave: inline-flex para que se ajuste al contenido */
         align-items: center;
         justify-content: center;
-        min-height: 45px;
+        gap: 0.5rem;                        /* espacio entre ícono y texto */
+        white-space: nowrap;               /* evita que se corte el texto en varias líneas */
     }
 
     .btn-reload {

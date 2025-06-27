@@ -383,7 +383,7 @@ const Componente = styled.div`
     border-radius: 8px;
     font-size: 1rem;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    margin-right: 20px;
+    margin: 0px 20px;
     white-space: nowrap;
   }
 
@@ -446,22 +446,6 @@ const Componente = styled.div`
         background-color: #0465ac;
         color: white;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     .form-row {
         display: flex;

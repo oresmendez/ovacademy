@@ -98,15 +98,6 @@ const Componente = styled.div`
 		margin-bottom: 2rem;
 	}
 
-	.tabs-container {
-		display: flex;
-		flex-direction: row;
-		gap: 2rem;
-		font-family: var(--font-lexend);
-		font-weight: 400;
-		font-size: 1rem;
-	}
-
 	.tab-menu {
 		display: flex;
 		flex-direction: column;

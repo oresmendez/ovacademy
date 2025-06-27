@@ -31,5 +31,27 @@ const Componente = styled.div`
         transition: color 0.3s ease;
     }
 
+    @media (max-width: 480px) {
+
+        .icon-hamburger {  
+            padding: 0.2rem 1rem 0 1rem;
+            
+        }
+        
+    }
+
+    @media (max-width: 320px) {
+
+        .icon-hamburger {  
+            padding: 0rem 1rem 0 1rem;
+            
+        }
+
+        .icono{
+            font-size: 1px;
+        }
+        
+    }
+
 `;
 

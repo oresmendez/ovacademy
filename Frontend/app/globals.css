@@ -337,13 +337,38 @@ text-decoration: none; /* Sin subrayado al hacer hover */
   -ms-overflow-style: none;
 }
 
+    @media (max-width: 480px) {
+
+      .layout-body {
+        min-height: 78vh;
+        padding: 0.5rem; /* Reducir padding */
+      }
+        
+    }
+
+    @media (max-width: 320px) {
+
+      .layout-body {
+        min-height: 74vh;
+        padding: 0.5rem; /* Reducir padding */
+      }
+        
+    }
+
+
 
 .layout-body::-webkit-scrollbar {
   display: none; /* Ocultar la barra en WebKit */
 }
 
 .container-body {
-  padding: 1.5rem;
+  padding: 0.8rem;
+}
+
+@media (min-width: 481px) {
+	.container-body {
+		padding: 1.5rem;
+	}
 }
 
 .ui-shadow-md {
@@ -401,4 +426,21 @@ text-decoration: none; /* Sin subrayado al hacer hover */
   justify-content: space-between;
   gap: 1rem; /* espacio entre botones */
   align-items: center;
+}
+
+
+.tabs-container {
+  display: flex;
+  flex-direction: column; 
+  gap: 2rem;
+  font-family: var(--font-lexend);
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+@media (min-width: 769px) {
+  .tabs-container {
+    flex-direction: row;
+    gap: 2rem;
+  }
 }

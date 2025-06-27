@@ -36,4 +36,10 @@ const Componente = styled.div`
         background-color: var(--color-blanco);
         padding: 0 2.3rem;
     }
+
+    @media (max-width: 480px) {
+        .container-header {
+             padding: 0;
+        }
+    }
 `;

@@ -72,7 +72,7 @@ export default function () {
             <div className='layout-body'>
                 <div className='container-body'>
                     <BannerMateria />
-                    <ButtonAccion onClick={() => borrar()}>Borrar reload</ButtonAccion>
+                    {/* <ButtonAccion onClick={() => borrar()}>Borrar reload</ButtonAccion> */}
                     <div className='description-content-subjects-list mt-30'>
                         <div className='course-content'>
                             <div className='tab'>

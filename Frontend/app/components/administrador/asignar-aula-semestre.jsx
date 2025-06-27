@@ -260,7 +260,7 @@ export default function Asignar_aula_profesor() {
                         }}
                         className="space-y-4"
                     >
-                        <div className="form-row">
+                        <div className="form-column">
                             <div className="form-item">
                                 <InputField
                                     label="Nombre de la Sección"
@@ -332,7 +332,7 @@ export default function Asignar_aula_profesor() {
                         </div>
                     ) : (
                         <>
-                            <div className="grid mt-20">
+                            <div className="grid">
                                 {aulas.map((aula) => (
                                     <div key={aula.id} className="card mt-8">
                                         <h3>{aula.nombre}</h3>
@@ -486,16 +486,22 @@ const Component = styled.div`
   }
 
   .grid {
-    margin-top: 120px;
+    margin-top: 3rem;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
 
-  @media (max-width: 1024px) {
-    .grid {
-      grid-template-columns: repeat(2, 1fr);
+  @media (min-width: 1024px) {
+        .grid {
+            margin-top: 7rem;
+        }
     }
+
+  @media (max-width: 1024px) {
+        .grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
   }
 
   @media (max-width: 600px) {

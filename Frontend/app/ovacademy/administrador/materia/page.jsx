@@ -27,7 +27,7 @@ export default function Administrador_Materia() {
 		<Componente>
 			<div className="layout-body">
 				<div className="container-body">
-				<div className="tabs-container mt-10 p-10">
+				<div className="tabs-container p-10">
 					<div className="tab-menu">
 						<button className={activeTab === 0 ? "active" : ""} onClick={() => TabClick(0)}> Materia </button>
 					</div>
@@ -52,13 +52,6 @@ const Componente = styled.div`
   
 	.layout-body {
 		max-width: 115rem !important;
-	}
-
-	.tabs-container {
-		display: flex;
-		flex-direction: row;
-		gap: 2rem;
-		font-family: var(--font-lexend);
 	}
 
 	.tab-menu {
