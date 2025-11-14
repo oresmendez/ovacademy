@@ -3,9 +3,11 @@ import { DateTime } from 'luxon';
 
 export default class ContenidoService {  
 
+    private readonly contenidoModel = Contenido;
+
     async crear_contenido(id_unidad: number, nombre: string, descripcion: string): Promise<Contenido | null> {
         try {
-            return await Contenido.create({
+            return await this.contenidoModel.create({
                 id_unidad,                
                 nombre,
                 descripcion
@@ -21,13 +23,13 @@ export default class ContenidoService {
 
             let resultado;
             if (status === 'true') {
-                resultado = await Contenido.query()
+                resultado = await this.contenidoModel.query()
                     .where('id_unidad', id)
                     .where('is_deleted', false)
                     .where('status', true)
                     .orderBy('id', 'asc');
             } else {
-                resultado = await Contenido.query()
+                resultado = await this.contenidoModel.query()
                     .where('id_unidad', id)
                     .where('is_deleted', false)
                     .orderBy('id', 'asc');
@@ -47,7 +49,7 @@ export default class ContenidoService {
     async obtenerDetallesDeUnContenido(id: number): Promise<Contenido | null> {
         
         try {
-            const response = await Contenido
+            const response = await this.contenidoModel
                 .query()
                 .where('id', id)
                 .first();

@@ -1,20 +1,23 @@
 import { DateTime } from 'luxon';
 import type { HttpContext } from '@adonisjs/core/http'
 import SemestreService from '../../controllers/semestre/service.js'
-
-import SemestreProfesorAulaService from '../../controllers/semestre_profesor_aula/service.js'
-const SemestreProfesorAulaService_ = new SemestreProfesorAulaService();
-
 import UsersController from '../users/main.js'
-const UsersController_ = new UsersController();
-
-const SemestreService_ = new SemestreService();
-
+import SemestreProfesorAulaService from '../../controllers/semestre_profesor_aula/service.js'
 
 export default class SemestreController {
 
+    private readonly SemestreService_: SemestreService;
+    private readonly UsersController_: UsersController;
+    private readonly SemestreProfesorAulaService_: SemestreProfesorAulaService;
+
+    constructor() {
+        this.SemestreService_ = new SemestreService();
+        this.UsersController_ = new UsersController();
+        this.SemestreProfesorAulaService_ = new SemestreProfesorAulaService();
+    }
+
     obtenerSemestreActivo = async () => {
-        return await SemestreService_.get_semestre_active()
+        return await this.SemestreService_.get_semestre_active()
     }
 
     public async create_semestre({ request, response }: HttpContext) {
@@ -48,7 +51,7 @@ export default class SemestreController {
                     success: false,
                 });
             }
-            const semestre = await SemestreService_.create_semestre(nombre, fecha_inicio)
+            const semestre = await this.SemestreService_.create_semestre(nombre, fecha_inicio)
 
             if (!semestre) {
                 return response.status(400).send({ 
@@ -73,7 +76,7 @@ export default class SemestreController {
 
         try {
             
-            const semestres = await SemestreService_.obtenerSemestres();
+            const semestres = await this.SemestreService_.obtenerSemestres();
             if (!semestres) {
                 return response.status(400).send({ 
                     message: 'Error al obtener los semestres', 
@@ -122,13 +125,11 @@ export default class SemestreController {
         }
     }
 
-    
-
     public async get_id({ params, response }: HttpContext) {
     
         try {
 
-            const semestre = await SemestreService_.get_id(params.id);
+            const semestre = await this.SemestreService_.get_id(params.id);
             if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
             return response.status(200).json({
@@ -150,7 +151,7 @@ export default class SemestreController {
 
             const { id, nombre, date_start } = request.only(['id', 'nombre','date_start']);
 
-            const semestre = await SemestreService_.update(id, nombre, date_start);
+            const semestre = await this.SemestreService_.update(id, nombre, date_start);
             if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
             return response.status(200).json({
@@ -174,7 +175,7 @@ export default class SemestreController {
             const semestre = await this.obtenerSemestreActivo();
             if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
         
-            const aulas = await SemestreProfesorAulaService_.obtener_todas_aulas_con_profesor(semestre.id) || [];
+            const aulas = await this.SemestreProfesorAulaService_.obtener_todas_aulas_con_profesor(semestre.id) || [];
         
             const todasAulasDeshabilitadas = aulas.every((aula) => aula.habilitado === false);
         
@@ -189,7 +190,7 @@ export default class SemestreController {
                 
                     const profesoresInfo = await Promise.all(
                         profesoresConAulasHabilitadas.map((id) =>
-                        UsersController_.consultar_user_by_ID(id)
+                        this.UsersController_.consultar_user_by_ID(id)
                         )
                     );
                 
@@ -204,8 +205,8 @@ export default class SemestreController {
                     });
             }
             
-            await SemestreService_.update_element(semestre.id, { date_end: new Date() });
-            await SemestreService_.update_element(semestre.id, { active: false });
+            await this.SemestreService_.update_element(semestre.id, { date_end: new Date() });
+            await this.SemestreService_.update_element(semestre.id, { active: false });
 
             return response.status(200).json({
                 message: 'Semestre culminado correctamente',

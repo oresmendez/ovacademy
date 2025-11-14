@@ -1,9 +1,13 @@
 "use client"; 
 import { styled, apiRest, useState, useEffect, useRouter, toast, PropTypes, ButtonSave, Spinner, ModalField } from '@/app/components/utils/rutas';
+import * as Yup from "yup";
+import { Formik, Field, Form, useFormikContext } from "formik";
 
 export default function EditarMateria_() {
 
 	const router = useRouter();
+
+	const [formValues, setFormValues] = useState(null);
 
 	const [showSpinner, setShowSpinner] = useState(false);
 	const [isLoadingRespuestas, setIsLoadingRespuestas] = useState(true);
@@ -17,6 +21,13 @@ export default function EditarMateria_() {
 	useEffect(() => {
 		obtener_materia();
 	}, []);
+
+	const validationSchema = Yup.object({
+		nombre: Yup.string().required("El nombre de la materia es obligatorio"),
+		objetivo: Yup.string().required("El slogan de la materia es obligatorio"),
+		descripcion: Yup.string().required("La descripcion de la materia es obligatorio")
+
+	});
 
 
 	const obtener_materia = async () => {
@@ -32,14 +43,17 @@ export default function EditarMateria_() {
 		}finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
 	};
 
-	const editar_Materia = async () => {
-		setVisible(false)
-		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
-			const url = `${process.env.NEXT_PUBLIC_API_URL}/materia`
-			const response = await apiRest.fetchPut(
-				url,
-				{ nombre, objetivo, descripcion }
-			);
+	const editar_Materia = async ({ nombre, objetivo, descripcion }) => {
+		setVisible(false);
+		let timeout;
+		try {
+			timeout = setTimeout(() => setShowSpinner(true), 300);
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/materia`;
+			const response = await apiRest.fetchPut(url, {
+				nombre,
+				objetivo,
+				descripcion,
+			});
 
 			if (response.status === 200) {
 				toast.success(response.data.message);
@@ -49,8 +63,12 @@ export default function EditarMateria_() {
 			}
 		} catch (error) {
 			console.error(error);
-		}finally { clearTimeout(timeout); setShowSpinner(false);}
+		} finally {
+			clearTimeout(timeout);
+			setShowSpinner(false);
+		}
 	};
+
 
 	let contenido;
 
@@ -60,30 +78,97 @@ export default function EditarMateria_() {
         contenido = (
             <Component>
 				<div className="form-wrapper">
-					<form>
-						<InputField label="Nombre de la materia" value={nombre} onChange={setNombre} placeholder="Nombre de la materia" required />
-						<InputField label="Slogan / Objetivo" value={objetivo} onChange={setObjetivo} placeholder="Slogan / Objetivo" required />
-						<TextAreaField label="Descripción" value={descripcion} onChange={setDescripcion} placeholder="Descripción" required />
-						
-						<div className='center'>
-							<ButtonSave className="mt-10 mr-10" animation={false} onClick={() => setVisible(true)}>Guardar</ButtonSave>
-							<ButtonSave bgColor="#d5dbdb" hoverColor="#bfc9ca" className="mt-10" onClick={() => router.push('/ovacademy/administrador/dashboard')}>Regresar</ButtonSave>
+					<Formik
+					enableReinitialize
+					initialValues={{ nombre, objetivo, descripcion }}
+					validationSchema={validationSchema}
+					onSubmit={(values) => {
+						setVisible(true);
+						setFormValues(values); // Guarda los valores para el modal
+					}}
+					>
+					{({ errors, touched, handleChange, handleBlur, values }) => (
+						<Form>
+						<div className="form-group">
+							<label className="form-label">
+								Nombre de la materia
+							</label>
+							<input
+								type="text"
+								name="nombre"
+								className="form-input"
+								value={values.nombre}
+								onChange={handleChange}
+								onBlur={handleBlur}
+							/>
+							{touched.nombre && errors.nombre && (
+							<div className="form-error">{errors.nombre}</div>
+							)}
 						</div>
-					</form>
+
+						<div className="form-group">
+							<label className="form-label">
+								Slogan / Objetivo
+							</label>
+							<input
+								type="text"
+								name="objetivo"
+								className="form-input"
+								value={values.objetivo}
+								onChange={handleChange}
+								onBlur={handleBlur}
+							/>
+							{touched.objetivo && errors.objetivo && (
+								<div className="form-error">{errors.objetivo}</div>
+							)}
+						</div>
+
+						<div className="form-group">
+							<label className="form-label">
+								Descripción
+							</label>
+							<textarea
+							name="descripcion"
+							className="form-textarea"
+							value={values.descripcion}
+							onChange={handleChange}
+							onBlur={handleBlur}
+							/>
+							{touched.descripcion && errors.descripcion && (
+							<div className="form-error">{errors.descripcion}</div>
+							)}
+						</div>
+
+						<div className="center">
+							<ButtonSave type="submit" className="mt-10 mr-10">
+							Guardar
+							</ButtonSave>
+							<ButtonSave
+							bgColor="#d5dbdb"
+							hoverColor="#bfc9ca"
+							className="mt-10"
+							onClick={() => router.push("/ovacademy/administrador/dashboard")}
+							>
+							Regresar
+							</ButtonSave>
+						</div>
+						</Form>
+					)}
+					</Formik>					
 				</div>
-				<ModalField 
-					visible={visible} 
-					cerrarModal={() => setVisible(false)} 
-					onclick={() => editar_Materia()}
-					width={"700"}
-					height={"100"}
-					title={"¿Estas seguro?"}
-					mensaje={
-						<>
-							¿Que deseas editar el detalle de la materia? <br /><br />
-						</>
+					<ModalField 
+						visible={visible} 
+						cerrarModal={() => setVisible(false)} 
+						onclick={() => editar_Materia(formValues)}
+						width={"700"}
+						height={"100"}
+						title={"¿Estas seguro?"}
+						mensaje={
+							<>
+							¿Deseas editar el detalle de la materia? <br /><br />
+							</>
 					}
-				/>
+					/>
 			</Component>
         );
     }
@@ -92,19 +177,25 @@ export default function EditarMateria_() {
 	return contenido;
 }
 
-const InputField = ({ label, type = "text", value, onChange, placeholder, required = false }) => (
-	<div className="form-group">
-		<label className="form-label">{label}</label>
-		<input
-			type={type}
-			className="form-input"
-			value={value}
-			onChange={(e) => onChange(e.target.value)}
-			placeholder={placeholder}
-			required={required}
-		/>
-	</div>
-);
+const InputField = ({ label, name, type = "text", value, onChange, onBlur, placeholder, required = false, form: { errors, touched } }) => {
+    const hasError = touched[name] && errors[name];
+
+    return (
+		<div className="form-group">
+			<label className="form-label">{label}</label>
+			<input
+				type={type}
+				className="form-input"
+				value={value}
+				onChange={(e) => onChange(e.target.value)}
+				placeholder={placeholder}
+				required={required}
+			/>
+			{hasError && <div className="form-error">{errors[name]}</div>}
+		</div>
+    );
+};
+
 
 const TextAreaField = ({ label, value, onChange, placeholder, required = false }) => (
 	<div className="form-group">
@@ -139,66 +230,63 @@ TextAreaField.propTypes = {
 };
 
 const Component = styled.div`
-  .form-wrapper {
-    margin: 10px 0;
-    background: #fff;
-    border-radius: 12px;
-  }
+	.form-wrapper {
+		margin: 10px 0;
+		background: #fff;
+		border-radius: 12px;
+	}
 
-  .form-group {
-    margin-bottom: 16px;
-  }
+	.form-group {
+		margin-bottom: 1rem;
+	}
 
-  .form-label {
-    display: block;
-    margin-bottom: 6px;
-    color: #555;
-    font-weight: 600;
-  }
+	.form-label {
+		display: block;
+		margin-bottom: 6px;
+		color: #555;
+		font-weight: 600;
+	}
 
-  .form-input,
-  .form-textarea {
-    width: 100%;
-    padding: 10px 14px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
+	.form-input,
+	.form-textarea {
+		width: 100%;
+		padding: 10px 14px;
+		border: 2px solid #e0e0e0;
+		border-radius: 8px;
+		font-size: 1rem;
+		transition: border-color 0.3s, box-shadow 0.3s;
+	}
 
-  .form-textarea {
-    resize: none; /* Evita que se pueda redimensionar */
-    overflow-y: auto; /* Barra de desplazamiento si se pasa el contenido */
-    height: 150px; /* Tamaño fijo */
-  }
+	.form-textarea {
+		resize: none; 
+		overflow-y: auto;
+		height: 150px;
+	}
 
-  .form-input:focus,
-  .form-textarea:focus {
-    border-color: #0465ac;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
-    outline: none;
-  }
+	.form-input:focus,
+	.form-textarea:focus {
+		border-color: #0465ac;
+		box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+		outline: none;
+	}
 
-  .btn-primary {
-    width: 20%;
-    padding: 12px;
-    background: #0465ac;
-    color: white;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
+	.form-label.error {
+		color: red;
+		text-decoration: underline;
+		font-weight: bold;
+	}
 
-  .btn-primary:hover {
-    background: #0056b3;
-  }
+	.form-error {
+		color: red;
+		font-size: 0.9rem;
+		margin-top: 5px;
+	}
 
-  @media (max-width: 500px) {
-    .form-wrapper {
-      padding: 20px;
-    }
-  }
+
+	@media (max-width: 500px) {
+		.form-wrapper {
+			padding: 20px;
+		}
+	}
 `;
 

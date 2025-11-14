@@ -1,21 +1,32 @@
 import type { HttpContext } from '@adonisjs/core/http'
 
 import EstudianteAulaService from '../../controllers/estudiante_aula/service.js'
-const EstudianteAulaService_ = new EstudianteAulaService();
-
 import SemestreController from '../semestre/main.js';
-const SemestreController_ = new SemestreController();
-
+import TokenController from '../token/main.js';
 
 export default class EstudianteAulaController {
 
+    private readonly EstudianteAulaService_: EstudianteAulaService;
+    private readonly SemestreController_: SemestreController;
+    private readonly TokenController_: TokenController;
+    private user_id: number | null = null;
+
+
+    constructor() {
+        this.user_id = null;
+        this.TokenController_ = new TokenController();
+        this.EstudianteAulaService_ = new EstudianteAulaService();
+        this.SemestreController_ = new SemestreController();
+ 
+    }
+
     consultar_aula_by_estudiante = async (estudiante_id: number) => {
         
-        const semestre = await SemestreController_.obtenerSemestreActivo();
+        const semestre = await this.SemestreController_.obtenerSemestreActivo();
         
         if (!semestre) {return false}
 
-        const estudiante = await EstudianteAulaService_.obtener_un_estudiante_inscrito(semestre.id, estudiante_id);
+        const estudiante = await this.EstudianteAulaService_.obtener_un_estudiante_inscrito(semestre.id, estudiante_id);
 
         if (!estudiante) {
             return false
@@ -26,10 +37,10 @@ export default class EstudianteAulaController {
 
     obtener_detalles_del_aula = async (semestre_profesor_aula_id: number) => {
         
-        const semestre = await SemestreController_.obtenerSemestreActivo();
+        const semestre = await this.SemestreController_.obtenerSemestreActivo();
         if (!semestre) {return false}
 
-        const estudiante = await EstudianteAulaService_.obtener_detalles_del_aula(semestre.id, semestre_profesor_aula_id);
+        const estudiante = await this.EstudianteAulaService_.obtener_detalles_del_aula(semestre.id, semestre_profesor_aula_id);
 
         if (!estudiante) {
             return false
@@ -46,7 +57,7 @@ export default class EstudianteAulaController {
             let errores: any[] = [];
             let exitos: any[] = [];
 
-            const semestre = await SemestreController_.obtenerSemestreActivo();
+            const semestre = await this.SemestreController_.obtenerSemestreActivo();
             
             if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
     
@@ -61,7 +72,7 @@ export default class EstudianteAulaController {
                     continue;
                 }
     
-                const resultado = await EstudianteAulaService_.registrar_estudiante_aula(
+                const resultado = await this.EstudianteAulaService_.registrar_estudiante_aula(
                     semestre_profesor_aula_id,
                     semestre.id,
                     estudiante_id
@@ -87,16 +98,14 @@ export default class EstudianteAulaController {
         }
     }
 
-    public async obtener_estudiantes_inscritos_aula_general({ request, response }: HttpContext) {
+    public async obtener_estudiantes_inscritos_aula_general({ response }: HttpContext) {
         
         try {
 
-            const semestre = await SemestreController_.obtenerSemestreActivo();
+            const semestre = await this.SemestreController_.obtenerSemestreActivo();
             
             if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
-
-            const estudiantesInscritos = await EstudianteAulaService_.obtener_estudiantes_inscritos_generales(semestre.id);
-
+            const estudiantesInscritos = await this.EstudianteAulaService_.obtener_estudiantes_inscritos_generales(semestre.id);
 
             return response.status(200).json({
                 message: 'estudiantes inscritos',
@@ -106,16 +115,46 @@ export default class EstudianteAulaController {
         } catch (error) {return response.internalServerError({ message: 'Error interno del servidor' });}
     }
 
+    public async obtener_si_esta_matriculado(ctx: HttpContext) {
+
+        const { response } = ctx;
+
+        try {
+
+            this.user_id = await this.TokenController_.get_user_id_by_token(ctx);
+            if (!this.user_id) {return response.status(401).json({message: 'No autorizado'});}
+
+            const semestre = await this.SemestreController_.obtenerSemestreActivo();
+            if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
+
+            const estudianteMatriculado = await this.EstudianteAulaService_.obtener_si_esta_matriculado(semestre.id, this.user_id);
+
+            if (!estudianteMatriculado || Object.keys(estudianteMatriculado).length === 0) {
+                return response.status(404).json({
+                    message: 'Estudiante no matriculado en el semestre activo',
+                });
+            }
+
+            return response.status(200).json({
+                message: 'Estudiante matriculado',
+                estudianteMatriculado,
+            });
+
+        } catch (error) {return response.internalServerError({ message: 'Error interno del servidor' });}
+
+
+    }
+
     public async obtener_estudiantes_inscritos_by_aula({ request, response }: HttpContext) {
         try {
 
-			const semestre = await SemestreController_.obtenerSemestreActivo()
+			const semestre = await this.SemestreController_.obtenerSemestreActivo()
 		
 			if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
 			const { aulaId } = request.only(['aulaId'])
 
-			const estudiantesInscritos = await EstudianteAulaService_.obtener_estudiantes_inscritos_by_aula(
+			const estudiantesInscritos = await this.EstudianteAulaService_.obtener_estudiantes_inscritos_by_aula(
 				semestre.id,
 				aulaId
 			)
@@ -170,11 +209,11 @@ export default class EstudianteAulaController {
     
         try {
 
-            const semestre = await SemestreController_.obtenerSemestreActivo();
+            const semestre = await this.SemestreController_.obtenerSemestreActivo();
             
             if (!semestre) {return response.status(404).json({message: 'Semestre no encontrado'});}
 
-            const estudiante = await EstudianteAulaService_.obtener_un_estudiante_inscrito(semestre.id, params.id);
+            const estudiante = await this.EstudianteAulaService_.obtener_un_estudiante_inscrito(semestre.id, params.id);
 
             if (!estudiante) {
                 return response.status(404).json({ message: 'Estudiante no encontrado' })

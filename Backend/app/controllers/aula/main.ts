@@ -1,9 +1,13 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import AulaService from '../../controllers/aula/service.js'
 
-const AulaService_ = new AulaService();
-
 export default class AulaController {
+
+    private readonly AulaService_: AulaService;
+
+    constructor() {
+        this.AulaService_ = new AulaService();
+    }
 
     public async create_aula({ request, response }: HttpContext) {
 
@@ -11,7 +15,7 @@ export default class AulaController {
 
             const { nombre, ubicacion } = request.only(['nombre', 'ubicacion'])
             
-            if (!await AulaService_.crearAula(nombre, ubicacion)) {
+            if (!await this.AulaService_.crearAula(nombre, ubicacion)) {
                 return response.badRequest({ message: 'Error en crear el aula' });
             }
 
@@ -25,7 +29,7 @@ export default class AulaController {
 
         try {
             
-            const aulas = await AulaService_.obtenerAulas();
+            const aulas = await this.AulaService_.obtenerAulas();
     
             if (!aulas) {return response.badRequest({ message: 'Error al obtener las aulas' });}
             
@@ -39,7 +43,7 @@ export default class AulaController {
 
         try {
 
-            const aula = await AulaService_.obtenerAulaByID(params.id);
+            const aula = await this.AulaService_.obtenerAulaByID(params.id);
     
             if (!aula) {
                 return response.status(404).json({ message: 'Seccion no encontrada' });
@@ -58,7 +62,7 @@ export default class AulaController {
     public async edit_aula({ request, response }: HttpContext) {
         try {
             const { id, nombre, ubicacion } = request.only(['id', 'nombre','ubicacion']);
-            const aula = await AulaService_.obtenerAulaByID(id);
+            const aula = await this.AulaService_.obtenerAulaByID(id);
             if (!aula) {
                 return response.status(404).json({
                     message: 'No existe Aula',
@@ -99,7 +103,7 @@ export default class AulaController {
                 
         try {
             
-            const aula = await AulaService_.obtenerAulaByID(params.id);
+            const aula = await this.AulaService_.obtenerAulaByID(params.id);
     
             if (!aula) {
                 return response.status(404).json({

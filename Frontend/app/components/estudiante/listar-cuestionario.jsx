@@ -31,7 +31,7 @@ export default function Cuestionario({ idEvaluacion, notaEvaluacion, id_estudian
 				obtener_respuestas_cuestionarios(response.data.data, ids);
 
 			} else {
-				console.error('La respuesta de la API no contiene datos válidos.');
+				// console.error('La respuesta de la API no contiene datos válidos.');
 			}
 		} catch (err) {
 			console.error('Error al conectar con el servidor:', err);
@@ -62,7 +62,7 @@ export default function Cuestionario({ idEvaluacion, notaEvaluacion, id_estudian
 				setEnviado(true);
 				setestudiante_ya_respondio(true);
 			} else if (response.status != 404) {
-            	console.error('La respuesta de la API no contiene datos válidos.');
+            	// console.error('La respuesta de la API no contiene datos válidos.');
             }
 		} catch (err) {
 			console.error('Error al conectar con el servidor:', err);

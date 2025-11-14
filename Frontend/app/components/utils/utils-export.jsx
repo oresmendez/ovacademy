@@ -22,7 +22,7 @@ export const exportToExcel = (tittle, filteredData, name) => {
 // --------------------------------------------------------------------------
 export const pdf_table_profesores = (filteredData) => {
     const name = 'profesores.pdf';
-    const title = 'Listado de Profesores';
+    const title = '';
     const head = [['Correo Electrónico', 'Nombre', 'Apellido', 'Teléfono', 'Estado', 'Colegiado']];
     const tableRows = filteredData.map((row) => [
         row.email,

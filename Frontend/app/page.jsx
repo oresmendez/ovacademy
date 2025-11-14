@@ -369,41 +369,40 @@ function RecursosLibros() {
         <RecursosLibrosStyled>
             <h2 className="subtitulo">📚 Recursos y Libros Recomendados</h2>
             <div className="contenedor-imagenes-libros">
-                <div className="tarjeta-libro">
+                <a
+                    href="/libros/Arturo Morales Castro - Proyectos de Inversión.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tarjeta-libro"
+                >
                     <FaBookReader size={50} />
-                    <a
-                        href="/libros/Arturo Morales Castro - Proyectos de Inversión.pdf"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        >
-                        <p>Arturo Morales Castro - Proyectos de Inversión</p>
-                    </a>
+                    <p>Arturo Morales Castro - Proyectos de Inversión</p>
+                </a>
 
-                </div>
-                <div className="tarjeta-libro">
+                <a
+                    href="/libros/Gabriel Baca Urbina - Evaluación de Proyectos.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tarjeta-libro"
+                >
                     <FaBookReader size={50} />
-                        <a
-                            href="/libros/Gabriel Baca Urbina - Evaluación de Proyectos.pdf"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            >
-                        <p>Gabriel Baca Urbina - Evaluación de Proyectos</p>
-                    </a>
-                </div>
-                <div className="tarjeta-libro">
+                    <p>Gabriel Baca Urbina - Evaluación de Proyectos</p>
+                </a>
+
+                <a
+                    href="/libros/Marcial Córdoba Padilla - Formulación y Evaluación de Proyectos.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tarjeta-libro"
+                >
                     <FaBookReader size={50} />
-                        <a
-                            href="/libros/Marcial Córdoba Padilla - Formulación y Evaluación de Proyectos.pdf"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            >
-                        <p>Marcial Córdoba Padilla - Formulación y Evaluación de Proyectos</p>
-                    </a>
-                </div>
+                    <p>Marcial Córdoba Padilla - Formulación y Evaluación de Proyectos</p>
+                </a>
             </div>
         </RecursosLibrosStyled>
     );
 }
+
 
 const RecursosLibrosStyled = styled.div`
     width: 48%;
@@ -428,15 +427,19 @@ const RecursosLibrosStyled = styled.div`
     }
 
     .tarjeta-libro {
-        background: linear-gradient(135deg, #ffffff, #f8fafc);
-        border-radius: 16px;
-        padding: 1.5rem;
         display: flex;
         align-items: center;
         gap: 1.2rem;
+        background: linear-gradient(135deg, #ffffff, #f8fafc);
+        border-radius: 16px;
+        padding: 1.5rem;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        text-decoration: none; 
+        color: inherit;
     }
+
 
     .tarjeta-libro:hover {
         transform: perspective(1000px) rotateX(2deg) rotateY(1deg);

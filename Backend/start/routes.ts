@@ -26,7 +26,7 @@ import NotaEstudianteController from '#controllers/notas_estudiante/main'
 
 import SemestreController from '#controllers/semestre/main'
 import AulaController from '#controllers/aula/main'
-import SemestreProfesorAulController from '#controllers/semestre_profesor_aula/main'
+import SemestreProfesorAulaController from '#controllers/semestre_profesor_aula/main'
 import EstudianteAulaController from '#controllers/estudiante_aula/main'
 
 router.group(() => {
@@ -47,6 +47,7 @@ router.group(() => {
         router.post('', [UsersController, 'create_usuario']) // CREAR UN USUARIO
         router.put('', [UsersController, 'editar_usuario']) // EDITAR UN USUARIO
         router.delete('', [UsersController, 'habilitar_or_deshabilitar_user']) // ACTIVAR O DESHABILITAR UN USUARIO
+        router.delete('/:email', [UsersController, 'eliminar_usuario']) // ELIMINAR UN USUARIO
         
     }).prefix('/user')
 
@@ -55,26 +56,40 @@ router.group(() => {
             return { hello: 'world' }
         })
     }).prefix('/teacher').use(middleware.auth_teacher())
-
+    
     router.group(() => {
+
         router.get('', [SemestreController, 'get_Semestres']) // MUESTRA TODOS LOS SEMESTRES
         router.get('activo', [SemestreController, 'get_SemestreActivo']) // MUESTRA EL SEMESTRE ACTUAL
         router.post('', [SemestreController, 'create_semestre']) // CREAR UN SEMESTRE
-        router.post('aula', [SemestreProfesorAulController, 'asociar_profesor_aula']) // 
-        router.delete('aula', [SemestreProfesorAulController, 'desasociar_profesor_aula']) // 
-        router.delete('/aula/:aula_id', [SemestreProfesorAulController, 'habilitar_or_deshabilitar_seccion']); // DESMATRICULAR AULA
+        router.post('aula', [SemestreProfesorAulaController, 'asociar_profesor_aula']) // 
+        router.delete('aula', [SemestreProfesorAulaController, 'desasociar_profesor_aula']) // 
+        router.delete('/aula/:aula_id', [SemestreProfesorAulaController, 'habilitar_or_deshabilitar_seccion']); // DESMATRICULAR AULA
+        
+        
+        router.get('/:id', [SemestreController, 'get_id']) // Obtiene un semestre por el ID
+        
+        router.put('/finish', [SemestreController, 'culminar']); // Culminar el periodo del semestre actual
+        router.put('/:id', [SemestreController, 'update']) // Actualizar el semestre
+
+
+
     }).prefix('/semestre')
     
     router.group(() => {
         router.get('', [AulaController, 'list_aulas']) // MUESTRA TODOS LAS AULAS DISPONIBLES
-        router.get('profesor', [SemestreProfesorAulController, 'obtener_aula_asoaciada_profesor']) // MUESTRA TODOS LAS AULAS DISPONIBLES
+        router.get('profesor', [SemestreProfesorAulaController, 'obtener_aula_asoaciada_profesor']) // MUESTRA TODOS LAS AULAS DISPONIBLES
         router.get('estudiantesInscritos', [EstudianteAulaController, 'obtener_estudiantes_inscritos_aula_general']) // 
-        router.get('profesorWithAula', [SemestreProfesorAulController, 'obtener_todas_aulas_con_profesor']) // 
+        router.get('/estudianteMatriculado', [EstudianteAulaController, 'obtener_si_esta_matriculado']) // VER SI ESTA MATRICULADO UN ESTUDIANTE
+        router.get('profesorWithAula', [SemestreProfesorAulaController, 'obtener_todas_aulas_con_profesor']) // 
         router.post('estudiantesByAula', [EstudianteAulaController, 'obtener_estudiantes_inscritos_by_aula']) // 
-        router.get('obtenerAulabyaulaID/:aula_id', [SemestreProfesorAulController, 'obtenerAulaProfesorByID_Aula']) // 
+        router.get('obtenerAulabyaulaID/:aula_id', [SemestreProfesorAulaController, 'obtenerAulaProfesorByID_Aula']) // 
         router.post('', [AulaController, 'create_aula']) // CREAR UN AULA
         router.post('asociarEstudiante', [EstudianteAulaController, 'registrar_estudiante_a_aula']) // ASOCIA UN ESTUDIANTE A UN AULA
+        router.get('/:id', [AulaController, 'get_AulabyID']); // MUESTRA UN AULA
+        router.put('', [AulaController, 'edit_aula']); // Editar Aula
         router.delete('/desmatricular/:id', [EstudianteAulaController, 'desmatricular_estudiante']); // DESMATRICULAR ESTUDIANTE
+        router.delete('id/:id', [AulaController, 'habilitar_or_deshabilitar_aula']); // deshabilitar Aula
     }).prefix('/aula')
 
     router.group(() => {
@@ -91,6 +106,7 @@ router.group(() => {
         router.post('', [UnidadesController, 'create_unidad']); // CREAR UNA UNIDAD
         router.put('', [UnidadesController, 'edit_unidad_by_Id']); // EDITA UNA UNIDAD
         router.delete('/:id', [UnidadesController, 'habilitar_or_deshabilitar_unidad']); // DESAHIBILITA UNA UNIDAD
+        router.delete('delete/:id', [UnidadesController, 'delete']); // ELIMINA UNA UNIDAD DE FORMA LOGICA
     }).prefix('/unidades')
 
     router.group(() => {
@@ -99,17 +115,18 @@ router.group(() => {
         router.post('', [ContenidosController, 'create_contenido']); // CREAR UN CONTENIDO ASOCIADO A UNA UNIDAD
         router.put('', [ContenidosController, 'edit_contenido_by_Id']); // EDITA UNA CONTENIDO
         router.delete('/:id', [ContenidosController, 'habilitar_or_deshabilitar_contenido']); // DESAHIBILITA UNA UNIDAD
+        router.delete('delete/:id', [ContenidosController, 'delete']); // ELIMINA UN CONTENIDO DE FORMA LOGICA
     }).prefix('/contenido')
 
     router.group(() => {
-        
+
         router.get('/SopaDeLetras/:id', [SopaDeLetrasController, 'get_SopaDeLetras']); // MUESTRA EL ARRAY DE LA SOPA DE LETRAS
         router.put('/SopaDeLetras', [SopaDeLetrasController, 'edit_sopa_de_letras']); // EDITA UNA SOPA DE LETRAS
         router.get('/RespuestaSopaDeLetras/:id', [RespuestasSopaDeLetrasController, 'get_respuestas_SopaDeLetras']); // OBTENER LAS RESPUESTAS DE UNA SOPA DE LETRAS
         router.post('/SaveSopaDeLetras', [RespuestasSopaDeLetrasController, 'save_respuestas_SopaDeLetras']); // GUARDAR EL RESULTADO DE UNA SOPA DE LETRAS
 
         router.get('/cuestionario/:id', [CuestionariosController, 'get_cuestionario']); // MUESTRA LAS PREGUNTAS Y RESPUESTAS DE UN CUESTIONARIO
-        router.put('/cuestionario', [CuestionariosController, 'edit_cuestionario']); // EDITA UNA SOPA DE LETRAS
+        router.put('/cuestionario', [CuestionariosController, 'edit_cuestionario']); // EDITA UN CUESTIONARIO
         router.post('/SaveCuestionario', [RespuestasCuestionarioController, 'save_respuestas_cuestionario']); // GUARDAR EL RESULTADO DE UN CUESTIONARIO
         router.get('/RespuestaCuestionario/:id', [RespuestasCuestionarioController, 'get_respuestas_cuestionario']); // OBTENER LAS RESPUESTAS DE UN CUESTIONARIO
         
@@ -117,6 +134,7 @@ router.group(() => {
         router.post('/SavePreguntasAbiertas', [RespuestasPreguntasAbiertasController, 'save_respuestas_preguntas_abiertas']);
         router.get('/RespuestaPreguntasAbiertas/:id', [RespuestasPreguntasAbiertasController, 'get_respuestas_cuestionario']); // 
         router.put('/preguntasAbiertas', [RespuestasPreguntasAbiertasController, 'edit_respuestas_preguntas_abiertas']); 
+        router.put('/preguntaAbiert', [PreguntasAbiertasController, 'edit_preguntas_abiertas']); 
 
 
         router.get('/NotaEstudiante/:estudiante_id', [NotaEstudianteController, 'get_notas_estudiante']); //
@@ -126,9 +144,13 @@ router.group(() => {
         router.put('/NotaEstudiante', [NotaEstudianteController, 'edit_nota']); // EDITA UNA SOPA DE LETRAS
 
         router.get('/TypeEvaluaciones', [TypeEvaluacionesController, 'get_TypeEvaluaciones']); // MUESTRA EL DETALLE DE UN CONTENIDO
-        router.get('/TypeEscalaApreciacion', [TypeEscalaApreciacionController, 'get_TypeEscalaApreciacion']); 
-        router.get('/:id', [EvaluacionesController, 'obtener_evaluacionesByUnidad']); // MUESTRA TODAS LAS EVALUACIONES ASOCIADAS A UNA UNIDAD
+        router.get('/TypeEscalaApreciacion', [TypeEscalaApreciacionController, 'get_TypeEscalaApreciacion']); // MUESTRA TODAS LAS EVALUACIONES ASOCIADAS A UNA UNIDAD
+        router.get('/:id/:status?', [EvaluacionesController, 'obtener_evaluacionesByUnidad']);
         router.post('', [EvaluacionesController, 'create_evaluacion']); // CREAR UNA EVALUACION
+
+        router.delete('/delete/:id', [EvaluacionesController, 'delete']); // ELIMINA UN EVALUACION DE FORMA LOGICA
+        router.delete('', [EvaluacionesController, 'habilitar_or_deshabilitar_evaluacion']) // ACTIVAR O DESHABILITAR UNA EVALUACION
+
     }).prefix('/evaluaciones')
 
 }).prefix('ovacademy')

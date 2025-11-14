@@ -35,7 +35,7 @@ export default function CrearEvaluaciones_({ TabClick }) {
 
 				setUnidades(unidadesFormateadas);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // console.error('La respuesta de la API no contiene datos válidos.');
                 setData([]);
             }
         } catch (err) {
@@ -60,7 +60,7 @@ export default function CrearEvaluaciones_({ TabClick }) {
 
 				setTypeEvaluaciones(TypeEvaluacionesFormateadas);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // console.error('La respuesta de la API no contiene datos válidos.');
                 setTypeEvaluaciones([]);
             }
         } catch (err) {

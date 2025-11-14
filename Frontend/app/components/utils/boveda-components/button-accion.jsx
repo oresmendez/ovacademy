@@ -10,7 +10,8 @@ export default function ButtonAccion({
     loading = false, 
     duration = 1500,
     color = "#0465ac",
-    padding = "0.5rem 1rem" 
+    padding = "0.5rem 1rem",
+    className = "" 
 }) { 
     const [isLoading, setIsLoading] = useState(loading);
 
@@ -32,10 +33,10 @@ export default function ButtonAccion({
 
     return (
         <Component $color={color} $padding={padding}>
-            <button
-                type={type}
-                onClick={handleClick}
-                className="btn-accion"
+            <button 
+                type={type} 
+                onClick={handleClick} 
+                className={`btn-accion ${className}`.trim()} // <-- Combina clases
             >
                 {!children && <IoReload size={20} className={`btn-reload ${isLoading ? 'rotating' : ''}`} />}
                 {children}
@@ -53,7 +54,7 @@ const Component = styled.div`
         border-radius: 5px;
         cursor: pointer;
         font-size: 1rem;
-        background-color: #0465ac;
+        background-color: ${props => props.$color};
         display: inline-flex;               /* clave: inline-flex para que se ajuste al contenido */
         align-items: center;
         justify-content: center;

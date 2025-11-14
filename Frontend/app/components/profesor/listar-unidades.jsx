@@ -389,15 +389,15 @@ const Componente = styled.div`
 
 
     .delete-button {
-		background: linear-gradient(135deg, #0465ac, #039be5);
-		color: #fff;
-		padding: 10px 16px;
-		border: none;
-		border-radius: 8px;
-		cursor: pointer;
-		transition: background 0.3s;
-		margin-right: 10px;
-	}
+      background: linear-gradient(135deg, #0465ac, #039be5);
+      color: #fff;
+      padding: 0.4rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-right: 10px;
+    }
 
     .delete-button {
 		background: #e53935;

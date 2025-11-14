@@ -40,7 +40,7 @@ export default function ListarSopaDeletras({ idEvaluacion, idUnidad, typeId, not
 				obtener_Respuestas_SopadeLetras(sopaId);
 
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // console.error('La respuesta de la API no contiene datos válidos.');
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
@@ -55,7 +55,7 @@ export default function ListarSopaDeletras({ idEvaluacion, idUnidad, typeId, not
             if (response.status === 200) {
 				setGrid(response.data.data[0].matrix)
 			} else if (response.status != 404) {
-            	console.error('La respuesta de la API no contiene datos válidos.');
+            	// console.error('La respuesta de la API no contiene datos válidos.');
             } 
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);

@@ -1,4 +1,4 @@
-'use client'; import { useState, useEffect, useParams, styled, apiRest, Link, textBarHeader, BannerMateria, ButtonAccion, EditorContent, Crucigrama, Footer, TrueFalseQuiz } from '@/app/components/utils/rutas';
+'use client'; import { useState, useEffect, useParams, styled, apiRest, Link, textBarHeader, BannerMateria, ButtonAccion, EditorContent, Crucigrama, EditarContenido, Footer, TrueFalseQuiz } from '@/app/components/utils/rutas';
 
 export default function () {
     const params = useParams();
@@ -72,7 +72,7 @@ export default function () {
             <div className='layout-body'>
                 <div className='container-body'>
                     <BannerMateria />
-                    {/* <ButtonAccion onClick={() => borrar()}>Borrar reload</ButtonAccion> */}
+                    <ButtonAccion onClick={() => borrar()}>Borrar reload</ButtonAccion>
                     <div className='description-content-subjects-list mt-30'>
                         <div className='course-content'>
                             <div className='tab'>
@@ -80,14 +80,12 @@ export default function () {
                                     className={`tab-button ${activeTab === 0 ? 'active' : ''}`}
                                     onClick={() => TabClick(0)}
                                 >
-                                    Contenido
+                                    Detalles del Contenido
                                 </button>
                             </div>
                             <div className='tab-content'>
                                 {activeTab === 0 && (
-                                    <div className='tab-panel active'>
-                                        <div className='descripcion-contenido' dangerouslySetInnerHTML={{ __html: descripcion }} />
-                                    </div>
+                                    <EditarContenido descripcion={descripcion} readOnly={true} />
                                 )}
                             </div>
                         </div>

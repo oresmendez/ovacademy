@@ -4,10 +4,12 @@ import EstudianteAula from '../../models/universidad/estudiante_aula.js'
 
 export default class EstudianteAulaService {
 
+    private readonly estudianteAulaModel = EstudianteAula;
+
     async registrar_estudiante_aula(semestre_profesor_aula_id: number, semestre_id:number, estudiante_id: number): Promise<{ status: string, estudiante?: EstudianteAula | null }> {    
         try {
     
-            const nuevoRegistro = await EstudianteAula.create({
+            const nuevoRegistro = await this.estudianteAulaModel.create({
                 semestre_profesor_aula_id,
                 semestre_id,
                 estudiante_id, 
@@ -23,9 +25,22 @@ export default class EstudianteAulaService {
 
     async obtener_estudiantes_inscritos_generales(semestre_id: number): Promise<Array<EstudianteAula> | false> {
         try {
-            return await EstudianteAula.query()
+            return await this.estudianteAulaModel.query()
             .where('semestre_id', semestre_id)
-            .andWhere('nota_final', '<', 5);
+            .andWhere(builder => {
+                builder.where('nota_final', '<', 5).orWhereNull('nota_final');
+            });
+        } catch (error) {
+            console.error('Error obteniendo todos las Aulas:', error);
+            return false;
+        }
+    }
+
+    async obtener_si_esta_matriculado(semestre_id: number, user_id: number): Promise<Array<EstudianteAula> | false> {
+        try {
+            return await this.estudianteAulaModel.query()
+            .where('semestre_id', semestre_id)
+            .where('estudiante_id', user_id)
         } catch (error) {
             console.error('Error obteniendo todos las Aulas:', error);
             return false;
@@ -34,7 +49,7 @@ export default class EstudianteAulaService {
 
     async obtener_estudiantes_inscritos_by_aula(semestreId: number, aulaId: number) {
         try {
-          const estudiantes = await EstudianteAula
+          const estudiantes = await this.estudianteAulaModel
             .query()
             .from('universidad.estudiante_aula') // Indicar el esquema correcto
             .join('universidad.semestre_profesor_aula', 'estudiante_aula.semestre_profesor_aula_id', 'semestre_profesor_aula.id')
@@ -60,7 +75,7 @@ export default class EstudianteAulaService {
 	async obtener_un_estudiante_inscrito(semestre_id: number, estudiante_id: number): Promise<EstudianteAula | false> {
         
 		try {
-			const registro = await EstudianteAula
+			const registro = await this.estudianteAulaModel
 			  .query()
 			  .where('semestre_id', semestre_id)
 			  .where('estudiante_id', estudiante_id)
@@ -77,7 +92,7 @@ export default class EstudianteAulaService {
 	async obtener_detalles_del_aula(semestre_id: number, semestre_profesor_aula_id: number): Promise<EstudianteAula[] | false> {
         
 		try {
-			const registro = await EstudianteAula
+			const registro = await this.estudianteAulaModel
 			  .query()
 			  .where('semestre_id', semestre_id)
 			  .where('semestre_profesor_aula_id', semestre_profesor_aula_id)

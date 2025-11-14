@@ -37,6 +37,30 @@ export default class TokenService {
             return null;
         }
     }
+
+    async delete_token_user(user_id: number): Promise<boolean> {
+        try {
+            // Obtener el último token del usuario
+            const lastToken = await this.tokenModel.query()
+            .where('user_id', user_id)
+            .orderBy('created_at', 'desc') // o 'id', si no tienes created_at
+            .first();
+
+            if (!lastToken) {
+                return false; // No hay tokens que eliminar
+            }
+
+            // Eliminar el token
+            await lastToken.delete();
+
+            return true;
+        } catch (error) {
+            console.error('Error deleting last token for user:', error);
+            return false;
+        }
+    }
+
+
     
 
 }

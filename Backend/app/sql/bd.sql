@@ -137,7 +137,9 @@ CREATE TABLE universidad.materia (
 ); INSERT INTO universidad.materia (nombre, objetivo, descripcion) VALUES (
     'Formulación y Evaluación de Proyectos de Inversión (230-4604)',
     'Crear profesionales que tengan habilidades para el desarrollo de empresas', 
-    'La formulación y evaluación de proyectos es el proceso sistemático de diseñar, analizar y valorar la viabilidad técnica, económica y financiera de una idea antes de su ejecución. Su objetivo es determinar si un proyecto es rentable y factible, minimizando riesgos y optimizando recursos');
+    'La asignatura Formulación y Evaluación de Proyectos de Inversión, plantea las bases para entender qué es un proyecto y cómo debe abordarse su estudio y evaluación. 
+    Siempre considerando, que las inversiones no operan en un vacío, 
+    lo hacen en un ambiente es altamente que es altamente competitivo y está sujeto a diversas variables que deben analizarse.');
 
 DROP TABLE IF EXISTS universidad.unidades CASCADE;
 CREATE TABLE universidad.unidades (

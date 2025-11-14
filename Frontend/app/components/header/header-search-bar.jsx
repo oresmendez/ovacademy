@@ -46,7 +46,7 @@ const Componente = styled.div`
 
     @media (min-width: 2560px) {
         .container-search-bar {
-            background-color: darkgoldenrod;
+            background-color: #0c2c46;
             height: 2.35rem;
         }
         .search-bar-text-details {
@@ -68,7 +68,7 @@ const Componente = styled.div`
         /* 🖥️ Escritorios estándar (1025px - 1440px) */
     @media (min-width: 1025px) and (max-width: 1440px) {
         .container-search-bar {
-            background-color: darkcyan;
+            background-color: #0c2c46;
             height: 2.35rem;
         }
         .search-bar-text-details {
@@ -79,7 +79,7 @@ const Componente = styled.div`
         /* 💻 Tablets y pantallas pequeñas (769px - 1024px) */
     @media (min-width: 769px) and (max-width: 1024px) {
         .container-search-bar {
-            background-color: darkviolet;
+            background-color: #0c2c46;
             height: 2.28rem;
         }
         .search-bar-text-details {
@@ -90,7 +90,7 @@ const Componente = styled.div`
         /* 📱 Móviles grandes y pequeñas tablets (481px - 768px) */
     @media (min-width: 481px) and (max-width: 768px) {
         .container-search-bar {
-            background-color: darkred;
+            background-color: #0c2c46;
             height: 2.15rem;
         }
         .search-bar-text-details {
@@ -101,7 +101,7 @@ const Componente = styled.div`
         /* 📱 Móviles estándar (321px - 480px) */
     @media (min-width: 321px) and (max-width: 480px) {
         .container-search-bar {
-            background-color: gray;
+            background-color: #0c2c46;
         }
         .search-bar-text-details {
             font-size: 1rem;
@@ -113,7 +113,7 @@ const Componente = styled.div`
         /* 📱 Móviles pequeños (hasta 320px) */
     @media (max-width: 320px) {
         .container-search-bar {
-            background-color: gold;
+            background-color: #0c2c46;
         }
         .search-bar-text-details {
             font-size: 1rem;

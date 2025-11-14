@@ -49,15 +49,27 @@ export default function CrearProfesor_({ TabClick }) {
     };
 
     const SubmitButton = ({ children, setVisible, setFormValues, ...props }) => {
-        const { submitForm, values } = useFormikContext();
+        const { values, validateForm, setTouched } = useFormikContext();
         const [loading, setLoading] = useState(false);
 
         const handleClick = async () => {
             setLoading(true);
 
-            await submitForm(); // ejecuta validación
-            setFormValues(values); // guarda valores si son válidos
-            setVisible(true); // muestra el modal
+            // Marca todos los campos como tocados
+            await setTouched({
+                name: true,
+                surname: true,
+                email: true,
+                password: true,
+                verifyPassword: true
+            });
+
+            const errors = await validateForm();
+
+            if (Object.keys(errors).length === 0) {
+                setFormValues(values);   // almacena datos
+                setVisible(true);        // muestra modal
+            }
 
             setLoading(false);
         };
@@ -68,7 +80,6 @@ export default function CrearProfesor_({ TabClick }) {
             </ButtonSave>
         );
     };
-
 
     return (
         <Component>
@@ -119,7 +130,7 @@ export default function CrearProfesor_({ TabClick }) {
                                 placeholder="Correo electrónico"
                             />
                             <Field
-                                label="Contraseña Temporal"
+                                label="Contraseña"
                                 name="password"
                                 type="password"
                                 component={InputField}
@@ -174,29 +185,6 @@ export default function CrearProfesor_({ TabClick }) {
         </Component>
     );
 }
-
-const SubmitButton = ({ children, ...props }) => {
-    const { submitForm } = useFormikContext();
-    const [loading, setLoading] = useState(false);
-
-    const handleClick = async () => {
-        setLoading(true);
-
-        // Esperar envío y mínimo 1 segundo
-        await Promise.all([
-            submitForm(),
-            new Promise(resolve => setTimeout(resolve, 1000))
-        ]);
-
-        setLoading(false);
-    };
-
-    return (
-        <ButtonSave onClick={handleClick} disabled={loading} loading={loading} {...props}>
-            {children}
-        </ButtonSave>
-    );
-};
 
 const Component = styled.div``;
 

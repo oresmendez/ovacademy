@@ -43,7 +43,7 @@ export default function ListarEvaluaciones({ idUnidad, modulo, setCerrandoEvalua
             if (response.status === 200) {
                 setData(response.data);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // console.error('La respuesta de la API no contiene datos válidos.');
                 setData([]);
             }
         } catch (err) {
@@ -59,7 +59,7 @@ export default function ListarEvaluaciones({ idUnidad, modulo, setCerrandoEvalua
             if (response.status === 200) {
                 setTypesEvaluaciones(response.data.data);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // console.error('La respuesta de la API no contiene datos válidos.');
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
@@ -243,11 +243,9 @@ export default function ListarEvaluaciones({ idUnidad, modulo, setCerrandoEvalua
                         <>
                         <div className='center-left'>
                             <ButtonAccion onClick={handleCerrar}>Atrás</ButtonAccion>
-                            <div className='ml-05'>
-                                <ButtonAccion onClick={recargar} loading={true}></ButtonAccion>
-                            </div>
+                            <ButtonAccion onClick={recargar} loading={true} className="ml-05"></ButtonAccion>
                             <div className="total-puntos ml-20">
-                                <strong>Total puntos:</strong> {puntosTotalesRedondeado}
+                                <strong className=''>Total puntos: {puntosTotalesRedondeado}</strong>
                             </div>
                         </div>
                             <DataTableIndex columns={columns} data={filteredData} />

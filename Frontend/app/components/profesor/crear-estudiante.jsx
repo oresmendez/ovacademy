@@ -50,14 +50,27 @@ export default function CrearEstudiante({ TabClick }) {
   };
 
   const SubmitButton = ({ children, setVisible, setFormValues, ...props }) => {
-    const { submitForm, values } = useFormikContext();
+    const { values, validateForm, setTouched } = useFormikContext();
     const [loading, setLoading] = useState(false);
 
     const handleClick = async () => {
       setLoading(true);
-      await submitForm();
-      setFormValues(values);
-      setVisible(true);
+
+      await setTouched({
+        name: true,
+        surname: true,
+        email: true,
+        password: true,
+        verifyPassword: true
+      });
+
+      const errors = await validateForm();
+
+      if (Object.keys(errors).length === 0) {
+        setFormValues(values);
+        setVisible(true);
+      }
+
       setLoading(false);
     };
 
@@ -67,6 +80,7 @@ export default function CrearEstudiante({ TabClick }) {
       </ButtonSave>
     );
   };
+
 
   return (
     <Component>
@@ -116,7 +130,7 @@ export default function CrearEstudiante({ TabClick }) {
                 placeholder="Correo electrónico"
               />
               <Field
-                label="Contraseña Temporal"
+                label="Contraseña"
                 name="password"
                 type="password"
                 component={InputField}

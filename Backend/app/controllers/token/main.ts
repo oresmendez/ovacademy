@@ -71,4 +71,8 @@ export default class TokenController {
     
     }
 
+    public async delete_token_user(user_id: number): Promise<boolean> {
+        return await TokenService_.delete_token_user(user_id)
+    }
+
 }

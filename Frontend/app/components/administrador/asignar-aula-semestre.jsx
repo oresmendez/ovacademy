@@ -2,9 +2,7 @@
 
 import { styled, apiRest, useState, useEffect, useRouter, Select, toast, ModalField, ButtonAccion, ButtonSave, Spinner} from '@/app/components/utils/rutas';
 
-
-
-export default function Asignar_aula_profesor() {
+export default function Asignar_aula_profesor({ handleTabClick }) {
 
     const router = useRouter();
 
@@ -327,7 +325,8 @@ export default function Asignar_aula_profesor() {
                             <p>Para habilitar esta sección, debes tener registrado un semestre, un profesor y al menos una sección</p>
                             <div className='center'>
                                 <ButtonSave bgColor="#33b0e4" hoverColor="#3380e4" className="mt-30" onClick={() => router.push('/ovacademy/administrador/profesores')}>Profesor</ButtonSave>
-                                <ButtonSave bgColor="#33b0e4" hoverColor="#3380e4" className="mt-30 ml-10 mr-10" onClick={() => router.push('/ovacademy/administrador/semestre')}>Semestre</ButtonSave>
+                                <ButtonSave bgColor="#33b0e4" hoverColor="#3380e4" className="mt-30 ml-10" onClick={() => router.push('/ovacademy/administrador/semestre')}>Semestre</ButtonSave>
+                                <ButtonSave bgColor="#33b0e4" hoverColor="#3380e4" className="mt-30 ml-10 mr-10" onClick={() => handleTabClick(0)}>Sección</ButtonSave>
                             </div>
                         </div>
                     ) : (

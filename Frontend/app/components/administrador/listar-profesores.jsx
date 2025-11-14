@@ -87,19 +87,16 @@ export default function ListarProfesores() {
         }finally { clearTimeout(timeout); setShowSpinner(false);}
     };
     
-    
-
     const exportToPDF = () => {
         const name = 'profesores.pdf';
         const title = 'Listado de Profesores';
-        const head = [['Correo Electrónico', 'Nombre', 'Apellido', 'Teléfono', 'Estado', 'Colegiado']];
+        const head = [['Correo Electrónico', 'Nombre', 'Apellido', 'Teléfono', 'Estado']];
         const tableRows = filteredData.map((row) => [
             row.email,
             row.name,
             row.surname,
             row.phone,
             row.status_logico ? 'Activo' : 'Inactivo',
-            row.colegiado
         ]);
         export_file.exportToPDF(title, head, tableRows, name);
     };

@@ -38,24 +38,38 @@ export default function CrearUnidades({ TabClick }) {
     }
   };
 
-  const SubmitButton = ({ children, setVisible, setFormValues, ...props }) => {
-    const { submitForm, values } = useFormikContext();
-    const [loading, setLoading] = useState(false);
+const SubmitButton = ({ children, setVisible, setFormValues, ...props }) => {
+  const { values, validateForm, setTouched } = useFormikContext();
+  const [loading, setLoading] = useState(false);
 
-    const handleClick = async () => {
-      setLoading(true);
-      await submitForm();
+  const handleClick = async () => {
+    setLoading(true);
+
+    // Marca todos los campos como tocados
+    await setTouched({
+      modulo: true,
+      nombre: true,
+      nota_unidad: true,
+      descripcion: true
+    });
+
+    const errors = await validateForm();
+
+    if (Object.keys(errors).length === 0) {
       setFormValues(values);
       setVisible(true);
-      setLoading(false);
-    };
+    }
 
-    return (
-      <ButtonSave onClick={handleClick} disabled={loading} loading={loading} {...props}>
-        {children}
-      </ButtonSave>
-    );
+    setLoading(false);
   };
+
+  return (
+    <ButtonSave onClick={handleClick} disabled={loading} loading={loading} {...props}>
+      {children}
+    </ButtonSave>
+  );
+};
+
 
   return (
     <Component>

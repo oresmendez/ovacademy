@@ -133,7 +133,7 @@ export default function FormularioRespuestas({ idEvaluacion, id_estudiante, preg
             if (response.status === 200) {
                 setTiposApreciacion(response.data.data);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // console.error('La respuesta de la API no contiene datos válidos.');
                 setTiposApreciacion([]);
             }
         } catch (err) {

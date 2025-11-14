@@ -41,7 +41,6 @@ export default function CrearAula_({ setActiveTab }) {
         <Formik
           initialValues={{ nombre: "", ubicacion: "" }}
           validationSchema={validationSchema}
-          onSubmit={() => {}} // ya no lo necesitas
         >
           <Form className="formulario">
             <Field
@@ -97,14 +96,20 @@ export default function CrearAula_({ setActiveTab }) {
 }
 
 const SubmitButton = ({ children, setVisible, setFormValues, ...props }) => {
-  const { submitForm, values } = useFormikContext();
+  const { values, validateForm, setTouched } = useFormikContext();
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
     setLoading(true);
-    await submitForm();         // valida
-    setFormValues(values);      // guarda datos
-    setVisible(true);           // abre modal
+
+    await setTouched({ nombre: true, ubicacion: true });
+    const errors = await validateForm();
+
+    if (Object.keys(errors).length === 0) {
+      setFormValues(values);
+      setVisible(true);
+    }
+
     setLoading(false);
   };
 
@@ -114,6 +119,7 @@ const SubmitButton = ({ children, setVisible, setFormValues, ...props }) => {
     </ButtonSave>
   );
 };
+
 
 CrearAula_.propTypes = {
   setActiveTab: PropTypes.func.isRequired,

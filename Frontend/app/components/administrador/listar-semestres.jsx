@@ -78,7 +78,7 @@ export default function ListarSemestre_() {
                 await new Promise(resolve => setTimeout(resolve, 800));
                 setsemestreSeleccionado(true);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // // console.error('La respuesta de la API no contiene datos válidos.');
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);

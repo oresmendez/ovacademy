@@ -121,16 +121,11 @@ class TestDatosOvacademy:
                 print("Error al crear una unidad")   
 
     def cargar_contenido(self):
-
         url = "http://localhost:3333/ovacademy/contenido"
 
-        with ThreadPoolExecutor(max_workers=10) as executor:
-            futures = [
-                executor.submit(self._post_request, url, contenido, "Contenido", contenido['nombre'])
-                for contenido in self.contenidos
-            ]
-            for future in as_completed(futures):
-                future.result() 
+        for contenido in self.contenidos:
+            self._post_request(url, contenido, "Contenido", contenido['nombre'])
+
 
     def cargar_evaluaciones(self):
 
@@ -146,15 +141,14 @@ class TestDatosOvacademy:
 
     def main(self):
 
-        # self.cargar_usuarios()
-        # self.cargar_semestre()
-        # self.cargar_aula()
+        self.cargar_usuarios()
+        self.cargar_semestre()
+        self.cargar_aula()
 
         self.iniciar_sesion_user("Lisbeth.fernandez@gmail.com", "1")
         self.cargar_unidades()
         self.cargar_contenido()
-
-        self.cargar_evaluaciones()
+        # self.cargar_evaluaciones()
 
 
         

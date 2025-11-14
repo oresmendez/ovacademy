@@ -47,7 +47,6 @@ export default function ListarContenidos() {
 
                 setDataUnidades(unidadesFormateadas);
             } else {
-                console.error(`// console.error('La respuesta de la API no contiene datos válidos.'); función: ${obtenerUnidades.name}`);
                 setDataUnidades([]);
             }
         } catch (err) {
@@ -72,7 +71,6 @@ export default function ListarContenidos() {
             if (response.status === 200) {
                 setDataContenidos(response.data);
             } else {
-                console.error(`// console.error('La respuesta de la API no contiene datos válidos.'); función: ${obtenerContenidoByID.name}`);
                 setDataContenidos([]);
             }
         } catch (err) {
@@ -92,7 +90,7 @@ export default function ListarContenidos() {
                 setDescripcion(response.data.descripcion);
                 setEditarContenido(null);
             } else {
-                console.error(`// console.error('La respuesta de la API no contiene datos válidos.'); función: ${obtenerContenidoDetailsByID.name}`);
+                // console.error(`// // console.error('La respuesta de la API no contiene datos válidos.'); función: ${obtenerContenidoDetailsByID.name}`);
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
@@ -305,7 +303,7 @@ export default function ListarContenidos() {
                                 
                             </div>
                             <InputField label="Nombre" value={nombre} onChange={setNombre} placeholder="Nombre de la unidad" required />
-                            <EditarContenido descripcion={descripcion} setDescripcion={setDescripcion}/>
+                            <EditarContenido descripcion={descripcion} setDescripcion={setDescripcion} readOnly={false} />
                             <div className="center">
                                 <ButtonSave onClick={() => editar_contenido()} className="mt-10" classFather="center" >
                                     Guardar

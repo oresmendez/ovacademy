@@ -58,15 +58,16 @@ export default class SesioneController {
 
     public async iniciar_session({ request, response }: HttpContext) {
 
-        const { email, password } = request.only(['email', 'password']);
+        let { email, password } = request.only(['email', 'password']);
+        email = email.trim().toLowerCase();
 
-        if (!await this.consultar_user_si_esta_habilitado(email.toLowerCase())) {
+        if (!await this.consultar_user_si_esta_habilitado(email)) {
             return response.status(400).send({ 
-                message: 'Este usuario no esta habilitado en el sistema'
+                message: 'Usuario inhabilitado'
             });
         }
 
-        const user = await this.consultar_user_by_email(email.toLowerCase());
+        const user = await this.consultar_user_by_email(email);
 
         if (!user) {
             return response.status(400).send({ 

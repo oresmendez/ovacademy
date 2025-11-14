@@ -92,7 +92,7 @@ export default function ListarUnidades() {
     
                 setData(unidadesConNotas);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // console.error('La respuesta de la API no contiene datos válidos.');
                 setData([]);
             }
         } catch (err) {
@@ -194,7 +194,7 @@ export default function ListarUnidades() {
                 setUnidadSeleccionada(false);
                 setMostrarEvaluaciones(true);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // console.error('La respuesta de la API no contiene datos válidos.');
                 setDataEvaluaciones([]);
             }
         } catch (err) {
@@ -242,7 +242,7 @@ export default function ListarUnidades() {
             if (response.status === 200) {
                 setTypesEvaluaciones(response.data.data);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // console.error('La respuesta de la API no contiene datos válidos.');
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);

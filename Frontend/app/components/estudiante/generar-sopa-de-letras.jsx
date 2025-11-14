@@ -188,9 +188,9 @@ export default function SopaInteractiva({ id_sopa, palabrasMeta, notaEvaluacion,
 			);
 	
 			if (response.status === 200) {
-				window.history.go(-1)
 				toast.success(response.data.message);
 				await enviarNotaEvaluacion(notaEvaluacion, idEvaluacion);
+				window.location.reload();
 			} else {
 				toast.error(response.data.message);
 			}
@@ -253,12 +253,13 @@ export default function SopaInteractiva({ id_sopa, palabrasMeta, notaEvaluacion,
 					))}
 					</ul>
 					
-						<div className='mt-20 mr-10'>
-							<button onClick={resolver} className="resolver">Resolver Sopa</button>
-						</div>
 						<div className='center'>
 							<ButtonSave className="mt-30" onClick={guardar_sopadeletras}>Guardar</ButtonSave>
 						</div>
+						<div className="resolver-container mt-20 mr-10">
+							<button onClick={resolver} className="resolver">Resolver Sopa</button>
+						</div>
+
 					
 				</div>
 			</div>
@@ -291,6 +292,32 @@ const Component = styled.div`
 		to {
 			border-right: none;
 		}
+	}
+	.resolver-container {
+		position: relative;
+		display: inline-block;
+
+		&:hover .resolver {
+		opacity: 1;
+		pointer-events: auto;
+		}
+  }
+
+	.resolver {
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none; /* evita que se pueda hacer clic cuando está oculto */
+		background-color: #0f172a;
+		color: #fff;
+		padding: 10px 20px;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		font-size: 1rem;
+	}
+
+	.resolver:hover {
+		background-color: #12bd3758;
 	}
 
 `;

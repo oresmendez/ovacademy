@@ -1,4 +1,4 @@
-'use client'; import { useState, styled, useParams, apiRest, SopaDeLetras, Cuestionario, PreguntasAbiertas, textBarHeader, useEffect, Link, Footer} from '@/app/components/utils/rutas';
+'use client'; import { useState, styled, useParams, apiRest, MessageError, Spinner, SopaDeLetras, Cuestionario, PreguntasAbiertas, textBarHeader, useEffect, Link, Footer} from '@/app/components/utils/rutas';
 
 
 export default function Administrador_Materia() {
@@ -11,6 +11,9 @@ export default function Administrador_Materia() {
 
 	const [nameUnidad, setNameUnidad] = useState('');
 	const [evaluaciones, seEvaluaciones] = useState([]);
+
+  const [showSpinner, setShowSpinner] = useState(false);
+	const [isLoadingRespuestas, setIsLoadingRespuestas] = useState(true);
 
 	useEffect(() => {
 		obtenerUnidad();
@@ -49,7 +52,7 @@ export default function Administrador_Materia() {
     };
 
 	const obtenerEvaluaciones = async () => {
-		try {
+		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
       const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/${idUnidad}`
 			const response = await apiRest.fetchGet(url);
 			if (response.status === 200) {
@@ -58,7 +61,7 @@ export default function Administrador_Materia() {
 
 		} catch (err) {
 			console.error('Error al conectar con el servidor:', err);
-		}
+		}finally { clearTimeout(timeout); setShowSpinner(false); setIsLoadingRespuestas(false);}
 	};
 	
 	const tipoComponente = {
@@ -79,42 +82,52 @@ export default function Administrador_Materia() {
 		}
 	};
 	    
-	return (
-	<Componente>
-		<div className="layout-body">
-		<div className="container-body">
-			<div className="tabs-container mt-10 p-10">
-			<div className="tab-menu">
-				{evaluaciones.map((comp, index) => (
-				<button
-					key={comp.id}
-					className={activeTab === index ? "active" : ""}
-					onClick={() => TabClick(index)}
-				>
-					{tipoComponente[comp.typeId]?.nombre || "Sin nombre"}
-				</button>
-				))}
-			</div>
-			<div className="tab-content">
-				{evaluaciones.map((comp, index) => (
-					activeTab === index && (
-						<div key={comp.id} className="tab-panel">
-						{tipoComponente[comp.typeId]?.componente({
-							idEvaluacion: comp.id,
-							idUnidad: comp.idUnidad,
-							typeId: comp.typeId,
-							notaEvaluacion: comp.notaEvaluacion
-						})}
-						</div>
-					)
-				))}
-			</div>
-			</div>
-		</div>
-		</div>
-    <Footer />
-	</Componente>
-	);
+	let contenido;
+	
+
+	if (showSpinner || isLoadingRespuestas) {
+		contenido = <Spinner show={showSpinner} />;
+	} else if (!evaluaciones.length) {
+		contenido = <MessageError message="Esta unidad no tiene una evaluacion asignada." />;
+	} else {
+
+	  <Componente>
+      <div className="layout-body">
+      <div className="container-body">
+        <div className="tabs-container mt-10 p-10">
+        <div className="tab-menu">
+          {evaluaciones.map((comp, index) => (
+          <button
+            key={comp.id}
+            className={activeTab === index ? "active" : ""}
+            onClick={() => TabClick(index)}
+          >
+            {tipoComponente[comp.typeId]?.nombre || "Sin nombre"}
+          </button>
+          ))}
+        </div>
+        <div className="tab-content">
+          {evaluaciones.map((comp, index) => (
+            activeTab === index && (
+              <div key={comp.id} className="tab-panel">
+              {tipoComponente[comp.typeId]?.componente({
+                idEvaluacion: comp.id,
+                idUnidad: comp.idUnidad,
+                typeId: comp.typeId,
+                notaEvaluacion: comp.notaEvaluacion
+              })}
+              </div>
+            )
+          ))}
+        </div>
+        </div>
+      </div>
+      </div>
+      <Footer />
+    </Componente>
+	}
+
+	return contenido;
 }
 
 const Componente = styled.div`

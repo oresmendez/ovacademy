@@ -25,7 +25,7 @@ export default function ListarPreguntasAbiertas({ idEvaluacion, idUnidad, typeId
 				obtener_respuestas_preguntas(ids);
 
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // console.error('La respuesta de la API no contiene datos válidos.');
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
@@ -45,7 +45,7 @@ export default function ListarPreguntasAbiertas({ idEvaluacion, idUnidad, typeId
 
 			} else if (response.status != 404) {
 				setrespuestasPrevias([])
-            	console.error('La respuesta de la API no contiene datos válidos.');
+            	// console.error('La respuesta de la API no contiene datos válidos.');
             }
 		} catch (err) {
 			console.error('Error al conectar con el servidor:', err);

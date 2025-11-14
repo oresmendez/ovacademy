@@ -136,9 +136,9 @@
         "type_id": 2
       },
       {
-        "name": "Raúl",
-        "surname": "Delgado",
-        "email": "raul.delgado@gmail.com",
+        "name": "Jose",
+        "surname": "Sifontes",
+        "email": "jose.sifontes@gmail.com",
         "password": "1",
         "type_id": 2
       },
@@ -152,8 +152,8 @@
     ],
     "semestre":[
         {
-            "nombre": "I-2025",
-            "fecha_inicio":"2025-07-05"
+            "nombre": "I-2026",
+            "fecha_inicio":"2026-02-20"
         }
     ],
     "aula":[

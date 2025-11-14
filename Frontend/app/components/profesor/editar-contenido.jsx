@@ -9,10 +9,11 @@ import {
   FaAlignCenter,
   FaAlignRight,
   FaImage,
+  FaListUl,
 } from "react-icons/fa";
 import { MdFormatAlignJustify } from "react-icons/md";
 
-export default function EditarContenido({ descripcion, setDescripcion }) {
+export default function EditarContenido({ descripcion, setDescripcion, readOnly = false }) {
   const editorRef = useRef(null);
   const fileInputRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -144,14 +145,66 @@ img.addEventListener("dblclick", (e) => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [selectedImage]);
 
+const updateHtml = () => {
+  const clone = editorRef.current.cloneNode(true);
+  clone.querySelectorAll(".resize-handle").forEach(el => el.remove());
+  const newHtml = clone.innerHTML.trim();
+
+  if (newHtml !== prevDescripcionRef.current) {
+    setDescripcion(newHtml);
+    prevDescripcionRef.current = newHtml;
+  }
+
+};
+
+if (readOnly) {
+  return (
+    <Wrapper>
+      <EditorArea
+        ref={editorRef}
+        contentEditable={false}
+        suppressContentEditableWarning={true}
+        dangerouslySetInnerHTML={{ __html: descripcion }}
+          onInput={updateHtml}
+  onDragStart={(e) => e.preventDefault()}
+  onDrop={(e) => e.preventDefault()}
+  onDragOver={(e) => e.preventDefault()}
+        style={{
+          border: "none",
+          background: "none",
+          padding: "1rem",
+          width: "100%",
+          boxSizing: "border-box",
+          overflow: "hidden",
+        }}
+      />
+    </Wrapper>
+  );
+}
+
+
+
+
   const exec = (command, value = null) => {
-    document.execCommand(command, false, value);
+  const sel = window.getSelection();
+  const editor = editorRef.current;
+
+  if (!sel.rangeCount || !editor.contains(sel.anchorNode)) {
+    editor.focus();
+    return;
+  }
+
+  const range = sel.getRangeAt(0);
+
+  document.execCommand(command, false, value);
+
+
     updateHtml();
   };
 
 const insertImageAtCursor = (src) => {
   const wrapper = document.createElement("div");
-  wrapper.contentEditable = true;
+wrapper.contentEditable = false; // 🔒 evita que el wrapper se pueda arrastrar o editar
   wrapper.dataset.imageWrapper = "true";
   wrapper.style.cssText = `
     display: inline-block;
@@ -159,16 +212,24 @@ const insertImageAtCursor = (src) => {
     width: 50%;
     max-width: 100%;
     margin: 8px 12px 8px 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: auto;
   `;
 
   const img = document.createElement("img");
   img.src = src;
+img.draggable = false; // 🚫 impide arrastre
   img.style.cssText = `
     width: 100%;
     height: auto;
     display: block;
     cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
   `;
+img.addEventListener("dragstart", (e) => e.preventDefault());
 
   // 🔁 Mostrar handles en click o doble click
   const showHandles = (e) => {
@@ -238,6 +299,9 @@ const startResizing = (e, wrapper, img, corner) => {
   const aspectRatio = startWidth / startHeight;
   const editorWidth = editorRef.current.offsetWidth;
 
+  const minSize = 50;
+  const maxSize = editorWidth - 20; // margen de seguridad
+
   const onMouseMove = (moveEvent) => {
     const dx = moveEvent.clientX - startX;
     const dy = moveEvent.clientY - startY;
@@ -247,19 +311,11 @@ const startResizing = (e, wrapper, img, corner) => {
 
     if (corner.includes("e")) newWidth += dx;
     if (corner.includes("w")) newWidth -= dx;
-    if (corner.includes("s")) newHeight += dy;
-    if (corner.includes("n")) newHeight -= dy;
 
-    // Mantiene proporción si se ajusta desde esquina
-    if (corner.length === 2) {
-      newHeight = newWidth / aspectRatio;
-    }
+    // 🔒 Limita el tamaño dentro de los márgenes del editor
+    if (newWidth > maxSize) newWidth = maxSize;
+    if (newWidth < minSize) newWidth = minSize;
 
-    // Limita el tamaño
-    const minSize = 50;
-    const maxSize = editorWidth * 0.9;
-
-    newWidth = Math.max(minSize, Math.min(maxSize, newWidth));
     newHeight = newWidth / aspectRatio;
 
     wrapper.style.width = `${newWidth}px`;
@@ -297,15 +353,33 @@ const startResizing = (e, wrapper, img, corner) => {
     e.target.value = null;
   };
 
-  const updateHtml = () => {
-    const clone = editorRef.current.cloneNode(true);
-    clone.querySelectorAll(".resize-handle").forEach(el => el.remove());
-    const newHtml = clone.innerHTML;
-    if (newHtml !== descripcion) {
-      setDescripcion(newHtml);
-      prevDescripcionRef.current = newHtml;
-    }
-  };
+
+
+const applyFontSize = (size) => {
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+
+  const range = sel.getRangeAt(0);
+  if (range.collapsed) return;
+
+  // 1️⃣ Aplica tamaño usando execCommand (usa 1–7, no px)
+  document.execCommand("fontSize", false, 7);
+
+  // 2️⃣ Convierte los <font> generados a <span style="font-size:Xpx">
+  const editor = editorRef.current;
+  editor.querySelectorAll("font[size]").forEach((font) => {
+    font.removeAttribute("size");
+    font.style.fontSize = `${size}px`;
+  });
+
+  const select = document.querySelector("#fontSizeSelect");
+  if (select) select.value = "";
+
+  updateHtml();
+};
+
+
+
 
   const triggerFileInput = () => {
     fileInputRef.current.click();
@@ -314,6 +388,28 @@ const startResizing = (e, wrapper, img, corner) => {
   return (
     <Wrapper>
       <Toolbar>
+<select
+  id="fontSizeSelect"
+  onChange={(e) => applyFontSize(e.target.value)}
+  defaultValue=""
+  style={{
+    padding: "0.4rem",
+    borderRadius: "0.375rem",
+    border: "1px solid #9ca3af",
+  }}
+>
+  <option value="" disabled>Tamaño</option>
+  <option value="12">12px</option>
+  <option value="14">14px</option>
+  <option value="16">16px</option>
+  <option value="18">18px</option>
+  <option value="20">20px</option>
+  <option value="24">24px</option>
+</select>
+
+
+
+
         <IconButton onClick={() => exec("bold")}>
           <FaBold />
         </IconButton>
@@ -335,7 +431,9 @@ const startResizing = (e, wrapper, img, corner) => {
         <IconButton onClick={() => exec("justifyFull")} bg="blue">
           <MdFormatAlignJustify />
         </IconButton>
-
+        <IconButton onClick={() => exec("insertUnorderedList")} bg="gray">
+          <FaListUl />
+        </IconButton>
         <IconButton onClick={triggerFileInput} bg="green">
           <FaImage />
         </IconButton>
@@ -413,7 +511,9 @@ const Toolbar = styled.div`
   margin-bottom: 0.75rem;
 `;
 
-const IconButton = styled.button`
+const IconButton = styled.button.attrs(() => ({
+  type: "button", // ⚠️ evita que dispare submit
+}))`
   background-color: ${({ bg }) =>
     bg === "blue"
       ? "#2563eb"
@@ -433,6 +533,7 @@ const IconButton = styled.button`
   }
 `;
 
+
 const HiddenInput = styled.input`
   display: none;
 `;
@@ -451,11 +552,39 @@ const EditorArea = styled.div`
   display: block;
   overflow-wrap: break-word;
   word-break: break-word;
+  text-align: justify; /* 👈 añade esto para justificar correctamente */
 
   /* NUEVO: limita y oculta contenido que se desborde */
   max-width: 100%;
   overflow: hidden;
   position: relative;
+
+  ul, ol {
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
+    list-style-type: disc; /* 👈 muestra viñetas */
+  }
+
+  ol {
+    list-style-type: decimal; /* para listas numeradas */
+  }
+
+  li {
+    margin-bottom: 0.25rem;
+  }
+  &::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+
+img,
+[data-image-wrapper] {
+  user-select: none !important;
+  -webkit-user-drag: none !important; /* ✅ evita arrastre real */
+  pointer-events: auto;
+}
+
 `;
 
 
@@ -470,7 +599,9 @@ const ImageToolbar = styled.div`
   gap: 4px;
 `;
 
-const FloatButton = styled.button`
+const FloatButton = styled.button.attrs(() => ({
+  type: "button", // ✅ también evita submit
+}))`
   background: #f3f3f3;
   border: none;
   padding: 4px 8px;

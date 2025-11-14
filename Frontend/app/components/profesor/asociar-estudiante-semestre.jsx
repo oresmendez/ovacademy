@@ -19,19 +19,22 @@ export default function SelectAulaEstudiantes() {
 		let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
 			const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/profesor`
 			const response = await apiRest.fetchGet(url);
-			if (response.status === 200) {
-				const aulasFormateadas = response.data.data.map((aulas) => ({
-					value: aulas.id,
-					label: aulas.nombreAula,
+			if (response.status === 200 && response.data?.data?.length > 0) {
+				const aulasHabilitadas = response.data.data.filter((aula) => aula.habilitado);
+				const aulasFormateadas = aulasHabilitadas.map((aula) => ({
+					value: aula.id,
+					label: aula.nombreAula,
 				}));
 				setAulas(aulasFormateadas);
-				obtenerEstudiantesInscritos();
+				if (aulasHabilitadas.length > 0) {
+					obtenerEstudiantesInscritos();
+				}obtenerEstudiantesInscritos();
 			} else {
-				console.error('La respuesta de la API no contiene datos válidos.');
+				// console.error('No se encontraron aulas asignadas para el profesor.');
 			}
 		} catch (err) {
 			console.error('Error al conectar con el servidor:', err);
-		}finally { clearTimeout(timeout); setShowSpinner(false);}
+		}finally { clearTimeout(timeout); setShowSpinner(false); setIsLoadingRespuestas(false);}
 	};
 
 	const obtenerEstudiantesInscritos = async () => {
@@ -42,7 +45,7 @@ export default function SelectAulaEstudiantes() {
 			if (response.status === 200) {
 				obtenerEstudiantesNoInscritos(response.data.estudiantesInscritos)
 			} else {
-				console.error('La respuesta de la API no contiene datos válidos.');
+				// // console.error('La respuesta de la API no contiene datos válidos.');
 			}
 		} catch (err) {
 			console.error('Error al conectar con el servidor:', err);
@@ -66,12 +69,12 @@ export default function SelectAulaEstudiantes() {
 							? `${estudiante.name} ${estudiante.surname} - ${estudiante.email}`
 							: `${estudiante.email}`
 					}));
-	
+					
 				setEstudiantes(estudiantesNoInscritos);
 			}
 		} catch (err) {
 			console.error('Error al conectar con el servidor:', err);
-		}finally { clearTimeout(timeout); setShowSpinner(false);}
+		}finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
 	};
 	
 
@@ -116,14 +119,14 @@ export default function SelectAulaEstudiantes() {
 
 
 	let contenido;
+	
 
 	if (showSpinner || isLoadingRespuestas) {
-        contenido = <Spinner show={showSpinner} />;
-
-    }else if (!aulas.length) {
-		contenido = (
-			<MessageError message={"No tienes una sección asignada por el momento."}/>
-		);
+		contenido = <Spinner show={showSpinner} />;
+	} else if (!aulas.length) {
+		contenido = <MessageError message="No tienes una sección asignada por el momento." />;
+	} else if (!estudiantes.length) {
+		contenido = <MessageError message="No hay estudiantes disponibles para asignar." />;
 	} else {
 		contenido = (
 			<Component>
@@ -153,7 +156,8 @@ export default function SelectAulaEstudiantes() {
 							styles={customStyles}
 						/>
 					</div>
-					<div className='center pt-10'>
+
+					<div className="center pt-10">
 						<button className="boton" onClick={guardarData}>Guardar</button>
 					</div>
 				</div>

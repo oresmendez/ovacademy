@@ -47,14 +47,11 @@ export default function ListarEstudiantes() {
                 }
                 setAulas(aulasFormateadas);
             } else {
-                console.error('La respuesta de la API no contiene datos válidos.');
+                // // console.error('La respuesta de la API no contiene datos válidos.');
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
-        } finally {
-            clearTimeout(timeout);
-            setShowSpinner(false);
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
     };
 
     const obtenerEstudiantes = async () => {
@@ -79,10 +76,7 @@ export default function ListarEstudiantes() {
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
             setData([]);
-        } finally {
-            clearTimeout(timeout);
-            setShowSpinner(false);
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
     };
 
     const obtener_detalles_aula = async (aula_id) => {
@@ -96,11 +90,7 @@ export default function ListarEstudiantes() {
             }
         } catch (err) {
             console.error('Error al conectar con el servidor:', err);
-        } finally {
-            clearTimeout(timeout);
-            setShowSpinner(false);
-            setIsLoadingRespuestas(false);
-        }
+        }finally { clearTimeout(timeout); setShowSpinner(false);setIsLoadingRespuestas(false);}
     };
 
     const desmatricularEstudiante = async (id) => {
@@ -128,7 +118,9 @@ export default function ListarEstudiantes() {
                 cerrarModal();
                 obtenerAula();
             } else {
+                cerrarModal(); 
                 toast.error(response.data.message);
+                toast.error('No se puede cerrar la sección');
             }
         } catch (err) {
             console.log(err);
@@ -217,7 +209,9 @@ export default function ListarEstudiantes() {
     let contenido;
 
     if (showSpinner || isLoadingRespuestas) {
-        contenido = <Spinner show={showSpinner} />;
+	contenido = <Spinner show={showSpinner} />;
+    } else if (!aulas.length) {
+        contenido = <MessageError message="No tienes secciones asignadas actualmente." />;
     } else {
         contenido = (
             <Componente>
@@ -245,7 +239,7 @@ export default function ListarEstudiantes() {
                             )}
 
                             {detallesaula && (
-                                <ButtonAccion color="#cb192a" onClick={abrirModal}>
+                                <ButtonAccion color="#e74c3c" onClick={abrirModal}>
                                     Cerrar Sección
                                 </ButtonAccion>
                             )}
@@ -253,9 +247,7 @@ export default function ListarEstudiantes() {
                     </div>
 
                     {aulaSeleccionada && data.length === 0 ? (
-                        <div style={{ color: 'red', fontSize: '1.2rem', textAlign: 'center', padding: '2rem' }}>
-                            No se encuentran estudiantes matriculados para esta sección.
-                        </div>
+                        <MessageError message={"No se encuentran estudiantes matriculados para esta sección"}/>
                     ) : (
                         <DataTableIndex
                             columns={detallesaula ? [...columnasBase, columnaAccion] : columnasBase}

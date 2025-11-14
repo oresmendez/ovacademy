@@ -1,24 +1,23 @@
-/**----------------------------------------------------------
- * @author          : Orestes Fleitas
- * @NameController  : SesioneController
- * @details         : Controlador para gestionar las operaciones relacionadas con materias.
- */
 
 import type { HttpContext } from '@adonisjs/core/http'
 import MateriaService from '../../controllers/materia/service.js'
 
-const MateriaService_ = new MateriaService();
+export default class MateriasController { 
 
-export default class SesioneController { 
+    private readonly MateriaService_: MateriaService;
+
+    constructor() {
+        this.MateriaService_ = new MateriaService();
+    }
     
-    public async get_Materia({ request }: HttpContext) {
-        return await MateriaService_.getMateria();
+    public async get_Materia() {
+        return await this.MateriaService_.getMateria();
     } 
 
     public async edit_Materia({ request, response }: HttpContext) {
         try {
             
-            let materia = await MateriaService_.getMateria();
+            let materia = await this.MateriaService_.getMateria();
             if (!materia) {
                 return response.status(404).json({
                     message: 'No existe Materia',

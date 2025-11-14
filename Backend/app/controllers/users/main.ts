@@ -5,6 +5,7 @@ import SesioneController from '../sesiones/main.js';
 import AdministradorController from '../administrador/main.js';
 import EstudianteController from '../estudiante/main.js';
 import ProfesorController from '../profesor/main.js';
+import TokenController from '../token/main.js';
 
 export default class UsersController {
 
@@ -13,6 +14,7 @@ export default class UsersController {
     private readonly AdministradorController_: AdministradorController;
     private readonly EstudianteController_: EstudianteController;
     private readonly ProfesorController_: ProfesorController;
+    private readonly TokenController_: TokenController;
 
     constructor() {
         this.UserService_ = new UserService();
@@ -20,6 +22,7 @@ export default class UsersController {
         this.AdministradorController_ = new AdministradorController();
         this.EstudianteController_ = new EstudianteController();
         this.ProfesorController_ = new ProfesorController();
+        this.TokenController_ = new TokenController();
     }
 
     create_user = async (email: string, name: string, surname: string, type_id: number, status_logico: boolean) => {
@@ -48,8 +51,6 @@ export default class UsersController {
 
             const { email, password, name="", surname="", type_id, status_logico=true } = request.only(['email', 'password', 'name', 'surname', 'type_id', 'status_logico'])
             const user = await this.create_user(email, name, surname, type_id, status_logico)
-
-            console.log(user)
             
             if (!user) {
                 return response.status(400).send({ 
@@ -97,7 +98,7 @@ export default class UsersController {
             }
 
             return response.status(200).json({
-                message: 'usuario creado'
+                message: 'Usuario registrado exitosamente',
             });
 
         } catch (error) {
@@ -224,6 +225,14 @@ export default class UsersController {
             user.eliminado = !user.eliminado;
     
             await user.save();
+
+            const respuesta = await this.TokenController_.delete_token_user(user.id);
+
+            if (!respuesta) {
+                return response.status(400).json({
+                    message: 'No se pudo eliminar el token del usuario',
+                });
+            }
     
             return response.status(200).json({
                 success: true,

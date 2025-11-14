@@ -52,7 +52,7 @@ export default function Administrador_Materia() {
 
 				{activeTab === 1 && (
 					<div className="tab-panel">
-						<AsignarAulaSemestre />
+						<AsignarAulaSemestre handleTabClick={handleTabClick}/>
 					</div>
 				)}
 

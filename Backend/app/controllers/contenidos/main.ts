@@ -1,19 +1,23 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import ContenidoService from '../../controllers/contenidos/service.js'
-
 import TokenController from '../token/main.js';
-const TokenController_ = new TokenController();
 
-const ContenidoService_ = new ContenidoService();
 
 export default class ContenidosController {
 
-      
+    private readonly TokenController_: TokenController;
+    private readonly ContenidoService_: ContenidoService;
+
+    constructor() {
+        this.TokenController_ = new TokenController();
+        this.ContenidoService_ = new ContenidoService();
+    }
+
     public async create_contenido({ request, response }: HttpContext) {
         try {
             
             const { id_unidad, nombre, descripcion } = request.only(['id_unidad', 'nombre', 'descripcion'])
-            const contenido = await ContenidoService_.crear_contenido(id_unidad, nombre, descripcion)
+            const contenido = await this.ContenidoService_.crear_contenido(id_unidad, nombre, descripcion)
 
             if (!contenido) {
                 return response.status(400).send({ 
@@ -41,7 +45,7 @@ export default class ContenidosController {
             const token = request.header('token');
             if (!token) {return response.unauthorized({ message: 'Token requerido' });}
 
-            const userByToken = await TokenController_.obtenerUserByToken(token);
+            const userByToken = await this.TokenController_.obtenerUserByToken(token);
             if (!(userByToken && userByToken.length > 0)) {return response.notFound({ message: 'No se encontro un token valido de usuario' });}
 
             console.log(userByToken)
@@ -49,9 +53,9 @@ export default class ContenidosController {
             let unidad; // Declaración aquí
 
             if (userByToken[0].type_id == 1) {
-                unidad = await ContenidoService_.obtenerContenidoDeUnaUnidad(params.unidad, "true");   
+                unidad = await this.ContenidoService_.obtenerContenidoDeUnaUnidad(params.unidad, "true");   
             } else {
-                unidad = await ContenidoService_.obtenerContenidoDeUnaUnidad(params.unidad, "false");
+                unidad = await this.ContenidoService_.obtenerContenidoDeUnaUnidad(params.unidad, "false");
             }
     
             if (!unidad) {
@@ -67,7 +71,7 @@ export default class ContenidosController {
 
     public async get_ContenidoDetails({ params, response }: HttpContext) {
         
-        const contenido = await ContenidoService_.obtenerDetallesDeUnContenido(params.id);
+        const contenido = await this.ContenidoService_.obtenerDetallesDeUnContenido(params.id);
     
         if (!contenido) {
             return response.status(404).json({ message: 'Contenido no encontrado' });
@@ -81,7 +85,7 @@ export default class ContenidosController {
             
             const { id, nombre, descripcion } = request.only(['id', 'nombre', 'descripcion']);
 
-            const contenido = await ContenidoService_.obtenerDetallesDeUnContenido(id);
+            const contenido = await this.ContenidoService_.obtenerDetallesDeUnContenido(id);
     
             if (!contenido) {
                 return response.status(404).json({
@@ -121,7 +125,7 @@ export default class ContenidosController {
             
         try {
             
-            const contenido = await ContenidoService_.obtenerDetallesDeUnContenido(params.id);
+            const contenido = await this.ContenidoService_.obtenerDetallesDeUnContenido(params.id);
     
             if (!contenido) {
                 return response.status(404).json({
@@ -148,7 +152,7 @@ export default class ContenidosController {
         try {
             
             const { id } = params;
-            if (!await ContenidoService_.soft_delete(id)) {
+            if (!await this.ContenidoService_.soft_delete(id)) {
                 return response.status(400).send({ 
                     message: 'Error al eliminar la unidad', 
                     success: false 
