@@ -22,7 +22,6 @@ export default function DashboardPage() {
 			
 			const url = `${process.env.NEXT_PUBLIC_API_URL}/aula/estudianteMatriculado`
 			const response = await apiRest.fetchGet(url);
-            console.log('Respuesta:', response);
 			if (response.status === 200) {
 				setEstudianteMatriculado(true);
 			} else {

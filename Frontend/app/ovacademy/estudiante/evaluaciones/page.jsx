@@ -29,7 +29,6 @@ export default function CompletarEspacios() {
   }
 
   const guardarRespuestas = () => {
-    console.log('Respuestas guardadas:', respuestas)
     setGuardado(true)
   }
 

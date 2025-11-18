@@ -72,7 +72,6 @@ export default function ListarMaterias() {
     const handleDeleteClick = (id) => {
         const updatedData = data.filter((item) => item.id !== id);
         setData(updatedData);
-        console.log('Elemento eliminado con ID:', id);
     };
 
     const handleInputChange = (e, field) => {

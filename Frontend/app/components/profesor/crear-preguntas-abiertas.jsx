@@ -41,7 +41,6 @@ export default function ComponenteTest({id_unidad, type_id, nota_evaluacion, Tab
 
 
 	const crear_preguntas_abiertas = async () => {
-		console.log('Preguntas:', preguntas.map(p => p.pregunta));
 		if (nota_evaluacion === null || nota_evaluacion === undefined || nota_evaluacion === '') {
             toast.error("Por favor, ingresa una nota para la evaluación.");
             return;
@@ -99,8 +98,6 @@ export default function ComponenteTest({id_unidad, type_id, nota_evaluacion, Tab
 
 			const payloadPreguntas = [...preguntasActivas, ...preguntasEliminadas];
 
-			console.log('Payload preguntas:', payloadPreguntas);
-
 			const url = `${process.env.NEXT_PUBLIC_API_URL}/evaluaciones/preguntaAbiert`;
 			const payload = {
 				evaluacion_id: idEvaluacion,
@@ -108,7 +105,6 @@ export default function ComponenteTest({id_unidad, type_id, nota_evaluacion, Tab
 			};
 
 			const response = await apiRest.fetchPut(url, payload);
-			console.log('Response:', response);
 
 			if (response.status === 200) {
 				toast.success(response.data.message || 'Preguntas guardadas correctamente.');

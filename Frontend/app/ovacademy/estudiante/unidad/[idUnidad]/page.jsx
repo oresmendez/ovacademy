@@ -65,7 +65,6 @@ export default function MateriasUnidades() {
         let timeout; try { timeout = setTimeout(() => setShowSpinner(true), 300);
             const url = `${process.env.NEXT_PUBLIC_API_URL}/contenido/${idUnidad}`
             const response = await apiRest.fetchGet(url);
-            console.log('Respuesta de contenidos:', response);
             if (response.status === 200) {
                 setContenidos(response.data)
             }
