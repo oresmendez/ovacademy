@@ -23,7 +23,7 @@ export default function ListarMaterias() {
             try {
 
                 const [r_listadoMaterias] = await Promise.all([
-                    apiRest.fetchPost('http://localhost:3333/ovacademy/subject/unidades/obtenerTodasLasUnidades', { id: 1 }),
+                    apiRest.fetchPost(`${process.env.NEXT_PUBLIC_API_URL}/subject/unidades/obtenerTodasLasUnidades`, { id: 1 }),
                 ]);
 
                 setData(r_listadoMaterias.data);

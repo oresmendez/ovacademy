@@ -20,7 +20,7 @@ export async function middleware(request) {
 
     if (token) {
         try {
-            const response = await fetch("http://localhost:3333/ovacademy/auth/verifytoken", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verifytoken`, {
                 method: 'GET',
                 headers: {
                     'Token': token
