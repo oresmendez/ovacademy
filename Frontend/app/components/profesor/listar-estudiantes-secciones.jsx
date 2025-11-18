@@ -65,7 +65,6 @@ export default function ListarEstudiantes() {
             if (response.status === 200) {
                 const estudiantes = response.data.data;
                 setData(estudiantes);
-                console.log("Estudiantes obtenidos:", estudiantes);
                 if (estudiantes.length === 0) {
                     toast.warn("No hay estudiantes matriculados para esta sección");
                 }

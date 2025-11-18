@@ -4,7 +4,7 @@ import { Cookies, toast } from '@/app/components/utils/rutas';
 export const create_cookie = (data) => {
     Cookies.set('user-data', JSON.stringify(data), {
         expires: 0.0833, // Duración: 2 horas
-        secure: true,
+        secure: false,
         sameSite: 'Strict',
     });
 };
